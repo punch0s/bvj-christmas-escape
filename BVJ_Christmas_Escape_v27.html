@@ -1,0 +1,2999 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>BVJ: Christmas Escape</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --panel:#111a33;
+    --text:#f7f8ff;
+    --muted:#dce3f7;
+    --accent:#f0c85b;
+  }
+  *{box-sizing:border-box}
+  html,body{
+    width:100%;
+    min-height:100%;
+    margin:0;
+    overflow-x:hidden;
+    overscroll-behavior:none;
+    -webkit-text-size-adjust:100%;
+  }
+  body{
+    background:radial-gradient(circle at top,#18244a 0,#0b1020 55%,#070a12 100%);
+    color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100%;
+  }
+  #wrap{
+    width:min(100%,1100px);
+    padding:
+      max(10px,env(safe-area-inset-top))
+      max(10px,env(safe-area-inset-right))
+      max(10px,env(safe-area-inset-bottom))
+      max(10px,env(safe-area-inset-left));
+  }
+  #topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+    min-height:40px;
+    font-size:14px;
+    color:#f7f8ff;
+    font-weight:650;
+    text-shadow:0 1px 3px rgba(0,0,0,.85);
+  }
+  #hud{
+    color:#ffffff;
+    background:rgba(0,0,0,.62);
+    border:2px solid rgba(240,200,91,.85);
+    border-radius:12px;
+    padding:8px 12px;
+    min-width:390px;
+    min-height:40px;
+    flex:0 0 auto;
+    white-space:nowrap;
+    font-size:16px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:.2px;
+    text-shadow:0 1px 3px rgba(0,0,0,.8);
+    box-shadow:0 4px 14px rgba(0,0,0,.28);
+  }
+  #hud .jump-indicator{
+    display:inline-block;
+    width:12px;
+    min-width:12px;
+    text-align:center;
+    font-size:10px;
+    line-height:1;
+    vertical-align:1px;
+    opacity:.9;
+  }
+  #gamebox{
+    position:relative;
+    user-select:none;
+    -webkit-user-select:none;
+    overscroll-behavior:none;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#0e1530;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 16px 50px rgba(0,0,0,.45);
+  }
+  canvas{
+    width:100%;
+    height:100%;
+    display:block;
+    image-rendering:auto;
+    touch-action:none;
+  }
+  #overlay{
+    position:absolute; inset:0;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(rgba(4,8,20,.62),rgba(4,8,20,.84));
+    padding:24px;
+  }
+  .card{
+    width:min(680px,95%);
+    background:rgba(16,24,51,.96);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    padding:28px;
+    box-shadow:0 12px 40px rgba(0,0,0,.35);
+    text-align:center;
+  }
+  h1{margin:0 0 8px;font-size:clamp(28px,5vw,52px)}
+  h2{margin:0 0 10px}
+  p{line-height:1.45}
+  .small{
+    font-size:14px;
+    color:#e3e8f8;
+    text-shadow:0 1px 2px rgba(0,0,0,.45);
+  }
+  button{
+    border:0;
+    border-radius:14px;
+    padding:12px 18px;
+    font-weight:750;
+    cursor:pointer;
+    background:var(--accent);
+    color:#121212;
+    font-size:16px;
+  }
+  #message{
+    position:absolute;
+    z-index:25;
+    left:50%;
+    top:18px;
+    transform:translateX(-50%);
+    color:#ffffff;
+    background:rgba(6,10,22,.92);
+    border:1px solid rgba(255,255,255,.30);
+    border-radius:14px;
+    padding:9px 14px;
+    max-width:86%;
+    text-align:center;
+    font-size:14px;
+    font-weight:750;
+    text-shadow:0 1px 3px rgba(0,0,0,.9);
+    box-shadow:0 4px 14px rgba(0,0,0,.28);
+    opacity:0;
+    transition:opacity .2s;
+    pointer-events:none;
+  }
+  #message.show{opacity:1}
+  #mobile{
+    position:absolute;
+    z-index:20;
+    inset:auto 8px 8px 8px;
+    display:none;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:8px;
+    pointer-events:none;
+  }
+  .dpad, .actions{pointer-events:auto}
+  .dpad{
+    display:grid;
+    grid-template-columns:52px 52px 52px;
+    grid-template-rows:52px 52px 52px;
+    gap:4px;
+  }
+  .actions{
+    display:grid !important;
+    grid-template-columns:60px 60px;
+    grid-auto-rows:60px;
+    gap:7px !important;
+    align-items:end;
+  }
+  .ctrl{
+    width:52px;
+    height:52px;
+    border-radius:12px;
+    background:rgba(8,13,29,.62);
+    color:white;
+    border:1px solid rgba(255,255,255,.30);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1px;
+    font-weight:900;
+    line-height:1;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:none;
+    -webkit-tap-highlight-color:transparent;
+    backdrop-filter:blur(5px);
+  }
+  .ctrl .ctrl-main{font-size:20px}
+  .ctrl .ctrl-caption{font-size:8px;font-weight:800;opacity:.86}
+  .ctrl:active,.ctrl.pressed{
+    background:rgba(240,200,91,.34);
+    transform:scale(.96);
+  }
+  .up{grid-column:2;grid-row:1}
+  .left{grid-column:1;grid-row:2}
+  .down{grid-column:2;grid-row:2}
+  .right{grid-column:3;grid-row:2}
+  .actions .ctrl{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:rgba(240,200,91,.22);
+  }
+  #mobileUse{grid-column:1;grid-row:1}
+  #mobileJump{grid-column:2;grid-row:1}
+  #mobileAttack{grid-column:2;grid-row:2}
+  #mobileHint{
+    position:absolute;
+    z-index:18;
+    left:50%;
+    bottom:8px;
+    transform:translateX(-50%);
+    display:none;
+    pointer-events:none;
+    padding:5px 8px;
+    border-radius:9px;
+    background:rgba(6,10,22,.64);
+    border:1px solid rgba(255,255,255,.16);
+    color:#fff;
+    font-size:9px;
+    font-weight:800;
+    white-space:nowrap;
+    text-shadow:0 1px 2px #000;
+  }
+  #orientationHint{
+    display:none;
+    position:absolute;
+    z-index:19;
+    top:7px;
+    right:7px;
+    padding:4px 7px;
+    border-radius:8px;
+    background:rgba(6,10,22,.72);
+    border:1px solid rgba(255,255,255,.18);
+    color:#fff;
+    font-size:9px;
+    font-weight:800;
+    pointer-events:none;
+  }
+  @media (pointer:coarse), (max-width:760px){
+    body{align-items:flex-start}
+    #wrap{
+      width:100%;
+      padding:
+        max(6px,env(safe-area-inset-top))
+        max(6px,env(safe-area-inset-right))
+        max(6px,env(safe-area-inset-bottom))
+        max(6px,env(safe-area-inset-left));
+    }
+    #topbar{
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:5px;
+      margin-bottom:6px;
+      min-height:0;
+      font-size:11px;
+      text-align:center;
+    }
+    #stageLabel{width:100%;font-size:11px}
+    #hud{
+      width:100%;
+      min-width:0;
+      min-height:30px;
+      padding:5px 7px;
+      border-width:1px;
+      border-radius:9px;
+      font-size:11px;
+      line-height:1.2;
+      white-space:normal;
+      text-align:center;
+    }
+    #hud .jump-indicator{width:9px;min-width:9px;font-size:8px}
+    #gamebox{border-radius:10px;max-height:calc(100dvh - 70px)}
+    #mobile{display:flex}
+    #mobileHint{display:block}
+    .dpad{
+      grid-template-columns:46px 46px 46px;
+      grid-template-rows:46px 46px 46px;
+      gap:3px;
+    }
+    .dpad .ctrl{width:46px;height:46px;border-radius:11px}
+    .actions{grid-template-columns:50px 50px;grid-auto-rows:50px;gap:5px !important}
+    .actions .ctrl{width:50px;height:50px}
+    .ctrl .ctrl-main{font-size:17px}
+    .ctrl .ctrl-caption{font-size:7px}
+    #overlay{
+      position:fixed;
+      inset:0;
+      z-index:100;
+      padding:
+        max(10px,env(safe-area-inset-top))
+        max(10px,env(safe-area-inset-right))
+        max(10px,env(safe-area-inset-bottom))
+        max(10px,env(safe-area-inset-left));
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .card{
+      width:min(620px,100%);
+      max-height:none;
+      margin:auto;
+      overflow:visible;
+      border-radius:13px;
+      padding:14px;
+    }
+    h1{font-size:clamp(20px,6vw,30px);margin-bottom:4px}
+    h2{font-size:clamp(16px,4.5vw,22px);margin:0 0 5px}
+    p{font-size:12px;line-height:1.28;margin:6px 0}
+    .small{font-size:10px}
+    button{min-height:42px;padding:9px 14px;font-size:14px}
+    #message{top:7px;max-width:78%;padding:6px 9px;border-radius:10px;font-size:11px}
+  }
+  @media (pointer:coarse) and (orientation:portrait){
+    #orientationHint{display:block}
+  }
+
+  @media (pointer:coarse) and (orientation:landscape) and (max-height:480px){
+    #overlay{
+      align-items:flex-start;
+      padding-top:max(6px,env(safe-area-inset-top));
+      padding-bottom:max(6px,env(safe-area-inset-bottom));
+    }
+    .card{
+      max-height:calc(100dvh - 12px);
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      padding:10px 12px;
+    }
+    .card h1{font-size:22px}
+    .card h2{font-size:17px}
+    .card p{font-size:11px;line-height:1.22;margin:4px 0}
+    .card .small{font-size:9px}
+    .card button{min-height:40px;margin:4px 0}
+  }
+  @media (max-width:390px){
+    .dpad{grid-template-columns:40px 40px 40px;grid-template-rows:40px 40px 40px}
+    .dpad .ctrl{width:40px;height:40px}
+    .actions{grid-template-columns:46px 46px;grid-auto-rows:46px}
+    .actions .ctrl{width:46px;height:46px}
+    #mobile{inset:auto 5px 5px 5px;gap:4px}
+    #mobileHint{bottom:4px;font-size:8px}
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="topbar">
+    <div id="stageLabel"><strong>BVJ 2026/27</strong> · Etappe 1: 2D</div>
+    <div id="hud">Level 1 · 0/3 · 00:00</div>
+  </div>
+  <div id="gamebox">
+    <canvas id="game" width="960" height="540" aria-label="BVJ Christmas Escape"></canvas>
+    <div id="message"></div>
+
+    <div id="mobile" aria-label="Touch-Steuerung">
+      <div class="dpad">
+        <div class="ctrl up" data-key="ArrowUp" aria-label="Nach oben"><span class="ctrl-main">▲</span></div>
+        <div class="ctrl left" data-key="ArrowLeft" aria-label="Nach links"><span class="ctrl-main">◀</span></div>
+        <div class="ctrl down" data-key="ArrowDown" aria-label="Nach unten"><span class="ctrl-main">▼</span></div>
+        <div class="ctrl right" data-key="ArrowRight" aria-label="Nach rechts"><span class="ctrl-main">▶</span></div>
+      </div>
+      <div class="actions">
+        <div class="ctrl" id="mobileUse" data-key="KeyE" aria-label="Benutzen"><span class="ctrl-main">E</span><span class="ctrl-caption">NEHMEN</span></div>
+        <div class="ctrl" id="mobileJump" data-key="Space" aria-label="Springen"><span class="ctrl-main">↑</span><span class="ctrl-caption">SPRUNG</span></div>
+        <div class="ctrl" id="mobileAttack" data-key="KeyF" aria-label="Angreifen"><span class="ctrl-main">F</span><span class="ctrl-caption">ANGRIFF</span></div>
+      </div>
+    </div>
+    <div id="mobileHint">2D · Pfeile bewegen · E · ↑ · F</div>
+    <div id="orientationHint">↻ Querformat ist angenehmer</div>
+
+    <div id="overlay">
+      <div class="card">
+        <h1>🎄 BVJ: Christmas Escape</h1>
+        <p>Schaffst du es durch das 10. Schuljahr bis zu Weihnachten?</p>
+        <p class="small">
+          Das Spiel besteht jetzt aus drei unterschiedlichen Etappen:
+          zuerst die bekannte 2D-Welt, danach eine 3D-Labyrinth-Welt und zum Schluss
+          eine schnelle Neon-Pixel-Action-Etappe. Jede Etappe sieht anders aus und
+          hat eigene Spielmechaniken.
+        </p>
+        <p><strong>Etappe 1:</strong> WASD / Pfeiltasten · <strong>E</strong> = Sammeln / Taste · <strong>Leertaste</strong> = Springen · <strong>F</strong> = Lineal. <strong>Etappe 2:</strong> W/S = laufen, A/D = drehen. <strong>Etappe 3:</strong> A/D = laufen, Leertaste = springen, F = Angriff.</p>
+        <button id="startBtn">Spiel starten</button>
+        <p class="small">Viventa · BVJ 2026/27 · Technology &amp; Design</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const startBtn = document.getElementById('startBtn');
+  const hud = document.getElementById('hud');
+  const message = document.getElementById('message');
+  const stageLabel = document.getElementById('stageLabel');
+  const mobileUse = document.getElementById('mobileUse');
+  const mobileJump = document.getElementById('mobileJump');
+  const mobileAttack = document.getElementById('mobileAttack');
+  const mobileHint = document.getElementById('mobileHint');
+
+  const W = canvas.width, H = canvas.height;
+  const keys = new Set();
+  let started = false;
+  let finished = false;
+  let gameStage = 1; // 1 = klassische 2D-Welt, 2 = 3D-Welt, 3 = Neon-Action
+  let levelIndex = 0;
+  let startTime = 0;
+  let levelStartTime = 0;
+  let msgTimer = 0;
+  let snow = [];
+  let particles = [];
+  let collectBursts = [];
+  let rulerProjectiles = [];
+  let attackUntil = 0;
+  let attackStartedAt = 0;
+  let lastAttack = 0;
+  let playerInvulnerableUntil = 0;
+
+  const player = {
+    x: 70, y: 440, w: 28, h: 28,
+    speed: 215,
+    facing: "down",
+    maxHealth: 3,
+    health: 3,
+    jumpStart: 0,
+    jumpUntil: 0,
+    lastJump: 0
+  };
+
+  function isCompactMobile(){
+    return window.matchMedia("(pointer:coarse), (max-width:760px)").matches;
+  }
+
+  function updateMobileUI(){
+    if(!mobileUse || !mobileJump || !mobileAttack || !mobileHint) return;
+    if(gameStage===1){
+      mobileUse.style.display="flex";
+      mobileJump.style.display="flex";
+      mobileAttack.style.display="flex";
+      mobileHint.textContent="2D · Pfeile bewegen · E nehmen · ↑ springen · F werfen";
+    }else if(gameStage===2){
+      mobileUse.style.display="none";
+      mobileJump.style.display="none";
+      mobileAttack.style.display="none";
+      mobileHint.textContent="3D · ↑↓ laufen · ←→ drehen";
+    }else{
+      mobileUse.style.display="none";
+      mobileJump.style.display="flex";
+      mobileAttack.style.display="flex";
+      mobileHint.textContent="Neon · ←→ laufen · ↑ springen · F Angriff";
+    }
+  }
+
+  const levels = [
+    {
+      name: "Klassenzimmer",
+      subtitle: "Die ersten Schritte",
+      bg: "#24325d",
+      floor: "#d7d8df",
+      start: {x:70,y:440},
+      exit: {x:875,y:50,w:45,h:70,label:"WEITER"},
+      walls: [
+        {x:0,y:0,w:960,h:25},{x:0,y:515,w:960,h:25},{x:0,y:0,w:25,h:540},{x:935,y:0,w:25,h:540},
+
+        // Level 1: breite horizontale Gänge / Zickzack
+        {x:120,y:105,w:250,h:24},
+        {x:470,y:105,w:210,h:24},
+        {x:250,y:225,w:330,h:24},
+        {x:90,y:340,w:220,h:24},
+        {x:430,y:320,w:260,h:24},
+        {x:710,y:110,w:24,h:240}
+      ],
+      items: [
+        {x:195,y:150,label:"Schüler",icon:"🧑‍🎓"},
+        {x:650,y:390,label:"Teamwork",icon:"🤝"},
+        {x:470,y:410,label:"Mut",icon:"⭐"}
+      ],
+      enemies: [
+        {x:350,y:160,label:"Stress",axis:"x",min:300,max:405,speed:64,dir:1},
+        {x:655,y:405,label:"Chaos",axis:"y",min:365,max:475,speed:55,dir:-1}
+      ],
+      holes: [],
+      redButtons: [
+        {id:"bridgeButton1",x:250,y:165,targetType:"bridge",targetId:"bridge1",label:"Brücke bauen"}
+      ],
+      buildSites: [
+        {id:"bridge1",x:800,y:440,w:65,h:55,label:"Einziger Übergang",built:false}
+      ],
+      chasmSegments: [
+        {x:800,y:25,w:65,h:415},
+        {x:800,y:495,w:65,h:20}
+      ],
+      jumpBarriers: [{x:25,y:380,w:65,h:14,label:"Sprungstrecke"}],
+      signs: [
+        {x:55,y:60,text:""}
+      ]
+    },
+    {
+      name: "Werkstatt",
+      subtitle: "Planen, bauen, verbessern",
+      bg: "#172d2b",
+      floor: "#d8d2c4",
+      start: {x:70,y:455},
+      exit: {x:875,y:50,w:45,h:70,label:"WEITER"},
+      walls: [
+        {x:0,y:0,w:960,h:25},{x:0,y:515,w:960,h:25},{x:0,y:0,w:25,h:540},{x:935,y:0,w:25,h:540},
+
+        // Level 2: senkrechte Werkstatt-Gänge
+        {x:165,y:70,w:26,h:220},
+        {x:165,y:360,w:26,h:90},
+        {x:350,y:150,w:26,h:260},
+        {x:535,y:70,w:26,h:220},
+        {x:535,y:355,w:26,h:90},
+        {x:690,y:155,w:26,h:255}
+      ],
+      items: [
+        {x:230,y:170,label:"Planung",icon:"📐"},
+        {x:730,y:325,label:"Technik",icon:"⚙️"},
+        {x:480,y:445,label:"Geduld",icon:"🔧"}
+      ],
+      enemies: [
+        {x:380,y:455,label:"Fehler",axis:"x",min:365,max:430,speed:72,dir:1},
+        {x:570,y:175,label:"Zeitdruck",axis:"y",min:145,max:220,speed:62,dir:1},
+        {x:860,y:320,label:"Stress",axis:"y",min:290,max:455,speed:50,dir:-1}
+      ],
+      holes: [],
+      redButtons: [
+        {id:"bridgeButton2",x:650,y:130,targetType:"bridge",targetId:"bridge2",label:"Brücke bauen"}
+      ],
+      buildSites: [
+        {id:"bridge2",x:800,y:440,w:65,h:55,label:"Einziger Übergang",built:false}
+      ],
+      chasmSegments: [
+        {x:800,y:25,w:65,h:415},
+        {x:800,y:495,w:65,h:20}
+      ],
+      jumpBarriers: [{x:25,y:335,w:140,h:14,label:"Sprungstrecke"}],
+      signs: [
+        {x:55,y:55,text:"In der Werkstatt gilt: planen → bauen → testen → verbessern."}
+      ]
+    },
+    {
+      name: "Lehrstelle",
+      subtitle: "Das Ziel rückt näher",
+      bg: "#3a274b",
+      floor: "#d9d6e0",
+      start: {x:65,y:445},
+      exit: {x:870,y:45,w:50,h:82,label:"🎄 ZIEL"},
+      walls: [
+        {x:0,y:0,w:960,h:25},{x:0,y:515,w:960,h:25},{x:0,y:0,w:25,h:540},{x:935,y:0,w:25,h:540},
+
+        // Level 3: unregelmäßiges Bewerbungs-Labyrinth
+        {x:95,y:95,w:210,h:26},
+        {x:385,y:75,w:260,h:26},
+        {x:235,y:205,w:240,h:26},
+        {x:555,y:215,w:190,h:26},
+        {x:95,y:325,w:250,h:26},
+        {x:430,y:340,w:280,h:26},
+        {x:360,y:125,w:26,h:210}
+      ],
+      items: [
+        {x:620,y:155,label:"Dossier",icon:"📄"},
+        {x:690,y:285,label:"Schnuppern",icon:"👀"},
+        {x:480,y:455,label:"Lehrstelle",icon:"🎓"}
+      ],
+      enemies: [
+        {x:430,y:180,label:"Absage",axis:"y",min:145,max:225,speed:60,dir:1},
+        {x:620,y:455,label:"Nervosität",axis:"x",min:540,max:830,speed:67,dir:-1},
+        {x:875,y:185,label:"Deadline",axis:"y",min:140,max:360,speed:54,dir:1}
+      ],
+      holes: [],
+      redButtons: [
+        {id:"bridgeButton3",x:150,y:250,targetType:"bridge",targetId:"bridge3",label:"Brücke bauen"}
+      ],
+      buildSites: [
+        {id:"bridge3",x:800,y:440,w:65,h:55,label:"Einziger Übergang",built:false}
+      ],
+      chasmSegments: [
+        {x:800,y:25,w:65,h:415},
+        {x:800,y:495,w:65,h:20}
+      ],
+      jumpBarriers: [{x:25,y:370,w:70,h:14,label:"Sprungstrecke"}],
+      signs: [
+        {x:55,y:55,text:"Fast geschafft! Sammle die letzten drei Stationen deines Weges."}
+      ]
+    }
+  ];
+
+  let state = null;
+
+  function cloneLevel(i){
+    const src = levels[i];
+    return {
+      ...src,
+      walls: src.walls.map(o=>({...o})),
+      items: src.items.map((o,idx)=>({
+        ...o,
+        baseX:o.x, baseY:o.y,
+        phase:idx*2.1 + i*.7,
+        collected:false
+      })),
+      enemies: (src.enemies||[]).map((o,idx)=>({
+        ...o,
+        w:30, h:30,
+        hp:2,
+        maxHp:2,
+        defeated:false,
+        hitFlashUntil:0,
+        deformUntil:0,
+        hitDirX:0,
+        hitDirY:0,
+        dent:0,
+        phase:idx*1.4,
+        chasing:false,
+        sawPlayerUntil:0,
+        lastSeenX:o.x,
+        lastSeenY:o.y
+      })),
+      holes: (src.holes||[]).map((o,idx)=>({
+        ...o,
+        repaired:false,
+        phase:idx*1.7+i*.5,
+        lastDamageAt:0
+      })),
+      redButtons: (src.redButtons||[]).map(o=>({
+        ...o,
+        pressed:false,
+        pulse:0
+      })),
+      buildSites: (src.buildSites||[]).map(o=>({...o,built:false})),
+      chasmSegments: (src.chasmSegments||[]).map(o=>({...o})),
+      jumpBarriers: (src.jumpBarriers||[]).map(o=>({...o})),
+      signs: src.signs.map(o=>({...o}))
+    };
+  }
+
+  function resetLevel(){
+    state = cloneLevel(levelIndex);
+    player.x = state.start.x;
+    player.y = state.start.y;
+    player.facing = "down";
+    player.health = player.maxHealth;
+    player.jumpStart = 0;
+    player.jumpUntil = 0;
+    player.lastJump = 0;
+    attackUntil = 0;
+    lastAttack = 0;
+    playerInvulnerableUntil = 0;
+    particles = [];
+    collectBursts = [];
+    rulerProjectiles = [];
+    levelStartTime = performance.now();
+    showMessage(`${state.name}: ${state.subtitle}`, 1800);
+  }
+
+  function rectsOverlap(a,b){
+    return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+  }
+
+  function isJumping(now=performance.now()){
+    return now < player.jumpUntil;
+  }
+
+  function jumpHeight(now=performance.now()){
+    if(!isJumping(now) || player.jumpUntil<=player.jumpStart) return 0;
+    const p=(now-player.jumpStart)/(player.jumpUntil-player.jumpStart);
+    return Math.sin(Math.PI*Math.max(0,Math.min(1,p)))*24;
+  }
+
+  function jump(){
+    if(!started || finished) return;
+    const now=performance.now();
+    if(now-player.lastJump<760 || isJumping(now)) return;
+    player.lastJump=now;
+    player.jumpStart=now;
+    player.jumpUntil=now+620;
+    beep(520,.06);
+  }
+
+  function setFacingFromVector(dx,dy){
+    if(dx===0 && dy===0) return;
+    if(dx>0 && dy<0) player.facing="up-right";
+    else if(dx<0 && dy<0) player.facing="up-left";
+    else if(dx>0 && dy>0) player.facing="down-right";
+    else if(dx<0 && dy>0) player.facing="down-left";
+    else if(dx>0) player.facing="right";
+    else if(dx<0) player.facing="left";
+    else if(dy<0) player.facing="up";
+    else if(dy>0) player.facing="down";
+  }
+
+  function facingVector(){
+    const d=Math.SQRT1_2;
+    const map={
+      "right":[1,0], "left":[-1,0], "up":[0,-1], "down":[0,1],
+      "up-right":[d,-d], "up-left":[-d,-d],
+      "down-right":[d,d], "down-left":[-d,d]
+    };
+    return map[player.facing] || [0,1];
+  }
+
+  function movePlayer(dx,dy,dt){
+    const stepX = dx * player.speed * dt;
+    const stepY = dy * player.speed * dt;
+
+    const missingBridges=(state.buildSites||[])
+      .filter(s=>!s.built)
+      .map(s=>({x:s.x,y:s.y,w:s.w,h:s.h}));
+
+    const chasmBlocks=(state.chasmSegments||[]).map(s=>({...s}));
+
+    // Der Abgrund bleibt immer fest. Die Sprungstrecke blockiert nur,
+    // solange der Held nicht springt.
+    const blockers = isJumping()
+      ? state.walls.concat(chasmBlocks, missingBridges)
+      : state.walls.concat(state.jumpBarriers||[], chasmBlocks, missingBridges);
+
+    // X-Achse:
+    // Nur dann an die Seitenkante setzen, wenn der Held die Kante wirklich
+    // von außen betritt. So wird er bei diagonaler Bewegung nicht mehr
+    // plötzlich bis zum Rand eines langen Hindernisses "teleportiert".
+    if(stepX!==0){
+      const oldX=player.x;
+      const oldLeft=oldX;
+      const oldRight=oldX+player.w;
+
+      player.x += stepX;
+
+      for(const w of blockers){
+        if(!rectsOverlap(player,w)) continue;
+
+        if(stepX>0 && oldRight<=w.x){
+          player.x=w.x-player.w;
+        }else if(stepX<0 && oldLeft>=w.x+w.w){
+          player.x=w.x+w.w;
+        }
+      }
+    }
+
+    // Y-Achse:
+    // Dasselbe Prinzip oben/unten. Besonders wichtig für die horizontale
+    // Sprungstrecke: sie stoppt den Spieler sauber, ohne seine X-Position
+    // zu verändern.
+    if(stepY!==0){
+      const oldY=player.y;
+      const oldTop=oldY;
+      const oldBottom=oldY+player.h;
+
+      player.y += stepY;
+
+      for(const w of blockers){
+        if(!rectsOverlap(player,w)) continue;
+
+        if(stepY>0 && oldBottom<=w.y){
+          player.y=w.y-player.h;
+        }else if(stepY<0 && oldTop>=w.y+w.h){
+          player.y=w.y+w.h;
+        }
+      }
+    }
+
+    // Zusätzliche Sicherheitsbegrenzung für den Spielfeldrand.
+    player.x=Math.max(25,Math.min(W-25-player.w,player.x));
+    player.y=Math.max(25,Math.min(H-25-player.h,player.y));
+  }
+
+  function centerDist(a,b){
+    const ax=a.x+a.w/2, ay=a.y+a.h/2;
+    const bx=b.x+(b.w||0)/2, by=b.y+(b.h||0)/2;
+    return Math.hypot(ax-bx,ay-by);
+  }
+
+  function pointInRect(px,py,r){
+    return px>=r.x && px<=r.x+r.w && py>=r.y && py<=r.y+r.h;
+  }
+
+  function hasClearInteractionPath(targetX,targetY){
+    const startX=player.x+player.w/2;
+    const startY=player.y+player.h/2;
+
+    const missingBridges=(state.buildSites||[])
+      .filter(s=>!s.built)
+      .map(s=>({x:s.x,y:s.y,w:s.w,h:s.h}));
+
+    const blockers=[
+      ...state.walls,
+      ...(state.chasmSegments||[]),
+      ...missingBridges
+    ];
+
+    const dist=Math.hypot(targetX-startX,targetY-startY);
+    const steps=Math.max(1,Math.ceil(dist/5));
+
+    for(let i=1;i<steps;i++){
+      const t=i/steps;
+      const x=startX+(targetX-startX)*t;
+      const y=startY+(targetY-startY)*t;
+      if(blockers.some(r=>pointInRect(x,y,r))){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function collectedCount(){
+    return state.items.filter(i=>i.collected).length;
+  }
+
+  function showMessage(text,ms=1200){
+    message.textContent=text;
+    message.classList.add('show');
+    clearTimeout(msgTimer);
+    msgTimer=setTimeout(()=>message.classList.remove('show'),ms);
+  }
+
+  function beep(freq=620,dur=.08){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ac = beep.ac || (beep.ac = new AC());
+      const osc=ac.createOscillator(), gain=ac.createGain();
+      osc.frequency.value=freq; gain.gain.value=.035;
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.start(); gain.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);
+      osc.stop(ac.currentTime+dur);
+    }catch(e){}
+  }
+
+
+  function burst(x,y,color="#f0c85b",count=16){
+    for(let i=0;i<count;i++){
+      const a=Math.random()*Math.PI*2;
+      const sp=45+Math.random()*105;
+      particles.push({
+        x,y,
+        vx:Math.cos(a)*sp,
+        vy:Math.sin(a)*sp,
+        life:.45+Math.random()*.35,
+        maxLife:.8,
+        r:2+Math.random()*3,
+        color
+      });
+    }
+  }
+
+  function updateParticles(dt){
+    for(const p of particles){
+      p.x += p.vx*dt;
+      p.y += p.vy*dt;
+      p.vy += 80*dt;
+      p.life -= dt;
+    }
+    particles = particles.filter(p=>p.life>0);
+
+    for(const b of collectBursts) b.t += dt;
+    collectBursts = collectBursts.filter(b=>b.t<.5);
+  }
+
+  function updateMovingItems(now){
+    const t=now/1000;
+    for(const item of state.items){
+      if(item.collected) continue;
+      const ampX=7, ampY=5;
+      item.x = item.baseX + Math.sin(t*1.4 + item.phase)*ampX;
+      item.y = item.baseY + Math.cos(t*1.7 + item.phase)*ampY;
+    }
+  }
+
+  function holesClosed(){
+    return (state.holes||[]).filter(h=>h.repaired).length;
+  }
+
+  function updateHoles(now){
+    if(isJumping(now)) return;
+    for(const h of state.holes||[]){
+      if(h.repaired) continue;
+      const hit={x:h.x-h.r*.78,y:h.y-h.r*.50,w:h.r*1.56,h:h.r};
+      if(rectsOverlap(player,hit) && now-h.lastDamageAt>1000){
+        h.lastDamageAt=now;
+        player.health=Math.max(0,player.health-1);
+        playerInvulnerableUntil=now+850;
+        burst(h.x,h.y,"#563c31",14);
+        beep(150,.1);
+        player.x=Math.max(30,player.x-34);
+        player.y=Math.min(H-60,player.y+32);
+
+        if(player.health<=0){
+          showMessage("Du bist ins Loch gefallen! Das Level startet neu.",1200);
+          setTimeout(()=>{ if(started && !finished) resetLevel(); },850);
+        }else{
+          showMessage(`Ins Loch gefallen! Noch ${player.health} ${player.health===1?"Herz":"Herzen"}. Springen mit Leertaste!`,1200);
+        }
+      }
+    }
+  }
+
+  function activateNearbyButton(){
+    for(const b of state.redButtons||[]){
+      const bb={x:b.x-18,y:b.y-18,w:36,h:36};
+      if(centerDist(player,bb)>=64) continue;
+
+      if(!hasClearInteractionPath(b.x,b.y)){
+        showMessage("Die Wand ist im Weg – geh auf die andere Seite.",900);
+        return true;
+      }
+
+      if(b.pressed){
+        showMessage("Diese rote Taste wurde schon benutzt.",750);
+        return true;
+      }
+
+      b.pressed=true;
+      b.pulse=performance.now();
+      burst(b.x,b.y,"#ff4b4b",16);
+      beep(720,.08);
+      if(b.targetType==="bridge"){
+        const site=(state.buildSites||[]).find(s=>s.id===b.targetId);
+        if(site){
+          site.built=true;
+          burst(site.x+site.w/2,site.y+site.h/2,"#7dcf88",28);
+          showMessage("Brücke gebaut! Unten ist jetzt der einzige freie Durchgang zum Finish. 🌉",1300);
+          beep(980,.15);
+        }
+      }
+
+      return true;
+    }
+    return false;
+  }
+
+  function bridgeBuilt(){
+    const sites=state.buildSites||[];
+    return sites.length===0 || sites.every(s=>s.built);
+  }
+
+  function enemyBlockers(){
+    const missingBridges=(state.buildSites||[])
+      .filter(s=>!s.built)
+      .map(s=>({x:s.x,y:s.y,w:s.w,h:s.h}));
+
+    return [
+      ...state.walls,
+      ...(state.chasmSegments||[]),
+      ...missingBridges,
+      ...(state.jumpBarriers||[])
+    ];
+  }
+
+  function enemyBlockedAt(e,x,y){
+    const box={x,y,w:e.w,h:e.h};
+    return enemyBlockers().some(w=>rectsOverlap(box,w));
+  }
+
+  function enemyVisionBlockers(){
+    const missingBridges=(state.buildSites||[])
+      .filter(s=>!s.built)
+      .map(s=>({x:s.x,y:s.y,w:s.w,h:s.h}));
+
+    // Niedrige Sprunghindernisse blockieren die Sicht nicht,
+    // aber Wände und der Abgrund schon.
+    return [
+      ...state.walls,
+      ...(state.chasmSegments||[]),
+      ...missingBridges
+    ];
+  }
+
+  function clearLineBetween(x1,y1,x2,y2,blockers){
+    const dist=Math.hypot(x2-x1,y2-y1);
+    const steps=Math.max(1,Math.ceil(dist/6));
+
+    for(let i=1;i<steps;i++){
+      const t=i/steps;
+      const x=x1+(x2-x1)*t;
+      const y=y1+(y2-y1)*t;
+
+      if(blockers.some(r=>pointInRect(x,y,r))){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function enemyCanSeePlayer(e){
+    const ex=e.x+e.w/2;
+    const ey=e.y+e.h/2;
+    const px=player.x+player.w/2;
+    const py=player.y+player.h/2;
+
+    // Sichtweite des Feindes
+    if(Math.hypot(px-ex,py-ey)>245) return false;
+
+    return clearLineBetween(ex,ey,px,py,enemyVisionBlockers());
+  }
+
+  function updateEnemies(dt, now){
+    for(const e of state.enemies){
+      if(e.defeated) continue;
+
+      // Wenn der Feind den Helden ohne Wand dazwischen sieht,
+      // merkt er sich die Position kurz und beginnt zu verfolgen.
+      if(enemyCanSeePlayer(e)){
+        e.chasing=true;
+        e.sawPlayerUntil=now+1200;
+        e.lastSeenX=player.x;
+        e.lastSeenY=player.y;
+      }else if(now>e.sawPlayerUntil){
+        e.chasing=false;
+      }
+
+      if(e.chasing){
+        const targetX=e.lastSeenX;
+        const targetY=e.lastSeenY;
+        const dx=targetX-e.x;
+        const dy=targetY-e.y;
+        const len=Math.hypot(dx,dy)||1;
+        const chaseSpeed=Math.max(105,e.speed*1.65);
+        const stepX=(dx/len)*chaseSpeed*dt;
+        const stepY=(dy/len)*chaseSpeed*dt;
+
+        // X und Y getrennt bewegen, damit der Feind an Wänden entlanggleiten
+        // kann, aber niemals durch sie hindurchläuft.
+        const nextX=e.x+stepX;
+        if(!enemyBlockedAt(e,nextX,e.y)){
+          e.x=nextX;
+        }
+
+        const nextY=e.y+stepY;
+        if(!enemyBlockedAt(e,e.x,nextY)){
+          e.y=nextY;
+        }
+      }else if(e.axis==="x"){
+        let nextX=e.x + e.speed*e.dir*dt;
+
+        if(nextX<e.min){
+          nextX=e.min;
+          e.dir=1;
+        }else if(nextX>e.max){
+          nextX=e.max;
+          e.dir=-1;
+        }
+
+        if(enemyBlockedAt(e,nextX,e.y)){
+          e.dir*=-1;
+        }else{
+          e.x=nextX;
+        }
+      }else{
+        let nextY=e.y + e.speed*e.dir*dt;
+
+        if(nextY<e.min){
+          nextY=e.min;
+          e.dir=1;
+        }else if(nextY>e.max){
+          nextY=e.max;
+          e.dir=-1;
+        }
+
+        if(enemyBlockedAt(e,e.x,nextY)){
+          e.dir*=-1;
+        }else{
+          e.y=nextY;
+        }
+      }
+
+      // Kontakt mit Feind: 1 Herz Schaden + kurzer Rückstoß.
+      if(!isJumping(now) && now > playerInvulnerableUntil && rectsOverlap(player,e)){
+        playerInvulnerableUntil = now + 950;
+        player.health = Math.max(0, player.health - 1);
+
+        const px=player.x+player.w/2, py=player.y+player.h/2;
+        const ex=e.x+e.w/2, ey=e.y+e.h/2;
+        const dx=px-ex, dy=py-ey;
+        const len=Math.hypot(dx,dy)||1;
+        player.x += (dx/len)*24;
+        player.y += (dy/len)*24;
+        player.x=Math.max(26,Math.min(W-26-player.w,player.x));
+        player.y=Math.max(26,Math.min(H-26-player.h,player.y));
+
+        burst(px,py,"#e06464",14);
+        beep(170,.1);
+
+        if(player.health <= 0){
+          showMessage("Keine Herzen mehr! Das Level startet neu.",1300);
+          setTimeout(()=>{
+            if(started && !finished) resetLevel();
+          }, 900);
+        }else{
+          showMessage(`Autsch! Noch ${player.health} ${player.health===1?"Herz":"Herzen"}.`,950);
+        }
+      }
+    }
+  }
+
+
+  function updateProjectiles(dt){
+    for(const p of rulerProjectiles){
+      if(!p.alive) continue;
+
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rot += p.rotSpeed * dt;
+      p.life -= dt;
+
+      // Wandkollision / Lebenszeit
+      if(
+        p.life <= 0 ||
+        p.x < 20 || p.x > W-20 || p.y < 20 || p.y > H-20 ||
+        state.walls.some(w => rectsOverlap({x:p.x-18,y:p.y-4,w:36,h:8}, w))
+      ){
+        p.alive = false;
+        burst(p.x,p.y,"#f0c85b",8);
+        continue;
+      }
+
+      // Treffer auf Feinde
+      for(const e of state.enemies){
+        if(e.defeated || !p.alive) continue;
+        const hitbox = {x:p.x-18,y:p.y-6,w:36,h:12};
+        if(rectsOverlap(hitbox,e)){
+          p.alive = false;
+          e.hp -= 1;
+          const hitNow=performance.now();
+          e.hitFlashUntil=hitNow+180;
+
+          // Treffer verformt den Feind sichtbar.
+          const hitLen=Math.hypot(p.vx,p.vy)||1;
+          e.hitDirX=p.vx/hitLen;
+          e.hitDirY=p.vy/hitLen;
+          e.deformUntil=hitNow+340;
+          e.dent=Math.min(1,e.dent+0.55);
+
+          const knock=18;
+          const knockX=e.x + Math.sign(p.vx||0)*knock;
+          const knockY=e.y + Math.sign(p.vy||0)*knock;
+
+          // Auch der Rückstoß darf den Feind nicht durch eine Wand schieben.
+          if(!enemyBlockedAt(e,knockX,e.y)) e.x=knockX;
+          if(!enemyBlockedAt(e,e.x,knockY)) e.y=knockY;
+
+          burst(e.x+e.w/2,e.y+e.h/2,"#f0c85b",14);
+          beep(e.hp<=0?760:560,.08);
+
+          if(e.hp<=0){
+            e.defeated=true;
+            burst(e.x+e.w/2,e.y+e.h/2,"#ffffff",22);
+            showMessage(`${e.label} besiegt!`,850);
+          }else{
+            showMessage(`${e.label} getroffen – und deformiert! Noch 1 Treffer.`,850);
+          }
+        }
+      }
+    }
+
+    rulerProjectiles = rulerProjectiles.filter(p => p.alive);
+  }
+
+  function attack(){
+    if(!started || finished) return;
+    const now=performance.now();
+    if(now-lastAttack<280) return;
+    lastAttack=now;
+    attackStartedAt=now;
+    attackUntil=now+120;
+    beep(420,.05);
+
+    const [dx,dy]=facingVector();
+    const angle=Math.atan2(dy,dx);
+
+    rulerProjectiles.push({
+      x: player.x + player.w/2 + dx*18,
+      y: player.y + player.h/2 + dy*18,
+      vx: dx*430,
+      vy: dy*430,
+      rot: angle,
+      rotSpeed: 10,
+      life: 1.3,
+      alive: true
+    });
+  }
+
+  function aliveEnemies(){
+    return state.enemies.filter(e=>!e.defeated).length;
+  }
+
+  function interact(){
+    if(!started || finished) return;
+    if(activateNearbyButton()) return;
+    for(const item of state.items){
+      const box={x:item.x-18,y:item.y-18,w:36,h:36};
+      if(!item.collected && centerDist(player,box)<58){
+        if(!hasClearInteractionPath(item.x,item.y)){
+          showMessage("Du kannst den Gegenstand nicht durch die Wand nehmen.",900);
+          return;
+        }
+
+        item.collected=true;
+        collectBursts.push({x:item.x,y:item.y,icon:item.icon,t:0});
+        burst(item.x,item.y,"#f0c85b",20);
+        showMessage(`Gesammelt: ${item.label} ${item.icon}`);
+        beep(760,.09);
+        if(collectedCount()===state.items.length){
+          showMessage("Ausgang geöffnet! Geh zum Ziel.",1700);
+          beep(980,.16);
+        }
+        return;
+      }
+    }
+  }
+
+  function nextLevel(){
+    if(collectedCount() < state.items.length){
+      showMessage("Du brauchst zuerst alle 3 Gegenstände.");
+      return;
+    }
+    if(!bridgeBuilt()){
+      showMessage("Baue zuerst die Brücke mit der roten Taste.");
+      return;
+    }
+
+    beep(1000,.12);
+    levelIndex++;
+
+    if(levelIndex>=levels.length){
+      startPixelTransition(()=>startStage2(),"ETAPPE 2 · 3D-WELT");
+    }else{
+      startPixelTransition(()=>resetLevel(),`LEVEL ${levelIndex+1}`);
+    }
+  }
+
+  function formatTime(sec){
+    sec=Math.max(0,Math.floor(sec));
+    const m=Math.floor(sec/60).toString().padStart(2,'0');
+    const s=(sec%60).toString().padStart(2,'0');
+    return `${m}:${s}`;
+  }
+
+  function drawRoundedRect(x,y,w,h,r,fill,stroke=null){
+    ctx.beginPath();
+    ctx.roundRect(x,y,w,h,r);
+    ctx.fillStyle=fill; ctx.fill();
+    if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}
+  }
+
+  function drawReadableLabel(text,x,y,{
+    font="700 12px system-ui",
+    color="#ffffff",
+    bg="rgba(7,12,27,.76)",
+    padX=7,
+    padY=4,
+    radius=6,
+    align="center"
+  }={}){
+    ctx.save();
+    ctx.font=font;
+    const metrics=ctx.measureText(text);
+    const fontSize=parseInt(font.match(/(\d+)px/)?.[1]||"12",10);
+    const w=Math.ceil(metrics.width)+padX*2;
+    const h=fontSize+padY*2+2;
+
+    let left=x-w/2;
+    if(align==="left") left=x;
+    if(align==="right") left=x-w;
+
+    const top=y-h+3;
+
+    drawRoundedRect(left,top,w,h,radius,bg,"rgba(255,255,255,.14)");
+    ctx.shadowColor="rgba(0,0,0,.9)";
+    ctx.shadowBlur=3;
+    ctx.fillStyle=color;
+    ctx.textAlign=align;
+    ctx.textBaseline="alphabetic";
+    ctx.fillText(text,x,y-padY+1);
+    ctx.restore();
+  }
+
+  function drawSnow(){
+    ctx.save();
+    for(const s of snow){
+      ctx.globalAlpha=s.a;
+      ctx.fillStyle="#fff";
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawTree(x,y,scale=1){
+    ctx.save();
+    ctx.translate(x,y);ctx.scale(scale,scale);
+    ctx.fillStyle="#5b3a29";ctx.fillRect(-7,20,14,22);
+    ctx.fillStyle="#2d8c58";
+    ctx.beginPath();ctx.moveTo(0,-42);ctx.lineTo(-30,0);ctx.lineTo(30,0);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(-38,20);ctx.lineTo(38,20);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#f0c85b";ctx.font="24px serif";ctx.textAlign="center";ctx.fillText("★",0,-34);
+    ctx.restore();
+  }
+
+  function draw(){
+    if(!state) return;
+
+    // Sichere Standardwerte für jeden Frame.
+    // So können Text/Animationen aus dem vorherigen Frame nichts verschieben.
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.globalAlpha=1;
+    ctx.textAlign="left";
+    ctx.textBaseline="alphabetic";
+    ctx.shadowBlur=0;
+
+    ctx.clearRect(0,0,W,H);
+
+    // background / room
+    ctx.fillStyle=state.bg; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=state.floor; ctx.fillRect(25,25,W-50,H-50);
+
+    // Feste Level-Anzeige oben links.
+    // Textausrichtung und Basislinie werden jedes Bild explizit gesetzt,
+    // damit andere Animationen (z. B. Sammelobjekte) sie nicht verschieben können.
+    ctx.save();
+    ctx.textAlign="left";
+    ctx.textBaseline="alphabetic";
+    ctx.setTransform(1,0,0,1,0,0);
+
+    const titleX=34;
+    const titleY=34;
+    const titleW=255;
+    const titleH=56;
+
+    ctx.shadowColor="rgba(0,0,0,.55)";
+    ctx.shadowBlur=8;
+    drawRoundedRect(titleX,titleY,titleW,titleH,12,"rgba(7,12,27,.58)","rgba(255,255,255,.16)");
+    ctx.shadowBlur=0;
+
+    ctx.fillStyle="rgba(255,255,255,.96)";
+    ctx.font="800 19px system-ui";
+    ctx.fillText(state.name,titleX+16,titleY+25);
+
+    ctx.fillStyle="rgba(240,200,91,.96)";
+    ctx.font="700 13px system-ui";
+    ctx.fillText(state.subtitle,titleX+16,titleY+46);
+    ctx.restore();
+
+    // walls/desks
+    for(const w of state.walls){
+      ctx.fillStyle="#6b5f58";
+      ctx.fillRect(w.x,w.y,w.w,w.h);
+      if(w.w>80 && w.h<60){
+        ctx.fillStyle="rgba(255,255,255,.12)";
+        ctx.fillRect(w.x+6,w.y+5,w.w-12,4);
+      }
+    }
+
+    // Level-Hinweise werden NACH den Wänden gezeichnet.
+    // So kann keine Wand mehr Text übermalen oder "durchstreichen".
+    for(const s of state.signs){
+      if(!s.text) continue;
+      const sy=Math.max(s.y,102);
+
+      ctx.save();
+      drawRoundedRect(
+        s.x,sy,410,36,10,
+        "rgba(7,12,27,.88)",
+        "rgba(255,255,255,.28)"
+      );
+      ctx.fillStyle="#ffffff";
+      ctx.font="800 13px system-ui";
+      ctx.textAlign="left";
+      ctx.textBaseline="alphabetic";
+      ctx.shadowColor="rgba(0,0,0,.95)";
+      ctx.shadowBlur=4;
+      ctx.fillText(s.text,s.x+12,sy+23);
+      ctx.restore();
+    }
+
+    // Rote Taste baut eine Brücke über eine echte Lücke im Weg.
+    // Rote Tasten stehen bewusst an einem anderen Ort als ihr Ziel.
+    for(const b of state.redButtons||[]){
+      const pressOffset=b.pressed?4:0;
+      const glow=!b.pressed && Math.sin(performance.now()*0.006)>0 ? 10 : 5;
+
+      ctx.save();
+      ctx.shadowColor="rgba(225,45,45,.7)";
+      ctx.shadowBlur=glow;
+
+      // Sockel
+      ctx.fillStyle="#555";
+      ctx.beginPath();ctx.roundRect(b.x-18,b.y+5,36,12,5);ctx.fill();
+
+      // roter Knopf
+      ctx.fillStyle=b.pressed?"#7b2a2a":"#e83d3d";
+      ctx.strokeStyle="#8f2020";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(b.x,b.y+pressOffset,14,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.restore();
+
+      drawReadableLabel(
+        b.pressed?"BENUTZT":"ROTE TASTE",
+        b.x,b.y+37,
+        {font:"800 11px system-ui",bg:"rgba(70,12,18,.76)"}
+      );
+    }
+
+    // Der Abgrund teilt die Karte vollständig in zwei Seiten.
+    // Nur an der Brückenstelle gibt es einen möglichen Übergang.
+    for(const c of state.chasmSegments||[]){
+      ctx.save();
+
+      ctx.fillStyle="#17151b";
+      ctx.fillRect(c.x,c.y,c.w,c.h);
+
+      // Seitenkanten
+      ctx.fillStyle="#6b5544";
+      ctx.fillRect(c.x-4,c.y,4,c.h);
+      ctx.fillRect(c.x+c.w,c.y,4,c.h);
+
+      // Tiefenlinien
+      ctx.strokeStyle="rgba(255,255,255,.08)";
+      ctx.lineWidth=2;
+      for(let y=c.y+18;y<c.y+c.h;y+=30){
+        ctx.beginPath();
+        ctx.moveTo(c.x+8,y);
+        ctx.lineTo(c.x+c.w-8,y+12);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    // Minispiel: eine echte Lücke im Weg -> rote Taste baut die Brücke.
+    for(const s of state.buildSites||[]){
+      ctx.save();
+
+      if(!s.built){
+        // Dunkler Abgrund: hier kann der Held nicht weiter.
+        ctx.fillStyle="#17151b";
+        ctx.beginPath();
+        ctx.roundRect(s.x,s.y,s.w,s.h,5);
+        ctx.fill();
+
+        // Kanten des Bodens
+        ctx.strokeStyle="#82694f";
+        ctx.lineWidth=4;
+        ctx.beginPath();
+        ctx.moveTo(s.x,s.y+2);
+        ctx.lineTo(s.x+s.w,s.y+2);
+        ctx.moveTo(s.x,s.y+s.h-2);
+        ctx.lineTo(s.x+s.w,s.y+s.h-2);
+        ctx.stroke();
+
+        // Tiefe / Warnlinien
+        ctx.strokeStyle="rgba(255,255,255,.10)";
+        ctx.lineWidth=2;
+        for(let x=s.x+12;x<s.x+s.w;x+=24){
+          ctx.beginPath();
+          ctx.moveTo(x,s.y+8);
+          ctx.lineTo(x-8,s.y+s.h-8);
+          ctx.stroke();
+        }
+
+        drawReadableLabel(
+          "EINZIGER WEG",
+          s.x+s.w/2,s.y+s.h/2+8,
+          {font:"800 12px system-ui",color:"#f6d66f",bg:"rgba(7,12,27,.82)"}
+        );
+      }else{
+        // Holzbrücke verbindet beide Seiten.
+        ctx.fillStyle="#8b633f";
+        ctx.beginPath();
+        ctx.roundRect(s.x,s.y,s.w,s.h,4);
+        ctx.fill();
+
+        // Planken
+        ctx.strokeStyle="#5f432e";
+        ctx.lineWidth=2;
+        for(let x=s.x+8;x<s.x+s.w;x+=15){
+          ctx.beginPath();
+          ctx.moveTo(x,s.y+3);
+          ctx.lineTo(x,s.y+s.h-3);
+          ctx.stroke();
+        }
+
+        // Geländer / Seile
+        ctx.strokeStyle="#4f3827";
+        ctx.lineWidth=4;
+        ctx.beginPath();
+        ctx.moveTo(s.x+3,s.y+5);
+        ctx.lineTo(s.x+s.w-3,s.y+5);
+        ctx.moveTo(s.x+3,s.y+s.h-5);
+        ctx.lineTo(s.x+s.w-3,s.y+s.h-5);
+        ctx.stroke();
+
+        drawReadableLabel(
+          "WEG OFFEN ✓",
+          s.x+s.w/2,s.y+s.h+19,
+          {font:"800 11px system-ui",bg:"rgba(23,78,39,.78)"}
+        );
+
+        drawReadableLabel(
+          "→",
+          s.x+s.w+18,s.y+s.h/2+8,
+          {font:"900 17px system-ui",bg:"rgba(23,78,39,.78)",padX:5,padY:2}
+        );
+      }
+
+      ctx.restore();
+      ctx.textAlign="left";
+    }
+
+    // Minispiel 2: über niedrige Hindernisse springen.
+    // Jede Sprungstrecke schließt den jeweiligen Korridor vollständig ab.
+    for(const b of state.jumpBarriers||[]){
+      ctx.save();
+
+      // Kleine Anschlussstücke zeigen klar, dass links/rechts kein Weg vorbeiführt.
+      ctx.fillStyle="#8b5b20";
+      ctx.fillRect(b.x,b.y-3,4,b.h+6);
+      ctx.fillRect(b.x+b.w-4,b.y-3,4,b.h+6);
+
+      ctx.fillStyle="#c98a32";
+      ctx.strokeStyle="#6e4618";
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.roundRect(b.x,b.y,b.w,b.h,4);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle="#f7e0a2";
+      ctx.lineWidth=3;
+      for(let x=b.x+8;x<b.x+b.w-4;x+=20){
+        ctx.beginPath();
+        ctx.moveTo(x,b.y+2);
+        ctx.lineTo(Math.min(x+10,b.x+b.w-2),b.y+b.h-2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Beschriftung exakt über der Mitte der Sprungstrecke.
+      drawReadableLabel(
+        "SPRUNG · LEERTASTE",
+        b.x+b.w/2,b.y-7,
+        {font:"800 10px system-ui",bg:"rgba(83,52,16,.88)",padX:6,padY:3}
+      );
+    }
+
+    // Bewegtes Ziel / Ausgang
+    const exitBob = Math.sin(performance.now()*0.0032)*5;
+    drawTree(state.exit.x+state.exit.w/2, state.exit.y+state.exit.h+40+exitBob, .72);
+
+    const unlocked=collectedCount()===state.items.length;
+    drawRoundedRect(state.exit.x,state.exit.y+exitBob,state.exit.w,state.exit.h,10,unlocked?"#e9c44f":"#777");
+    ctx.fillStyle=unlocked?"#111":"#fff";
+    ctx.font="900 12px system-ui";
+    ctx.textAlign="center";
+    ctx.shadowColor=unlocked?"rgba(255,255,255,.55)":"rgba(0,0,0,.9)";
+    ctx.shadowBlur=3;
+    ctx.fillText(state.exit.label,state.exit.x+state.exit.w/2,state.exit.y+exitBob+state.exit.h/2+4);
+    ctx.shadowBlur=0;
+    ctx.textAlign="left";
+
+    // Hinweis: Das Ziel liegt bewusst hinter dem Abgrund.
+    drawReadableLabel(
+      "FINISH-SEITE",
+      895,140,
+      {font:"800 11px system-ui",bg:"rgba(7,12,27,.76)"}
+    );
+
+    // Bewegliche Sammelobjekte
+    for(const item of state.items){
+      if(item.collected) continue;
+      const pulse=1+Math.sin(performance.now()*0.006+item.phase)*.08;
+      ctx.save();
+      ctx.translate(item.x,item.y);
+      ctx.scale(pulse,pulse);
+      ctx.shadowColor="rgba(240,200,91,.65)";
+      ctx.shadowBlur=18;
+      ctx.fillStyle="#fff";
+      ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+
+      ctx.font="26px serif";ctx.textAlign="center";ctx.fillText(item.icon,item.x,item.y+9);
+      drawReadableLabel(
+        item.label,
+        item.x,item.y+43,
+        {font:"800 12px system-ui",bg:"rgba(7,12,27,.78)"}
+      );
+    }
+
+    // Sammel-Animation: Icon fliegt kurz nach oben und verschwindet
+    for(const b of collectBursts){
+      const p=Math.min(1,b.t/.5);
+      ctx.save();
+      ctx.globalAlpha=1-p;
+      ctx.font=`${28+20*p}px serif`;
+      ctx.textAlign="center";
+      ctx.fillText(b.icon,b.x,b.y-35*p);
+      ctx.restore();
+    }
+
+    // Bewegliche Feinde
+    for(const e of state.enemies){
+      if(e.defeated) continue;
+      const wobble=Math.sin(performance.now()*0.008+e.phase)*2;
+      ctx.save();
+      const enemyNow=performance.now();
+      ctx.translate(e.x+e.w/2,e.y+e.h/2+wobble);
+
+      // Elastische Verformung direkt nach einem Treffer.
+      // Der Feind wird in Einschlagrichtung zusammengedrückt und quer dazu gestreckt.
+      if(enemyNow<e.deformUntil){
+        const left=(e.deformUntil-enemyNow)/340;
+        const pulse=Math.sin(Math.max(0,Math.min(1,left))*Math.PI/2);
+
+        const horizontal=Math.abs(e.hitDirX);
+        const vertical=Math.abs(e.hitDirY);
+
+        const scaleX=1 - .20*pulse*horizontal + .11*pulse*vertical;
+        const scaleY=1 - .20*pulse*vertical + .11*pulse*horizontal;
+
+        ctx.translate(e.hitDirX*3.5*pulse,e.hitDirY*3.5*pulse);
+        ctx.rotate((e.hitDirX-e.hitDirY)*.06*pulse);
+        ctx.scale(scaleX,scaleY);
+      }
+
+      if(enemyNow<e.hitFlashUntil){
+        ctx.globalAlpha=.55;
+      }
+
+      // Körper
+      ctx.fillStyle="#a53a42";
+      ctx.beginPath();
+      ctx.roundRect(-15,-14,30,28,9);
+      ctx.fill();
+
+      // Nach einem Treffer bleibt bis zum nächsten Level eine kleine
+      // sichtbare Delle auf der getroffenen Seite.
+      if(e.dent>0){
+        const impactX=-e.hitDirX*12;
+        const impactY=-e.hitDirY*10;
+        ctx.save();
+        ctx.globalAlpha=.34+.20*e.dent;
+        ctx.fillStyle="#64262e";
+        ctx.beginPath();
+        ctx.ellipse(
+          impactX,impactY,
+          3.2+e.dent*2.6,
+          2.4+e.dent*1.8,
+          Math.atan2(e.hitDirY,e.hitDirX),
+          0,Math.PI*2
+        );
+        ctx.fill();
+
+        // kleine helle Kante erzeugt den Eindruck einer eingedrückten Stelle
+        ctx.globalAlpha=.30;
+        ctx.strokeStyle="#d36a70";
+        ctx.lineWidth=1.3;
+        ctx.beginPath();
+        ctx.arc(impactX-e.hitDirX*2,impactY-e.hitDirY*2,3.2+e.dent,0,Math.PI*1.35);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // kleine Hörner
+      ctx.fillStyle="#6f2630";
+      ctx.beginPath();
+      ctx.moveTo(-10,-12);ctx.lineTo(-16,-22);ctx.lineTo(-4,-15);ctx.closePath();ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(10,-12);ctx.lineTo(16,-22);ctx.lineTo(4,-15);ctx.closePath();ctx.fill();
+
+      // Augen
+      ctx.fillStyle="#fff";
+      ctx.beginPath();ctx.arc(-5,-3,3,0,Math.PI*2);ctx.arc(5,-3,3,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#1b1420";
+      ctx.beginPath();ctx.arc(-4,-3,1.3,0,Math.PI*2);ctx.arc(4,-3,1.3,0,Math.PI*2);ctx.fill();
+
+      // Mund
+      ctx.strokeStyle="#fff";ctx.lineWidth=1.8;
+      ctx.beginPath();ctx.moveTo(-6,7);ctx.lineTo(0,4);ctx.lineTo(6,7);ctx.stroke();
+
+      // HP
+      ctx.fillStyle="rgba(0,0,0,.35)";
+      ctx.fillRect(-15,18,30,4);
+      ctx.fillStyle="#f0c85b";
+      ctx.fillRect(-15,18,30*(e.hp/e.maxHp),4);
+
+      // Alarmzeichen, sobald der Feind den Spieler entdeckt hat.
+      if(e.chasing){
+        ctx.shadowColor="#ffffff";
+        ctx.shadowBlur=5;
+        ctx.fillStyle="#ff3d48";
+        ctx.font="900 24px system-ui";
+        ctx.textAlign="center";
+        ctx.fillText("!",0,-28);
+        ctx.shadowBlur=0;
+        ctx.textAlign="left";
+      }
+
+      ctx.restore();
+
+      drawReadableLabel(
+        e.label,
+        e.x+e.w/2,e.y+e.h+22,
+        {font:"800 11px system-ui",bg:"rgba(80,16,23,.80)"}
+      );
+    }
+
+    // player: Schüler mit vier Blickrichtungen
+    ctx.save();
+    ctx.translate(player.x + player.w/2, player.y + player.h/2);
+
+    // Nach einem Treffer blinkt der Held kurz als Schutzphase.
+    if(performance.now() < playerInvulnerableUntil){
+      ctx.globalAlpha = (Math.floor(performance.now()/90)%2===0) ? 0.35 : 1;
+    }
+
+    const isWalking =
+      keys.has("ArrowLeft") || keys.has("KeyA") ||
+      keys.has("ArrowRight") || keys.has("KeyD") ||
+      keys.has("ArrowUp") || keys.has("KeyW") ||
+      keys.has("ArrowDown") || keys.has("KeyS");
+
+    const walkPhase = isWalking ? Math.sin(performance.now() * 0.018) : 0;
+    const legSwing = walkPhase * 5.5;
+    const armSwing = walkPhase * 3.2;
+
+    // Schatten
+    ctx.fillStyle="rgba(0,0,0,.18)";
+    ctx.globalAlpha *= (1 - Math.min(.45,jumpHeight()/55));
+    ctx.beginPath();
+    ctx.ellipse(0,18,13+jumpHeight()*.12,4+jumpHeight()*.03,0,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.globalAlpha = (performance.now() < playerInvulnerableUntil)
+      ? ((Math.floor(performance.now()/90)%2===0) ? 0.35 : 1)
+      : 1;
+    ctx.translate(0,-jumpHeight());
+
+    ctx.lineCap="round";
+
+    if(["down","down-left","down-right"].includes(player.facing)){
+      if(player.facing==="down-left") ctx.rotate(-0.10);
+      if(player.facing==="down-right") ctx.rotate(0.10);
+      // Beine
+      ctx.strokeStyle="#26334f"; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(-5,8); ctx.lineTo(-6+legSwing,17); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5,8); ctx.lineTo(6-legSwing,17); ctx.stroke();
+
+      // Arme
+      ctx.strokeStyle="#f0c7a5"; ctx.lineWidth=3.5;
+      ctx.beginPath(); ctx.moveTo(-9,0); ctx.lineTo(-12-armSwing,8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(9,0); ctx.lineTo(12+armSwing,8); ctx.stroke();
+
+      // Körper
+      ctx.fillStyle="#2f62c9";
+      ctx.beginPath(); ctx.roundRect(-10,-3,20,16,5); ctx.fill();
+
+      // Rucksack seitlich sichtbar
+      ctx.fillStyle="#d7a94b";
+      ctx.beginPath(); ctx.roundRect(7,0,6,11,3); ctx.fill();
+
+      // Hals + Kopf
+      ctx.fillStyle="#f0c7a5"; ctx.fillRect(-3,-7,6,5);
+      ctx.beginPath(); ctx.arc(0,-13,8,0,Math.PI*2); ctx.fill();
+
+      // Haare
+      ctx.fillStyle="#4a3426";
+      ctx.beginPath(); ctx.arc(0,-15,8,Math.PI,Math.PI*2);
+      ctx.lineTo(8,-13); ctx.lineTo(-8,-13); ctx.closePath(); ctx.fill();
+
+      // Gesicht
+      ctx.fillStyle="#222";
+      ctx.beginPath();
+      ctx.arc(-2.5,-13,1,0,Math.PI*2);
+      ctx.arc(2.5,-13,1,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    else if(["up","up-left","up-right"].includes(player.facing)){
+      if(player.facing==="up-left") ctx.rotate(0.10);
+      if(player.facing==="up-right") ctx.rotate(-0.10);
+      // Beine
+      ctx.strokeStyle="#26334f"; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(-5,8); ctx.lineTo(-6+legSwing,17); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5,8); ctx.lineTo(6-legSwing,17); ctx.stroke();
+
+      // Arme
+      ctx.strokeStyle="#f0c7a5"; ctx.lineWidth=3.5;
+      ctx.beginPath(); ctx.moveTo(-9,0); ctx.lineTo(-12-armSwing,8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(9,0); ctx.lineTo(12+armSwing,8); ctx.stroke();
+
+      // Körper
+      ctx.fillStyle="#2f62c9";
+      ctx.beginPath(); ctx.roundRect(-10,-3,20,16,5); ctx.fill();
+
+      // Rucksack mittig auf dem Rücken
+      ctx.fillStyle="#d7a94b";
+      ctx.beginPath(); ctx.roundRect(-7,-1,14,13,4); ctx.fill();
+      ctx.strokeStyle="#8f6b2d"; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(-5,0); ctx.lineTo(-8,-5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5,0); ctx.lineTo(8,-5); ctx.stroke();
+
+      // Hals + Hinterkopf
+      ctx.fillStyle="#f0c7a5"; ctx.fillRect(-3,-7,6,5);
+      ctx.beginPath(); ctx.arc(0,-13,8,0,Math.PI*2); ctx.fill();
+
+      // Haare von hinten
+      ctx.fillStyle="#4a3426";
+      ctx.beginPath(); ctx.arc(0,-14,8,Math.PI,Math.PI*2);
+      ctx.lineTo(8,-10); ctx.lineTo(-8,-10); ctx.closePath(); ctx.fill();
+    }
+
+    else {
+      // Seitenansicht: Zeichnung zunächst nach rechts,
+      // für links wird die Figur gespiegelt.
+      if(player.facing === "left") ctx.scale(-1,1);
+
+      // Beine laufen vor/zurück
+      ctx.strokeStyle="#26334f"; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(-2,8); ctx.lineTo(-6+legSwing,17); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(3,8); ctx.lineTo(7-legSwing,17); ctx.stroke();
+
+      // hinterer Arm
+      ctx.strokeStyle="#d7a98c"; ctx.lineWidth=3.5;
+      ctx.beginPath(); ctx.moveTo(-2,0); ctx.lineTo(-5-armSwing,8); ctx.stroke();
+
+      // Körper
+      ctx.fillStyle="#2f62c9";
+      ctx.beginPath(); ctx.roundRect(-8,-3,16,16,5); ctx.fill();
+
+      // Rucksack auf dem Rücken
+      ctx.fillStyle="#d7a94b";
+      ctx.beginPath(); ctx.roundRect(-12,-1,7,13,3); ctx.fill();
+
+      // vorderer Arm
+      ctx.strokeStyle="#f0c7a5"; ctx.lineWidth=3.5;
+      ctx.beginPath(); ctx.moveTo(6,0); ctx.lineTo(10+armSwing,8); ctx.stroke();
+
+      // Hals + Kopf
+      ctx.fillStyle="#f0c7a5"; ctx.fillRect(-1,-7,5,5);
+      ctx.beginPath(); ctx.arc(2,-13,8,0,Math.PI*2); ctx.fill();
+
+      // Haare
+      ctx.fillStyle="#4a3426";
+      ctx.beginPath(); ctx.arc(1,-15,8,Math.PI,Math.PI*2);
+      ctx.lineTo(8,-13); ctx.lineTo(-6,-13); ctx.closePath(); ctx.fill();
+
+      // Auge
+      ctx.fillStyle="#222";
+      ctx.beginPath(); ctx.arc(5,-13,1.1,0,Math.PI*2); ctx.fill();
+
+      // kleine Nase
+      ctx.strokeStyle="#bd8f72"; ctx.lineWidth=1.3;
+      ctx.beginPath(); ctx.moveTo(8,-12); ctx.lineTo(10,-11); ctx.stroke();
+    }
+
+
+    // Kurze Wurfbewegung beim Schießen
+    if(performance.now() < attackUntil){
+      const p=Math.min(1,(performance.now()-attackStartedAt)/120);
+      ctx.save();
+      const [fx,fy]=facingVector();
+      const baseRot=Math.atan2(fy,fx);
+      const ox=fx*14, oy=fy*14;
+      const rot=baseRot-0.25+p*0.5;
+      ctx.translate(ox,oy);
+      ctx.rotate(rot);
+      ctx.fillStyle="#f0c85b";
+      ctx.strokeStyle="#8d6e24";
+      ctx.lineWidth=1.4;
+      ctx.beginPath();
+      ctx.roundRect(3,-3,28,7,2);
+      ctx.fill();ctx.stroke();
+      ctx.restore();
+    }
+
+    ctx.restore();
+
+    // Fliegende Lineale / Projektile
+    for(const rp of rulerProjectiles){
+      ctx.save();
+      ctx.translate(rp.x,rp.y);
+      ctx.rotate(rp.rot);
+      ctx.fillStyle="#f0c85b";
+      ctx.strokeStyle="#8d6e24";
+      ctx.lineWidth=1.5;
+      ctx.beginPath();
+      ctx.roundRect(-18,-4,36,8,2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Markierungen auf dem Lineal
+      ctx.strokeStyle="#5d4818";
+      ctx.lineWidth=1;
+      for(let m=-12;m<=12;m+=6){
+        ctx.beginPath();
+        ctx.moveTo(m,-4);
+        ctx.lineTo(m,-1);
+        ctx.stroke();
+      }
+
+      // leichte Spur dahinter
+      ctx.globalAlpha=0.25;
+      ctx.fillStyle="#fff6cf";
+      ctx.fillRect(-30,-2,12,4);
+      ctx.restore();
+    }
+
+    // Partikel über der Spielfläche
+    // Partikel über der Spielfläche
+    for(const p of particles){
+      ctx.save();
+      ctx.globalAlpha=Math.max(0,p.life/p.maxLife);
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // hint when close to item
+    let hint=false;
+    for(const item of state.items){
+      if(item.collected) continue;
+      const box={x:item.x-18,y:item.y-18,w:36,h:36};
+      if(centerDist(player,box)<58){ hint=true; break; }
+    }
+    if(hint){
+      drawRoundedRect(player.x-18,player.y-34,64,24,8,"rgba(6,10,22,.85)");
+      ctx.fillStyle="#fff";ctx.font="700 12px system-ui";ctx.textAlign="center";
+      ctx.fillText("E drücken",player.x+14,player.y-18);ctx.textAlign="left";
+    }
+
+    drawSnow();
+  }
+
+  function updateSnow(dt){
+    if(snow.length<45){
+      snow.push({x:Math.random()*W,y:-10,r:1+Math.random()*2.6,v:25+Math.random()*55,a:.25+Math.random()*.55});
+    }
+    for(const s of snow){
+      s.y+=s.v*dt;
+      s.x+=Math.sin((s.y+s.v)*.015)*8*dt;
+      if(s.y>H+8){s.y=-8;s.x=Math.random()*W}
+    }
+  }
+
+  let last=performance.now();
+
+  // Pixel-Übergang beim Wechseln des Levels / der Etappe
+  const transitionBuffer=document.createElement("canvas");
+  const transitionBufferCtx=transitionBuffer.getContext("2d");
+  transitionBufferCtx.imageSmoothingEnabled=false;
+
+  const transitionFX={
+    active:false,
+    start:0,
+    inMs:260,
+    holdMs:90,
+    outMs:260,
+    switched:false,
+    onSwitch:null,
+    label:""
+  };
+
+  function startPixelTransition(onSwitch,label="LEVEL WECHSEL"){
+    if(transitionFX.active) return;
+    transitionFX.active=true;
+    transitionFX.start=performance.now();
+    transitionFX.switched=false;
+    transitionFX.onSwitch=onSwitch;
+    transitionFX.label=label;
+    keys.clear();
+  }
+
+  function updateTransitionFX(now){
+    if(!transitionFX.active) return;
+
+    const elapsed=now-transitionFX.start;
+    if(!transitionFX.switched && elapsed>=transitionFX.inMs){
+      transitionFX.switched=true;
+      transitionFX.onSwitch?.();
+    }
+
+    const total=transitionFX.inMs+transitionFX.holdMs+transitionFX.outMs;
+    if(elapsed>=total){
+      transitionFX.active=false;
+      transitionFX.onSwitch=null;
+      transitionFX.label="";
+    }
+  }
+
+  function transitionCover(now){
+    const elapsed=now-transitionFX.start;
+    if(elapsed<=transitionFX.inMs){
+      return Math.max(0,Math.min(1,elapsed/transitionFX.inMs));
+    }
+    if(elapsed<=transitionFX.inMs+transitionFX.holdMs){
+      return 1;
+    }
+    const outElapsed=elapsed-transitionFX.inMs-transitionFX.holdMs;
+    return Math.max(0,1-Math.min(1,outElapsed/transitionFX.outMs));
+  }
+
+  function drawPixelTransition(now){
+    if(!transitionFX.active) return;
+
+    const cover=transitionCover(now);
+    const pixelStep=Math.round(4+cover*34);
+    const sampleW=Math.max(18,Math.round(W/pixelStep));
+    const sampleH=Math.max(10,Math.round(H/pixelStep));
+
+    if(transitionBuffer.width!==sampleW || transitionBuffer.height!==sampleH){
+      transitionBuffer.width=sampleW;
+      transitionBuffer.height=sampleH;
+    }
+
+    transitionBufferCtx.clearRect(0,0,sampleW,sampleH);
+    transitionBufferCtx.drawImage(canvas,0,0,sampleW,sampleH);
+
+    ctx.save();
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(transitionBuffer,0,0,sampleW,sampleH,0,0,W,H);
+
+    // dunkle Einfärbung für klaren Wechsel
+    ctx.fillStyle=`rgba(7,10,18,${0.12+cover*0.44})`;
+    ctx.fillRect(0,0,W,H);
+
+    // sichtbare Pixelraster-Linien
+    const grid=Math.max(12,Math.round(14+cover*26));
+    ctx.strokeStyle=`rgba(255,255,255,${0.02+cover*0.06})`;
+    ctx.lineWidth=1;
+    for(let x=0;x<=W;x+=grid){
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+    }
+    for(let y=0;y<=H;y+=grid){
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
+
+    drawReadableLabel(
+      transitionFX.label || "WECHSEL",
+      W/2,H/2+14,
+      {
+        font:"900 18px system-ui",
+        bg:`rgba(7,12,27,${0.58+cover*0.20})`,
+        padX:14,
+        padY:7
+      }
+    );
+    ctx.restore();
+  }
+
+
+  // ================================================================
+  // ETAPPE 2: 3D-LABYRINTH
+  // ================================================================
+  const stage2Map = [
+    "############",
+    "#..........#",
+    "#.####.##..#",
+    "#....#.....#",
+    "##.#.#.###.#",
+    "#..#.......#",
+    "#..###.###.#",
+    "#..........#",
+    "############"
+  ];
+
+  const stage2 = {
+    x:1.5, y:1.5, angle:0,
+    collected:0,
+    items:[],
+    exit:{x:10.5,y:1.5},
+    depth:[]
+  };
+
+  function resetStage2(){
+    gameStage=2;
+    stage2.x=1.5;
+    stage2.y=1.5;
+    stage2.angle=0;
+    stage2.collected=0;
+    stage2.items=[
+      {x:3.5,y:3.5,label:"Idee",icon:"◆",got:false},
+      {x:7.5,y:5.5,label:"Technik",icon:"◆",got:false},
+      {x:9.5,y:7.5,label:"Zukunft",icon:"◆",got:false}
+    ];
+    stage2.exit={x:10.5,y:1.5};
+    stage2.depth=[];
+    keys.clear();
+    stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 2: 3D-Welt";
+    hud.textContent=isCompactMobile() ? "3D · ◆ 0/3" : "Etappe 2/3 · 3D-Labyrinth · ◆ 0/3";
+    updateMobileUI();
+  }
+
+  function showStageCard(title,subtitle,text,buttonText,onStart){
+    started=false;
+    keys.clear();
+    overlay.innerHTML=`
+      <div class="card">
+        <h1>${title}</h1>
+        <h2>${subtitle}</h2>
+        <p>${text}</p>
+        <button id="stageContinueBtn">${buttonText}</button>
+        <p class="small">BVJ 2026/27 · Technology &amp; Design</p>
+      </div>`;
+    overlay.style.display="flex";
+    const stageContinueBtn=document.getElementById("stageContinueBtn");
+    let stageButtonHandled=false;
+
+    const continueStage=()=>{
+      if(stageButtonHandled) return;
+      stageButtonHandled=true;
+      overlay.style.display="none";
+      started=true;
+      keys.clear();
+      onStart?.();
+    };
+
+    stageContinueBtn.addEventListener("click",continueStage);
+    stageContinueBtn.addEventListener("pointerup",e=>{
+      if(e.pointerType==="touch"){
+        e.preventDefault();
+        continueStage();
+      }
+    });
+  }
+
+  function startStage2(){
+    resetStage2();
+    showStageCard(
+      "🧊 Etappe 2",
+      "3D-Labyrinth",
+      "Die Perspektive wechselt vollständig. Finde drei leuchtende Stationen im Labyrinth und erreiche danach das grüne Portal. W/S = vor/zurück, A/D oder ←/→ = drehen.",
+      "3D-Welt starten"
+    );
+  }
+
+  function s2IsWall(x,y){
+    const gx=Math.floor(x), gy=Math.floor(y);
+    if(gy<0 || gy>=stage2Map.length || gx<0 || gx>=stage2Map[0].length) return true;
+    return stage2Map[gy][gx]==="#";
+  }
+
+  function s2CanStand(x,y){
+    const r=.18;
+    return !s2IsWall(x-r,y-r) &&
+           !s2IsWall(x+r,y-r) &&
+           !s2IsWall(x-r,y+r) &&
+           !s2IsWall(x+r,y+r);
+  }
+
+  function updateStage2(dt){
+    let turn=0;
+    if(keys.has("KeyA") || keys.has("ArrowLeft")) turn-=1;
+    if(keys.has("KeyD") || keys.has("ArrowRight")) turn+=1;
+    stage2.angle += turn*1.85*dt;
+
+    let forward=0;
+    if(keys.has("KeyW") || keys.has("ArrowUp")) forward+=1;
+    if(keys.has("KeyS") || keys.has("ArrowDown")) forward-=1;
+
+    if(forward){
+      const speed=2.15;
+      const nx=stage2.x+Math.cos(stage2.angle)*forward*speed*dt;
+      const ny=stage2.y+Math.sin(stage2.angle)*forward*speed*dt;
+      if(s2CanStand(nx,stage2.y)) stage2.x=nx;
+      if(s2CanStand(stage2.x,ny)) stage2.y=ny;
+    }
+
+    for(const item of stage2.items){
+      if(item.got) continue;
+      if(Math.hypot(stage2.x-item.x,stage2.y-item.y)<.46){
+        item.got=true;
+        stage2.collected++;
+        beep(720,.08);
+        showMessage(`${item.label} gefunden! ${stage2.collected}/3`,900);
+      }
+    }
+
+    if(Math.hypot(stage2.x-stage2.exit.x,stage2.y-stage2.exit.y)<.52){
+      if(stage2.collected<stage2.items.length){
+        showMessage("Das Portal ist noch gesperrt – finde zuerst alle 3 Stationen.",1000);
+      }else{
+        startPixelTransition(()=>startStage3(),"ETAPPE 3 · NEON-ACTION");
+      }
+    }
+
+    hud.textContent=isCompactMobile()
+      ? `3D · ◆ ${stage2.collected}/3`
+      : `Etappe 2/3 · 3D-Labyrinth · ◆ ${stage2.collected}/3`;
+  }
+
+  function castStage2Ray(angle){
+    let dist=0;
+    const step=.025;
+    while(dist<18){
+      dist+=step;
+      const x=stage2.x+Math.cos(angle)*dist;
+      const y=stage2.y+Math.sin(angle)*dist;
+      if(s2IsWall(x,y)) break;
+    }
+    return dist;
+  }
+
+  function angleDiff(a,b){
+    let d=a-b;
+    while(d>Math.PI) d-=Math.PI*2;
+    while(d<-Math.PI) d+=Math.PI*2;
+    return d;
+  }
+
+  function drawStage2Sprite(sprite,kind){
+    const dx=sprite.x-stage2.x;
+    const dy=sprite.y-stage2.y;
+    const dist=Math.hypot(dx,dy);
+    const a=Math.atan2(dy,dx);
+    const diff=angleDiff(a,stage2.angle);
+    const fov=Math.PI/3;
+
+    if(Math.abs(diff)>fov*.58 || dist<.1) return;
+
+    const corrected=dist*Math.cos(diff);
+    const sx=(.5+diff/fov)*W;
+    const size=Math.max(18,Math.min(150,210/corrected));
+    const rayIndex=Math.max(0,Math.min(stage2.depth.length-1,
+      Math.floor((.5+diff/fov)*stage2.depth.length)));
+
+    if(stage2.depth[rayIndex] && corrected>stage2.depth[rayIndex]+.16) return;
+
+    ctx.save();
+    ctx.translate(sx,H/2+size*.10);
+    ctx.shadowBlur=Math.min(38,size*.28);
+
+    if(kind==="item"){
+      ctx.shadowColor="#61e9ff";
+      ctx.fillStyle="#73ecff";
+      ctx.rotate(performance.now()*.0016);
+      ctx.fillRect(-size*.18,-size*.18,size*.36,size*.36);
+      ctx.strokeStyle="#ffffff";
+      ctx.lineWidth=Math.max(1,size*.018);
+      ctx.strokeRect(-size*.18,-size*.18,size*.36,size*.36);
+    }else{
+      ctx.shadowColor="#72ff9b";
+      ctx.fillStyle=stage2.collected===3?"#64f08e":"#55615b";
+      const w=size*.50,h=size*.82;
+      ctx.fillRect(-w/2,-h/2,w,h);
+      ctx.strokeStyle=stage2.collected===3?"#dffff0":"#8c9690";
+      ctx.lineWidth=Math.max(2,size*.025);
+      ctx.strokeRect(-w/2,-h/2,w,h);
+      ctx.fillStyle=stage2.collected===3?"#e8fff0":"#aeb8b2";
+      ctx.fillRect(-w*.24,-h*.10,w*.48,h*.08);
+    }
+    ctx.restore();
+  }
+
+  function drawStage2(){
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.globalAlpha=1;
+    ctx.clearRect(0,0,W,H);
+
+    // Decke und Boden
+    ctx.fillStyle="#080d18";
+    ctx.fillRect(0,0,W,H/2);
+    ctx.fillStyle="#18202c";
+    ctx.fillRect(0,H/2,W,H/2);
+
+    // Perspektivlinien im Boden
+    ctx.save();
+    ctx.strokeStyle="rgba(83,209,231,.11)";
+    ctx.lineWidth=1;
+    for(let i=1;i<=8;i++){
+      const yy=H/2+(H/2)*(i/8)*(i/8);
+      ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();
+    }
+    for(let i=-8;i<=8;i++){
+      ctx.beginPath();
+      ctx.moveTo(W/2,H/2);
+      ctx.lineTo(W/2+i*95,H);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Raycasting
+    const rays=240;
+    const fov=Math.PI/3;
+    stage2.depth=new Array(rays);
+    const stripW=W/rays+1;
+
+    for(let i=0;i<rays;i++){
+      const rayAngle=stage2.angle-fov/2+(i/(rays-1))*fov;
+      const raw=castStage2Ray(rayAngle);
+      const d=Math.max(.05,raw*Math.cos(rayAngle-stage2.angle));
+      stage2.depth[i]=d;
+
+      const wallH=Math.min(H*1.45,390/d);
+      const y=(H-wallH)/2;
+      const shade=Math.max(35,210-d*20);
+      const blue=Math.min(255,shade+28);
+      ctx.fillStyle=`rgb(${Math.floor(shade*.48)},${Math.floor(shade*.68)},${Math.floor(blue)})`;
+      ctx.fillRect(i*stripW,y,stripW+1,wallH);
+
+      if(i%5===0){
+        ctx.fillStyle="rgba(255,255,255,.035)";
+        ctx.fillRect(i*stripW,y,1,wallH);
+      }
+    }
+
+    for(const item of stage2.items){
+      if(!item.got) drawStage2Sprite(item,"item");
+    }
+    drawStage2Sprite(stage2.exit,"exit");
+
+    // Crosshair
+    ctx.save();
+    ctx.strokeStyle="rgba(255,255,255,.75)";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(W/2-8,H/2);ctx.lineTo(W/2+8,H/2);
+    ctx.moveTo(W/2,H/2-8);ctx.lineTo(W/2,H/2+8);
+    ctx.stroke();
+    ctx.restore();
+
+    // Titel / Steuerung
+    drawRoundedRect(24,24,270,60,12,"rgba(3,8,18,.74)","rgba(118,235,255,.22)");
+    ctx.fillStyle="#ffffff";
+    ctx.font="900 20px system-ui";
+    ctx.fillText("ETAPPE 2 · 3D-WELT",40,51);
+    ctx.fillStyle="#7deeff";
+    ctx.font="700 12px system-ui";
+    ctx.fillText("W/S laufen · A/D drehen · ◆ sammeln",40,72);
+
+    // Mini-Karte
+    const cell=10;
+    const mapX=W-stage2Map[0].length*cell-26;
+    const mapY=26;
+    ctx.save();
+    ctx.globalAlpha=.78;
+    ctx.fillStyle="rgba(3,8,18,.82)";
+    ctx.fillRect(mapX-8,mapY-8,stage2Map[0].length*cell+16,stage2Map.length*cell+16);
+    for(let y=0;y<stage2Map.length;y++){
+      for(let x=0;x<stage2Map[y].length;x++){
+        if(stage2Map[y][x]==="#"){
+          ctx.fillStyle="#38576a";
+          ctx.fillRect(mapX+x*cell,mapY+y*cell,cell-1,cell-1);
+        }
+      }
+    }
+    for(const item of stage2.items){
+      if(item.got) continue;
+      ctx.fillStyle="#75eeff";
+      ctx.fillRect(mapX+item.x*cell-2,mapY+item.y*cell-2,4,4);
+    }
+    ctx.fillStyle=stage2.collected===3?"#62f28a":"#89948e";
+    ctx.fillRect(mapX+stage2.exit.x*cell-3,mapY+stage2.exit.y*cell-3,6,6);
+    ctx.fillStyle="#ffffff";
+    ctx.beginPath();
+    ctx.arc(mapX+stage2.x*cell,mapY+stage2.y*cell,3.5,0,Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle="#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(mapX+stage2.x*cell,mapY+stage2.y*cell);
+    ctx.lineTo(
+      mapX+(stage2.x+Math.cos(stage2.angle)*.8)*cell,
+      mapY+(stage2.y+Math.sin(stage2.angle)*.8)*cell
+    );
+    ctx.stroke();
+    ctx.restore();
+  }
+
+
+  // ================================================================
+  // ETAPPE 3: SCHNELLE NEON-PIXEL-ACTION
+  // Optik und Tempo erinnern an stylische Side-Scroller,
+  // verwenden aber vollständig eigene Formen, Figuren und Level.
+  // ================================================================
+  const stage3 = {
+    worldW:2700,
+    x:80,y:406,w:28,h:44,
+    vx:0,vy:0,
+    facing:1,
+    onGround:true,
+    cameraX:0,
+    health:3,
+    invulnUntil:0,
+    attackUntil:0,
+    collected:0,
+    pickups:[],
+    enemies:[],
+    platforms:[],
+    exitX:2570
+  };
+
+  function resetStage3(){
+    gameStage=3;
+    stage3.x=80; stage3.y=406;
+    stage3.vx=0; stage3.vy=0;
+    stage3.facing=1;
+    stage3.onGround=true;
+    stage3.cameraX=0;
+    stage3.health=3;
+    stage3.invulnUntil=0;
+    stage3.attackUntil=0;
+    stage3.collected=0;
+    stage3.pickups=[
+      {x:650,y:355,label:"Mut",got:false},
+      {x:1430,y:305,label:"Fokus",got:false},
+      {x:2260,y:355,label:"Ziel",got:false}
+    ];
+    stage3.enemies=[
+      {x:470,y:414,w:28,h:36,min:430,max:610,dir:1,dead:false},
+      {x:930,y:414,w:28,h:36,min:860,max:1080,dir:-1,dead:false},
+      {x:1370,y:414,w:28,h:36,min:1290,max:1510,dir:1,dead:false},
+      {x:1840,y:414,w:28,h:36,min:1750,max:1980,dir:-1,dead:false},
+      {x:2310,y:414,w:28,h:36,min:2220,max:2430,dir:1,dead:false}
+    ];
+    stage3.platforms=[
+      {x:560,y:380,w:170,h:18},
+      {x:1180,y:350,w:180,h:18},
+      {x:1390,y:330,w:140,h:18},
+      {x:2050,y:380,w:190,h:18}
+    ];
+    keys.clear();
+    stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 3: Neon-Action";
+    hud.textContent=isCompactMobile() ? "♥♥♥ · ✦ 0/3 · 👾 5" : "Etappe 3/3 · ♥♥♥ · ✦ 0/3";
+    updateMobileUI();
+  }
+
+  function startStage3(){
+    resetStage3();
+    showStageCard(
+      "⚡ Etappe 3",
+      "Neon-Action",
+      "Die Perspektive wechselt erneut: schnelle 2D-Side-Scroller-Action mit eigener Neon-Pixel-Optik. Sammle Mut, Fokus und Ziel. A/D oder ←/→ = laufen, Leertaste = springen, F = Nahkampfangriff.",
+      "Neon-Etappe starten"
+    );
+  }
+
+  function s3Jump(){
+    if(stage3.onGround){
+      stage3.vy=-560;
+      stage3.onGround=false;
+      beep(520,.05);
+    }
+  }
+
+  function s3Attack(){
+    stage3.attackUntil=performance.now()+180;
+    beep(690,.045);
+  }
+
+  function s3Rect(){
+    return {x:stage3.x,y:stage3.y,w:stage3.w,h:stage3.h};
+  }
+
+  function updateStage3(dt,now){
+    let move=0;
+    if(keys.has("KeyA") || keys.has("ArrowLeft")) move-=1;
+    if(keys.has("KeyD") || keys.has("ArrowRight")) move+=1;
+
+    stage3.vx=move*285;
+    if(move) stage3.facing=Math.sign(move);
+
+    stage3.x+=stage3.vx*dt;
+    stage3.x=Math.max(20,Math.min(stage3.worldW-stage3.w-20,stage3.x));
+
+    const oldBottom=stage3.y+stage3.h;
+    stage3.vy+=1450*dt;
+    stage3.y+=stage3.vy*dt;
+    stage3.onGround=false;
+
+    const groundY=450;
+    if(stage3.y+stage3.h>=groundY){
+      stage3.y=groundY-stage3.h;
+      stage3.vy=0;
+      stage3.onGround=true;
+    }
+
+    // Landen auf Plattformen.
+    if(stage3.vy>=0){
+      for(const p of stage3.platforms){
+        const newBottom=stage3.y+stage3.h;
+        const overlapsX=stage3.x+stage3.w>p.x && stage3.x<p.x+p.w;
+        if(overlapsX && oldBottom<=p.y && newBottom>=p.y){
+          stage3.y=p.y-stage3.h;
+          stage3.vy=0;
+          stage3.onGround=true;
+          break;
+        }
+      }
+    }
+
+    // Pickups
+    for(const p of stage3.pickups){
+      if(p.got) continue;
+      if(Math.hypot((stage3.x+stage3.w/2)-p.x,(stage3.y+stage3.h/2)-p.y)<46){
+        p.got=true;
+        stage3.collected++;
+        beep(830,.07);
+        showMessage(`${p.label} gesammelt! ${stage3.collected}/3`,850);
+      }
+    }
+
+    // Gegner
+    const attacking=now<stage3.attackUntil;
+    for(const e of stage3.enemies){
+      if(e.dead) continue;
+
+      const playerCenter=stage3.x+stage3.w/2;
+      const enemyCenter=e.x+e.w/2;
+      const dist=playerCenter-enemyCenter;
+
+      if(Math.abs(dist)<235){
+        e.x+=Math.sign(dist)*105*dt;
+      }else{
+        e.x+=e.dir*62*dt;
+        if(e.x<e.min){e.x=e.min;e.dir=1}
+        if(e.x>e.max){e.x=e.max;e.dir=-1}
+      }
+
+      if(attacking){
+        const attackCenter=stage3.x+stage3.w/2+stage3.facing*44;
+        if(Math.abs(enemyCenter-attackCenter)<48 &&
+           Math.abs((e.y+e.h/2)-(stage3.y+stage3.h/2))<48){
+          e.dead=true;
+          beep(880,.055);
+          burst(
+            Math.max(20,Math.min(W-20,e.x-stage3.cameraX)),
+            e.y+e.h/2,
+            "#f04f88",14
+          );
+          continue;
+        }
+      }
+
+      if(now>stage3.invulnUntil &&
+         stage3.x<e.x+e.w && stage3.x+stage3.w>e.x &&
+         stage3.y<e.y+e.h && stage3.y+stage3.h>e.y){
+        stage3.health--;
+        stage3.invulnUntil=now+900;
+        stage3.x-=Math.sign(dist||1)*45;
+        stage3.vy=-260;
+        beep(160,.08);
+
+        if(stage3.health<=0){
+          showMessage("Keine Herzen mehr – Etappe 3 startet neu.",1000);
+          setTimeout(()=>resetStage3(),700);
+          return;
+        }
+      }
+    }
+
+    // Kamera
+    stage3.cameraX+=(Math.max(0,Math.min(stage3.worldW-W,stage3.x-260))-stage3.cameraX)*Math.min(1,dt*7);
+
+    // Ziel
+    if(stage3.x+stage3.w>=stage3.exitX){
+      if(stage3.collected<3){
+        showMessage("Dir fehlen noch Mut, Fokus oder Ziel.",900);
+        stage3.x=stage3.exitX-stage3.w-8;
+      }else{
+        finishWholeGame();
+      }
+    }
+
+    const hearts="♥".repeat(stage3.health)+"♡".repeat(3-stage3.health);
+    const remaining=stage3.enemies.filter(e=>!e.dead).length;
+    hud.textContent=isCompactMobile()
+      ? `${hearts} · ✦ ${stage3.collected}/3 · 👾 ${remaining}`
+      : `Etappe 3/3 · ${hearts} · ✦ ${stage3.collected}/3 · Gegner ${remaining}`;
+  }
+
+  function drawPixelBuilding(x,baseY,w,h,seed,alpha){
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle=seed%2?"#151b38":"#1d1735";
+    ctx.fillRect(Math.round(x),Math.round(baseY-h),Math.round(w),Math.round(h));
+
+    ctx.fillStyle=seed%3===0?"#3be7df":"#d2458f";
+    const cols=Math.max(2,Math.floor(w/18));
+    const rows=Math.max(2,Math.floor(h/26));
+    for(let yy=0;yy<rows;yy++){
+      for(let xx=0;xx<cols;xx++){
+        if((xx+yy+seed)%3===0){
+          ctx.globalAlpha=alpha*.55;
+          ctx.fillRect(
+            Math.round(x+7+xx*16),
+            Math.round(baseY-h+10+yy*23),
+            5,8
+          );
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawStage3(){
+    const now=performance.now();
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.globalAlpha=1;
+    ctx.clearRect(0,0,W,H);
+    ctx.imageSmoothingEnabled=false;
+
+    // Himmel
+    ctx.fillStyle="#090817";
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="#18102b";
+    ctx.fillRect(0,250,W,290);
+
+    // Mond / Neon-Sonne
+    ctx.save();
+    ctx.globalAlpha=.8;
+    ctx.fillStyle="#e04e8c";
+    ctx.beginPath();ctx.arc(760,115,58,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#090817";
+    for(let y=80;y<150;y+=11) ctx.fillRect(700,y,120,4);
+    ctx.restore();
+
+    // Parallax city
+    for(let layer=0;layer<2;layer++){
+      const factor=layer===0?.18:.38;
+      const base=layer===0?350:410;
+      const alpha=layer===0?.42:.72;
+      for(let i=0;i<14;i++){
+        const worldX=i*210+(layer*90);
+        const sx=worldX-stage3.cameraX*factor;
+        const wrap=((sx+250)%2900+2900)%2900-250;
+        drawPixelBuilding(wrap,base,110+(i%3)*35,110+(i%5)*28,i+layer*7,alpha);
+      }
+    }
+
+    const cam=stage3.cameraX;
+
+    // Boden
+    ctx.fillStyle="#10131f";
+    ctx.fillRect(0,450,W,90);
+    ctx.fillStyle="#3ce1d0";
+    ctx.fillRect(0,450,W,3);
+    ctx.fillStyle="rgba(210,58,137,.18)";
+    for(let x=-((cam*.7)%60);x<W;x+=60) ctx.fillRect(x,478,28,3);
+
+    // Plattformen
+    for(const p of stage3.platforms){
+      const sx=p.x-cam;
+      if(sx>W+100 || sx+p.w<-100) continue;
+      ctx.fillStyle="#24233b";
+      ctx.fillRect(sx,p.y,p.w,p.h);
+      ctx.fillStyle="#41e5d7";
+      ctx.fillRect(sx,p.y,p.w,3);
+      ctx.fillStyle="#d34c91";
+      for(let x=sx+8;x<sx+p.w-4;x+=26) ctx.fillRect(x,p.y+8,12,3);
+    }
+
+    // Pickups
+    for(const p of stage3.pickups){
+      if(p.got) continue;
+      const sx=p.x-cam;
+      if(sx<-80 || sx>W+80) continue;
+      const pulse=1+Math.sin(now*.006+p.x)*.12;
+      ctx.save();
+      ctx.translate(sx,p.y);
+      ctx.scale(pulse,pulse);
+      ctx.shadowColor="#f0cf55";
+      ctx.shadowBlur=18;
+      ctx.fillStyle="#f4d75f";
+      ctx.beginPath();
+      ctx.moveTo(0,-15);ctx.lineTo(13,0);ctx.lineTo(0,15);ctx.lineTo(-13,0);ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      drawReadableLabel(p.label,sx,p.y+37,{font:"800 11px system-ui",bg:"rgba(20,12,32,.82)"});
+    }
+
+    // Gegner
+    for(const e of stage3.enemies){
+      if(e.dead) continue;
+      const sx=e.x-cam;
+      if(sx<-80 || sx>W+80) continue;
+
+      ctx.save();
+      ctx.translate(Math.round(sx),Math.round(e.y));
+      ctx.fillStyle="#c7426c";
+      ctx.fillRect(0,6,e.w,e.h-6);
+      ctx.fillStyle="#191426";
+      ctx.fillRect(4,0,e.w-8,12);
+      ctx.fillStyle="#f7e4ee";
+      ctx.fillRect(e.dir>0?18:6,5,4,3);
+      ctx.fillStyle="#8c2d50";
+      ctx.fillRect(-5,19,8,5);
+      ctx.restore();
+    }
+
+    // Ausgang
+    const exitSX=stage3.exitX-cam;
+    ctx.save();
+    ctx.shadowColor="#62f3ca";
+    ctx.shadowBlur=20;
+    ctx.fillStyle=stage3.collected===3?"#42e7bc":"#49545a";
+    ctx.fillRect(exitSX,337,38,113);
+    ctx.fillStyle="#0d1420";
+    ctx.fillRect(exitSX+9,350,20,82);
+    ctx.restore();
+    drawReadableLabel(
+      stage3.collected===3?"WEIHNACHTEN":"GESPERRT",
+      exitSX+19,330,
+      {font:"900 11px system-ui",bg:"rgba(12,17,29,.86)"}
+    );
+
+    // Spieler
+    const px=stage3.x-cam;
+    ctx.save();
+    ctx.translate(Math.round(px+stage3.w/2),Math.round(stage3.y+stage3.h/2));
+    if(now<stage3.invulnUntil && Math.floor(now/80)%2===0) ctx.globalAlpha=.35;
+
+    // Körper
+    ctx.fillStyle="#eeeeef";
+    ctx.fillRect(-9,-17,18,26);
+    ctx.fillStyle="#252036";
+    ctx.fillRect(-9,9,7,13);
+    ctx.fillRect(2,9,7,13);
+    ctx.fillStyle="#e24a8d";
+    ctx.fillRect(stage3.facing>0?5:-9,-11,4,5);
+
+    // Schwert / Linealartige Klinge
+    ctx.strokeStyle="#75f4e2";
+    ctx.lineWidth=4;
+    ctx.beginPath();
+    ctx.moveTo(stage3.facing*8,-2);
+    ctx.lineTo(stage3.facing*25,-8);
+    ctx.stroke();
+
+    if(now<stage3.attackUntil){
+      ctx.strokeStyle="#f6d85e";
+      ctx.lineWidth=7;
+      ctx.globalAlpha=.75;
+      ctx.beginPath();
+      if(stage3.facing>0) ctx.arc(7,-2,43,-1.05,1.05);
+      else ctx.arc(-7,-2,43,Math.PI-1.05,Math.PI+1.05);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Speed lines while moving
+    if(Math.abs(stage3.vx)>10){
+      ctx.save();
+      ctx.strokeStyle="rgba(116,240,226,.18)";
+      ctx.lineWidth=2;
+      for(let i=0;i<10;i++){
+        const y=120+(i*41+Math.floor(now*.05))%300;
+        const x=(i*113+Math.floor(now*.18))%W;
+        ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-stage3.facing*34,y);ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Scanlines
+    ctx.save();
+    ctx.globalAlpha=.08;
+    ctx.fillStyle="#ffffff";
+    for(let y=0;y<H;y+=4) ctx.fillRect(0,y,W,1);
+    ctx.restore();
+
+    // Titel
+    drawRoundedRect(22,22,300,61,10,"rgba(8,7,18,.82)","rgba(226,74,141,.30)");
+    ctx.fillStyle="#ffffff";
+    ctx.font="900 20px system-ui";
+    ctx.fillText("ETAPPE 3 · NEON-ACTION",38,49);
+    ctx.fillStyle="#70eadc";
+    ctx.font="700 12px system-ui";
+    ctx.fillText("A/D laufen · Leertaste springen · F angreifen",38,71);
+  }
+
+  function finishWholeGame(){
+    if(finished) return;
+    finished=true;
+    started=false;
+    keys.clear();
+    const total=formatTime((performance.now()-startTime)/1000);
+    overlay.innerHTML=`
+      <div class="card">
+        <h1>🎄 Geschafft!</h1>
+        <h2>Drei Welten – ein Weg durchs BVJ</h2>
+        <p>Du hast die <strong>2D-Welt</strong>, das <strong>3D-Labyrinth</strong> und die <strong>Neon-Action-Etappe</strong> abgeschlossen.</p>
+        <p>Gesamtzeit: <strong>${total}</strong></p>
+        <p class="small">Viventa · BVJ 2026/27 · Technology &amp; Design</p>
+        <button id="againBtn">Noch einmal spielen</button>
+      </div>`;
+    overlay.style.display="flex";
+    document.getElementById("againBtn").onclick=()=>{
+      gameStage=1;
+      levelIndex=0;
+      finished=false;
+      started=true;
+      overlay.style.display="none";
+      startTime=performance.now();
+      stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 1: 2D";
+      updateMobileUI();
+      resetLevel();
+    };
+  }
+
+  function drawCurrentStage(){
+    if(gameStage===1) draw();
+    else if(gameStage===2) drawStage2();
+    else drawStage3();
+  }
+
+  function loop(now){
+    const dt=Math.min(.032,(now-last)/1000);
+    last=now;
+
+    updateTransitionFX(now);
+
+    if(started && !finished && !transitionFX.active){
+      if(gameStage===1){
+        let dx=0,dy=0;
+        if(keys.has("ArrowLeft")||keys.has("KeyA")) dx-=1;
+        if(keys.has("ArrowRight")||keys.has("KeyD")) dx+=1;
+        if(keys.has("ArrowUp")||keys.has("KeyW")) dy-=1;
+        if(keys.has("ArrowDown")||keys.has("KeyS")) dy+=1;
+
+        setFacingFromVector(dx,dy);
+        if(dx&&dy){dx*=Math.SQRT1_2;dy*=Math.SQRT1_2}
+
+        movePlayer(dx,dy,dt);
+        updateMovingItems(now);
+        updateEnemies(dt,now);
+        updateProjectiles(dt);
+        updateParticles(dt);
+
+        const exitHit={...state.exit,y:state.exit.y+Math.sin(now*0.0032)*5};
+        if(rectsOverlap(player,exitHit)){
+          nextLevel();
+        }
+
+        const hearts = "♥".repeat(player.health) + "♡".repeat(player.maxHealth-player.health);
+        const jumpMark=isJumping(now)?"↑":"&nbsp;";
+        const buttonDone=(state.redButtons||[]).filter(b=>b.pressed).length;
+        const buttonAll=(state.redButtons||[]).length;
+        if(isCompactMobile()){
+          hud.innerHTML=`${hearts}<span class="jump-indicator" aria-hidden="true">${jumpMark}</span> · 2D ${levelIndex+1}/3 · 🎒 ${collectedCount()}/3 · 🔴 ${buttonDone}/${buttonAll}`;
+        }else{
+          hud.innerHTML=`${hearts}<span class="jump-indicator" aria-hidden="true">${jumpMark}</span> · Etappe 1/3 · Level ${levelIndex+1}/3 · ${collectedCount()}/3 · 🔴 ${buttonDone}/${buttonAll}`;
+        }
+      }else if(gameStage===2){
+        updateStage2(dt);
+      }else{
+        updateStage3(dt,now);
+      }
+    }
+
+    if(gameStage===1) updateSnow(dt);
+
+    if((!started || finished) && gameStage===1){
+      updateParticles(dt);
+      updateProjectiles(dt);
+    }
+
+    drawCurrentStage();
+
+    if(transitionFX.active){
+      drawPixelTransition(now);
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  function keyDown(code){
+    if(code==="ShiftLeft" || code==="ShiftRight") return;
+
+    keys.add(code);
+
+    if(gameStage===1){
+      if(code==="KeyE") interact();
+      if(code==="Space") jump();
+      if(code==="KeyF") attack();
+      if(code==="KeyR" && started && !finished) resetLevel();
+    }else if(gameStage===2){
+      if(code==="KeyR" && started && !finished) resetStage2();
+    }else if(gameStage===3){
+      if(code==="Space" && started && !finished) s3Jump();
+      if(code==="KeyF" && started && !finished) s3Attack();
+      if(code==="KeyR" && started && !finished) resetStage3();
+    }
+  }
+
+  function keyUp(code){
+    keys.delete(code);
+  }
+
+  // Shift wird absichtlich abgefangen, damit der Browser oder ein fokussiertes
+  // Element damit keine eigene Aktion / Scrollbewegung auslösen kann.
+  window.addEventListener("keydown",e=>{
+    if(e.code==="ShiftLeft" || e.code==="ShiftRight"){
+      e.preventDefault();
+      e.stopPropagation();
+      keys.delete("ShiftLeft");
+      keys.delete("ShiftRight");
+      return;
+    }
+
+    if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].includes(e.code)){
+      e.preventDefault();
+    }
+
+    if(!e.repeat) keyDown(e.code);
+  }, true);
+
+  window.addEventListener("keyup",e=>{
+    if(e.code==="ShiftLeft" || e.code==="ShiftRight"){
+      e.preventDefault();
+      e.stopPropagation();
+      keys.delete("ShiftLeft");
+      keys.delete("ShiftRight");
+      return;
+    }
+    keyUp(e.code);
+  }, true);
+
+  document.querySelectorAll(".ctrl").forEach(el=>{
+    const code=el.dataset.key;
+    const down=e=>{
+      e.preventDefault();
+      try{el.setPointerCapture(e.pointerId)}catch(_){}
+      el.classList.add("pressed");
+      keyDown(code);
+    };
+    const up=e=>{
+      e.preventDefault();
+      el.classList.remove("pressed");
+      keyUp(code);
+      try{if(el.hasPointerCapture?.(e.pointerId)) el.releasePointerCapture(e.pointerId)}catch(_){}
+    };
+    el.addEventListener("pointerdown",down);
+    el.addEventListener("pointerup",up);
+    el.addEventListener("pointercancel",up);
+    el.addEventListener("lostpointercapture",()=>{
+      el.classList.remove("pressed");
+      keyUp(code);
+    });
+  });
+
+  document.getElementById("gamebox").addEventListener("contextmenu",e=>e.preventDefault());
+
+  window.addEventListener("blur",()=>{
+    keys.clear();
+    document.querySelectorAll(".ctrl.pressed").forEach(el=>el.classList.remove("pressed"));
+  });
+
+  window.addEventListener("resize",updateMobileUI);
+  window.addEventListener("orientationchange",()=>{
+    keys.clear();
+    setTimeout(updateMobileUI,80);
+  });
+
+  function beginGame(){
+    // Schutz gegen den zusätzlichen synthetischen Click nach einem Touch.
+    if(started && overlay.style.display==="none") return;
+
+    gameStage=1;
+    started=true;
+    finished=false;
+    levelIndex=0;
+    overlay.style.display="none";
+    startTime=performance.now();
+    stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 1: 2D";
+    updateMobileUI();
+    resetLevel();
+  }
+
+  startBtn.addEventListener("click",beginGame);
+
+  // Auf iPhone/Android direkt auf das Loslassen des Fingers reagieren.
+  // Dadurch hängt der Start nicht davon ab, ob der Browser danach noch
+  // einen synthetischen Click erzeugt.
+  startBtn.addEventListener("pointerup",e=>{
+    if(e.pointerType==="touch"){
+      e.preventDefault();
+      beginGame();
+    }
+  });
+
+  resetLevel();
+  updateMobileUI();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
