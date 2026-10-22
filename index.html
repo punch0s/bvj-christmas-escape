@@ -453,6 +453,57 @@
   }
   @media (prefers-reduced-motion:reduce){.ctrl{transition:none!important}}
 
+
+  #audioPanel{position:fixed;right:12px;bottom:10px;z-index:60;display:flex;gap:6px;padding:6px;border-radius:12px;background:#10182be8;border:1px solid #52617a}
+  #audioPanel button{font-size:12px;padding:8px;min-height:36px;border-radius:8px;background:#263651;color:white}
+  #audioPanel button[aria-pressed="true"]{background:#53602b;color:#fff9ce}
+  @media (orientation:landscape) and (max-height:600px){#audioPanel{top:auto;bottom:6px;right:50%;transform:translateX(50%);padding:2px}#audioPanel button{font-size:10px;min-height:28px;padding:5px}}
+
+  #mobileDash{display:none;grid-column:1;grid-row:1}
+  #mobile[data-stage="3"] #mobileDash{display:flex}
+
+  .menu-card{width:min(780px,96%)!important;text-align:left;background:linear-gradient(135deg,#15273b,#130d23);border:1px solid #5f657d;padding:26px!important}
+  .menu-kicker{font-size:12px;letter-spacing:3px;color:#69dacb;text-transform:uppercase}
+  .menu-card h1{font-size:clamp(26px,5vw,43px);line-height:1.05;margin:12px 0}
+  .menu-card .subtitle{color:#ced5e5;max-width:600px;font-size:15px}
+  .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+  .stage-choice{background:#172639;color:#f3f5fc;text-align:left;border:1px solid #415567;min-height:95px;padding:13px;line-height:1.5}
+  .stage-choice:nth-child(2){background:#122d34}.stage-choice:nth-child(3){background:#2c1729;border-color:#71445e}
+  .stage-choice small{display:block;color:#c6cfda;font-weight:500;font-size:12px}
+  .menu-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.menu-actions button{min-height:44px}
+  .menu-secondary{background:#253247;color:#edf2ff;border:1px solid #4b6076}
+  .help-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;font-size:14px;line-height:1.55;color:#dfe8f5}
+  .help-grid div{background:#ffffff08;padding:13px;border-radius:10px}
+  #mobileDash.cooldown{opacity:.48}#mobileDash{border-color:#75eee1!important}
+  .ctrl{touch-action:none!important}.ctrl:focus-visible,button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  @media (pointer:coarse),(max-width:760px){
+    #audioPanel #musicToggle,#audioPanel #fxToggle{display:none}
+    #audioPanel button{min-height:40px;min-width:42px;font-size:12px}
+    #mobile .dpad{display:none}#joystick{display:block;width:116px;height:116px}
+    #mobile .actions{grid-template-columns:repeat(2,60px);grid-auto-rows:60px;gap:8px!important}
+    #mobile .actions .ctrl{width:60px;height:60px;border-radius:50%}
+    #mobile[data-stage="3"] #mobileDash{grid-column:1;grid-row:1}
+    #mobile[data-stage="3"] #mobileJump{grid-column:1;grid-row:2}
+    #mobile[data-stage="3"] #mobileAttack{grid-column:2;grid-row:2}
+    .menu-card{padding:16px!important}.menu-grid{gap:7px;margin:12px 0}.stage-choice{min-height:80px;font-size:13px;padding:9px}
+  }
+  @media (max-width:760px) and (orientation:portrait){
+    #wrap{padding:8px 8px 75px}#gamebox{height:auto;max-height:none;aspect-ratio:auto;overflow:visible}
+    #game{width:100%;height:auto;aspect-ratio:16/9;border-radius:10px}
+    #mobile{position:relative;inset:auto;padding:16px 12px;min-height:165px;background:#0b1324;border-radius:0 0 12px 12px}
+    #audioPanel{bottom:max(6px,env(safe-area-inset-bottom));left:8px;right:8px;justify-content:center;transform:none}
+    #orientationHint{font-size:11px;margin-top:6px}#mobileHint{display:none}
+    .menu-grid{grid-template-columns:1fr}.stage-choice{min-height:58px}.stage-choice small{display:inline;margin-left:8px}
+    .help-grid{grid-template-columns:1fr}
+  }
+  @media (orientation:landscape) and (max-height:600px){
+    #audioPanel{bottom:max(5px,env(safe-area-inset-bottom));left:50%;right:auto;transform:translateX(-50%);max-width:45%;padding:2px}
+    #audioPanel #musicToggle,#audioPanel #fxToggle{display:none}
+    #audioPanel button{min-height:36px;padding:6px}
+    #mobile{bottom:max(8px,env(safe-area-inset-bottom))}.menu-card{max-height:calc(100dvh - 16px)!important}
+    .menu-card h1{font-size:26px!important}.menu-card .subtitle{font-size:12px}.stage-choice{min-height:68px}
+  }
+button:disabled{opacity:.45;cursor:not-allowed}.menu-grid .stage-choice{min-height:86px}
 </style>
 </head>
 <body>
@@ -477,6 +528,7 @@
         <div id="joyKnob"></div>
       </div>
       <div class="actions">
+        <div class="ctrl" id="mobileDash" data-key="ShiftLeft" aria-label="Rennen: gedrückt halten"><span class="ctrl-main">⇧</span><span class="ctrl-caption">RENNEN HALTEN</span></div>
         <div class="ctrl" id="mobileUse" data-key="KeyE" aria-label="Benutzen"><span class="ctrl-main">E</span><span class="ctrl-caption">NEHMEN</span></div>
         <div class="ctrl" id="mobileJump" data-key="Space" aria-label="Springen"><span class="ctrl-main">↑</span><span class="ctrl-caption">SPRUNG</span></div>
         <div class="ctrl" id="mobileAttack" data-key="KeyF" aria-label="Angreifen"><span class="ctrl-main">F</span><span class="ctrl-caption">ANGRIFF</span></div>
@@ -489,7 +541,7 @@
 </div>
 <div id="overlay">
   <div class="card">
-        <h1>🎄 BVJ: Christmas Escape</h1>
+        <h1>🎄 BVJ: Christmas Escape</h1><p class="small">3D-Update 8 · Stress-Monster, freie Kamera und zwei Ansichten</p>
         <p>Schaffst du es durch das 10. Schuljahr bis zu Weihnachten?</p>
         <p class="small">📱 iPhone: Halte das Gerät <strong>waagerecht</strong>. Links steuern, rechts springen und angreifen.</p>
         <p class="small">
@@ -498,14 +550,19 @@
           eine schnelle Neon-Pixel-Action-Etappe. Jede Etappe sieht anders aus und
           hat eigene Spielmechaniken.
         </p>
-        <p><strong>Etappe 1:</strong> WASD / Pfeiltasten · <strong>E</strong> = Sammeln / Taste · <strong>Leertaste</strong> = Springen · <strong>F</strong> = Lineal. <strong>Etappe 2:</strong> W/S = laufen, A/D = drehen. <strong>Etappe 3:</strong> A/D = laufen, Leertaste = springen, F = Angriff.</p>
+        <p><strong>Etappe 1:</strong> WASD / Pfeiltasten · <strong>E</strong> = Sammeln / Taste · <strong>Leertaste</strong> = Springen · <strong>F</strong> = Lineal. <strong>Etappe 2:</strong> W/S = laufen, A/D = drehen, F = Gegner abwehren. <strong>Etappe 3:</strong> A/D = laufen, Leertaste = springen, F = Angriff.</p>
+        <p class="small">♫ Eigene Musik für jede Welt · Aktionsgeräusche · Ton unten separat einstellbar</p>
         <button id="startBtn">Spiel starten</button>
         <p class="small">Viventa · BVJ 2026/27 · Technology &amp; Design</p>
   </div>
 </div>
 
+<div id="audioPanel" aria-label="Spiel-Einstellungen"><button id="menuToggle">☰ Menü</button><button id="fullToggle" aria-label="Vollbild umschalten">⛶</button><button id="cameraToggle" style="display:none" aria-label="Kameraperspektive wechseln">Kamera: hinten</button><button id="musicToggle" aria-pressed="true">♫ Musik</button><button id="fxToggle" aria-pressed="true">♪ Geräusche</button></div>
 <script>
 (() => {
+  let paused=false,pauseRealAt=0,pausedTotal=0,menuView='home';
+  function gameNow(){return (paused?pauseRealAt:performance.now())-pausedTotal}
+
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
   const overlay = document.getElementById('overlay');
@@ -518,6 +575,57 @@
   const mobileAttack = document.getElementById('mobileAttack');
   const mobileHint = document.getElementById('mobileHint');
 
+  /* CONTENT_START */
+const GAME_DATA={"motion": {"walkSpeed": 310, "sprintSpeed": 465, "mazeSpeed": 2.15, "response": [0, 0.0119283, 0.0237143, 0.0353597, 0.0468662, 0.0582355, 0.0694691, 0.0805687, 0.091536, 0.102372, 0.11308, 0.123659, 0.134112, 0.144441, 0.154646, 0.16473, 0.174693, 0.184538, 0.194265, 0.203876, 0.213372, 0.222755, 0.232026, 0.241187, 0.250238, 0.259182, 0.268018, 0.27675, 0.285377, 0.293901, 0.302324, 0.310646, 0.318869, 0.326993, 0.335021, 0.342953, 0.350791, 0.358535, 0.366186, 0.373746, 0.381217, 0.388598, 0.395891, 0.403097, 0.410217, 0.417252, 0.424203, 0.431071, 0.437858, 0.444563, 0.451188, 0.457735, 0.464203, 0.470594, 0.476909, 0.483149, 0.489314, 0.495405, 0.501424, 0.507372, 0.513248, 0.519054, 0.524791, 0.530459, 0.53606, 0.541594, 0.547062, 0.552465, 0.557803, 0.563078, 0.568289, 0.573439, 0.578527, 0.583555, 0.588522, 0.59343, 0.59828, 0.603072, 0.607807, 0.612485, 0.617107, 0.621674, 0.626187, 0.630646, 0.635052, 0.639405, 0.643706, 0.647956, 0.652156, 0.656305, 0.660404, 0.664455, 0.668458, 0.672412, 0.67632, 0.680181, 0.683996, 0.687765, 0.69149, 0.69517, 0.698806], "gait": [0, 0.0608297, 0.121428, 0.181565, 0.241012, 0.299548, 0.356953, 0.413017, 0.467536, 0.520316, 0.571173, 0.619933, 0.666436, 0.710532, 0.752088, 0.790981, 0.827107, 0.860373, 0.890705, 0.91804, 0.942335, 0.963559, 0.981698, 0.996751, 1.00873, 1.01767, 1.02361, 1.0266, 1.02671, 1.02401, 1.0186, 1.01056, 1, 0.987033, 0.971774, 0.954342, 0.934863, 0.913464, 0.890272, 0.865417, 0.839027, 0.811228, 0.782145, 0.751898, 0.720604, 0.688375, 0.655316, 0.621529, 0.587107, 0.552137, 0.516699, 0.480866, 0.444705, 0.408272, 0.37162, 0.334794, 0.297831, 0.260763, 0.223616, 0.186413, 0.149168, 0.111896, 0.0746063, 0.0373056, 9.30732e-17, -0.0373056, -0.0746063, -0.111896, -0.149168, -0.186413, -0.223616, -0.260763, -0.297831, -0.334794, -0.37162, -0.408272, -0.444705, -0.480866, -0.516699, -0.552137, -0.587107, -0.621529, -0.655316, -0.688375, -0.720604, -0.751898, -0.782145, -0.811228, -0.839027, -0.865417, -0.890272, -0.913464, -0.934863, -0.954342, -0.971774, -0.987033, -1, -1.01056, -1.0186, -1.02401, -1.02671, -1.0266, -1.02361, -1.01767, -1.00873, -0.996751, -0.981698, -0.963559, -0.942335, -0.91804, -0.890705, -0.860373, -0.827107, -0.790981, -0.752088, -0.710532, -0.666436, -0.619933, -0.571173, -0.520316, -0.467536, -0.413017, -0.356953, -0.299548, -0.241012, -0.181565, -0.121428, -0.0608297]}, "circuit": [0, 1, 2], "questions": [{"q": "Was gehört in ein Bewerbungsdossier?", "a": ["Nur ein Foto", "Nur dein Lieblingsspiel", "Lebenslauf, Zeugnisse und Motivationsschreiben"], "correct": 2}, {"q": "Wie bereitest du dich auf ein Gespräch vor?", "a": ["Firma kennenlernen und eigene Fragen überlegen", "Ohne Vorbereitung kommen", "Nur den Lohn auswendig lernen"], "correct": 0}, {"q": "Du verstehst eine Aufgabe beim Schnuppern nicht.", "a": ["Einfach raten", "Gezielt nachfragen und zuhören", "Den Arbeitsplatz verlassen"], "correct": 1}], "seed": 2026};
+/* CONTENT_END */
+  function response(dt){const a=GAME_DATA.motion.response;return a[Math.min(100,Math.max(0,Math.round(dt*1000)))];}
+  function gait(phase){const a=GAME_DATA.motion.gait;return a[((Math.floor(phase/(Math.PI*2)*a.length)%a.length)+a.length)%a.length]}
+  const cosmetics=[
+    {id:'classic',name:'Schuljacke',kind:'outfit',price:0,color:'#285b90',scarf:'#dd315b'},
+    {id:'red',name:'Winterrot',kind:'outfit',price:6,color:'#b73350',scarf:'#f2c46d'},
+    {id:'mint',name:'Polargrün',kind:'outfit',price:8,color:'#248b78',scarf:'#e7f6ef'},
+    {id:'violet',name:'Nachtviolett',kind:'outfit',price:10,color:'#8252b1',scarf:'#56e3e7'},
+    {id:'gold',name:'Goldjacke',kind:'outfit',price:12,color:'#bd8b2d',scarf:'#513584'},
+    {id:'none',name:'Ohne Kopfbedeckung',kind:'hat',price:0,color:'#334050'},
+    {id:'beanie',name:'Wintermütze',kind:'hat',price:8,color:'#dd315b'},
+    {id:'phones',name:'Kopfhörer',kind:'hat',price:10,color:'#54d8df'}
+  ];
+  let profile={candies:0,outfit:'classic',hat:'none',owned:['classic','none'],claimed:{}},saveAvailable=true;
+  try{
+    const raw=JSON.parse(localStorage.getItem('bvj-christmas-profile-v1')||'null');
+    if(raw){profile.candies=Number.isFinite(raw.candies)?Math.max(0,Math.floor(raw.candies)):0;
+      profile.owned=[...new Set(['classic','none',...(Array.isArray(raw.owned)?raw.owned.filter(id=>cosmetics.some(c=>c.id===id)):[])])];
+      if(profile.owned.includes(raw.outfit)&&cosmetics.some(c=>c.id===raw.outfit&&c.kind==='outfit'))profile.outfit=raw.outfit;
+      if(profile.owned.includes(raw.hat)&&cosmetics.some(c=>c.id===raw.hat&&c.kind==='hat'))profile.hat=raw.hat;
+      if(raw.claimed&&typeof raw.claimed==='object')profile.claimed=Object.fromEntries(Object.keys(raw.claimed).filter(id=>/^candy-|^finish-/.test(id)).map(id=>[id,true]));
+    }
+  }catch(_){saveAvailable=false}
+  function saveProfile(){try{localStorage.setItem('bvj-christmas-profile-v1',JSON.stringify(profile));saveAvailable=true}catch(_){saveAvailable=false}}
+  function outfit(){return cosmetics.find(c=>c.id===profile.outfit)||cosmetics[0]}
+  function rgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255)}
+  function awardCandy(id,amount=1){
+    if(profile.claimed[id])return false;
+    profile.claimed[id]=true;profile.candies+=amount;saveProfile();beep(1050,.07);return true;
+  }
+  function purchaseCosmetic(id){
+    const item=cosmetics.find(c=>c.id===id);if(!item)return false;
+    if(!profile.owned.includes(id)){if(profile.candies<item.price)return false;profile.candies-=item.price;profile.owned.push(id)}
+    profile[item.kind]=id;saveProfile();return true;
+  }
+  function drawCandy(x,y,scale=1){
+    ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);ctx.rotate(Math.sin(gameNow()*.002+x)*.16);
+    ctx.fillStyle='#e96eae';ctx.beginPath();ctx.moveTo(-6,0);ctx.lineTo(-13,-7);ctx.lineTo(-13,7);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(13,-7);ctx.lineTo(13,7);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#fff0cf';ctx.beginPath();ctx.ellipse(0,0,8,6,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e5559e';ctx.fillRect(-2,-5,4,10);ctx.restore();
+  }
+  function activeCandies(){return gameStage===1?(state.candies||[]):gameStage===3?(stage3.candies||[]):(gameStage===2||gameStage===0)?(stage2.candies||[]):[]}
+  function collectCandies(){
+    const px=gameStage===1?player.x+14:gameStage===3?stage3.x+14:stage2.x;
+    const py=gameStage===1?player.y+14:gameStage===3?stage3.y+22:stage2.y;
+    for(const candy of activeCandies())if(!profile.claimed[candy.id]&&Math.hypot(px-candy.x,py-candy.y)<((gameStage===2||gameStage===0)?.43:27)){
+      if(awardCandy(candy.id))showMessage('🍬 Bonbon gesammelt · '+profile.candies,850);
+    }
+  }
   const W = canvas.width, H = canvas.height;
   const keys = new Set();
   let started = false;
@@ -554,21 +662,22 @@
   function updateMobileUI(){
     if(!mobileUse || !mobileJump || !mobileAttack || !mobileHint) return;
     document.getElementById("mobile").dataset.stage=String(gameStage);
+    document.getElementById("cameraToggle").style.display=(gameStage===2||gameStage===0)?"block":"none";
     if(gameStage===1){
-      mobileUse.style.display="flex";
+      mobileUse.dataset.key="KeyE";mobileUse.innerHTML='<span class="ctrl-main">E</span><span class="ctrl-caption">BENUTZEN</span>';mobileUse.style.display="flex";
       mobileJump.style.display="flex";
       mobileAttack.style.display="flex";
       mobileHint.textContent="2D · Pfeile bewegen · E nehmen · ↑ springen · F werfen";
-    }else if(gameStage===2){
-      mobileUse.style.display="none";
-      mobileJump.style.display="none";
-      mobileAttack.style.display="none";
-      mobileHint.textContent="3D · ↑↓ laufen · ←→ drehen";
+    }else if((gameStage===2||gameStage===0)){
+      mobileUse.style.display="flex";mobileUse.dataset.key=gameStage===0?"KeyE":"KeyL";mobileUse.innerHTML=gameStage===0?'<span class="ctrl-main">E</span><span class="ctrl-caption">BENUTZEN</span>':'<span class="ctrl-main">☀</span><span class="ctrl-caption">LAMPE</span>';
+      mobileJump.style.display="flex";
+      mobileAttack.style.display=gameStage===0?"none":"flex";
+      mobileHint.textContent="3D · Joystick laufen · Bild wischen = Kamera · F Abwehr";
     }else{
-      mobileUse.style.display="none";
+      mobileUse.style.display="flex";mobileUse.dataset.key="KeyX";mobileUse.innerHTML='<span class="ctrl-main">X</span><span class="ctrl-caption">DASH</span>';
       mobileJump.style.display="flex";
       mobileAttack.style.display="flex";
-      mobileHint.textContent="Neon · ←→ laufen · ↑ springen · F Angriff";
+      mobileHint.textContent="Neon · ←→ laufen · ↑ springen · F Angriff · » Dash";
     }
   }
 
@@ -685,7 +794,7 @@
         {x:480,y:455,label:"Lehrstelle",icon:"🎓"}
       ],
       enemies: [
-        {x:430,y:180,label:"Absage",axis:"y",min:145,max:225,speed:60,dir:1},
+        {x:430,y:145,label:"Absage",axis:"y",min:120,max:174,speed:60,dir:1},
         {x:620,y:455,label:"Nervosität",axis:"x",min:540,max:830,speed:67,dir:-1},
         {x:875,y:185,label:"Deadline",axis:"y",min:140,max:360,speed:54,dir:1}
       ],
@@ -757,6 +866,9 @@
 
   function resetLevel(){
     state = cloneLevel(levelIndex);
+    initSchoolMission();
+    state.candies=[...state.items.map(i=>({x:i.x,y:i.y})),{x:state.start.x+35,y:state.start.y},{x:state.exit.x+12,y:state.exit.y+40}].map((c,i)=>({...c,id:'candy-school-'+levelIndex+'-'+i}));
+    for(const enemy of state.enemies) freeEnemyFromWall(enemy);
     player.x = state.start.x;
     player.y = state.start.y;
     player.facing = "down";
@@ -770,7 +882,7 @@
     particles = [];
     collectBursts = [];
     rulerProjectiles = [];
-    levelStartTime = performance.now();
+    levelStartTime = gameNow();
     showMessage(`${state.name}: ${state.subtitle}`, 1800);
   }
 
@@ -778,11 +890,11 @@
     return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
   }
 
-  function isJumping(now=performance.now()){
+  function isJumping(now=gameNow()){
     return now < player.jumpUntil;
   }
 
-  function jumpHeight(now=performance.now()){
+  function jumpHeight(now=gameNow()){
     if(!isJumping(now) || player.jumpUntil<=player.jumpStart) return 0;
     const p=(now-player.jumpStart)/(player.jumpUntil-player.jumpStart);
     return Math.sin(Math.PI*Math.max(0,Math.min(1,p)))*24;
@@ -790,12 +902,12 @@
 
   function jump(){
     if(!started || finished) return;
-    const now=performance.now();
+    const now=gameNow();
     if(now-player.lastJump<760 || isJumping(now)) return;
     player.lastJump=now;
     player.jumpStart=now;
     player.jumpUntil=now+620;
-    beep(520,.06);
+    effect('jump');
   }
 
   function setFacingFromVector(dx,dy){
@@ -934,17 +1046,120 @@
     msgTimer=setTimeout(()=>message.classList.remove('show'),ms);
   }
 
-  function beep(freq=620,dur=.08){
+  // Procedural soundtrack: no downloads, audio starts only after a user gesture.
+  const sound={ctx:null,music:true,fx:true,next:0,beat:0,stage:0,lastStep:0};
+  function unlockAudio(){
     try{
-      const AC = window.AudioContext || window.webkitAudioContext;
-      const ac = beep.ac || (beep.ac = new AC());
-      const osc=ac.createOscillator(), gain=ac.createGain();
-      osc.frequency.value=freq; gain.gain.value=.035;
-      osc.connect(gain); gain.connect(ac.destination);
-      osc.start(); gain.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);
-      osc.stop(ac.currentTime+dur);
-    }catch(e){}
+      if(!sound.ctx){
+        sound.ctx=new (window.AudioContext||window.webkitAudioContext)();
+        sound.musicBus=sound.ctx.createGain();sound.fxBus=sound.ctx.createGain();
+        sound.musicBus.gain.value=sound.music?.17:0;
+        sound.fxBus.gain.value=sound.fx?.35:0;
+        sound.musicBus.connect(sound.ctx.destination);sound.fxBus.connect(sound.ctx.destination);
+      }
+      if(sound.ctx.state==='suspended') sound.ctx.resume().catch(()=>{});
+    }catch(_){}
   }
+  function tone(freq,dur=.12,type='sine',volume=.2,delay=0,music=false,endFreq=null){
+    const ac=sound.ctx;if(!ac||ac.state!=='running')return;
+    const t=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
+    o.type=type;o.frequency.setValueAtTime(freq,t);
+    if(endFreq)o.frequency.exponentialRampToValueAtTime(endFreq,t+dur);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(volume,t+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g);g.connect(music?sound.musicBus:sound.fxBus);o.start(t);o.stop(t+dur+.02);
+    o.onended=()=>{o.disconnect();g.disconnect()};
+  }
+  function beep(freq=620,dur=.08){
+    tone(freq,dur,freq<220?'triangle':'sine',.24,0,false,freq<220?70:null);
+    if(freq>=720)tone(freq*1.5,dur+.08,'sine',.13,.06);
+  }
+  function effect(kind){
+    if(kind==='jump')tone(260,.22,'triangle',.22,0,false,780);
+    if(kind==='attack')tone(600,.14,'sawtooth',.10,0,false,100);
+    if(kind==='step')tone(95,.045,'triangle',.10,0,false,45);
+    if(kind==='alert'){tone(330,.16,'square',.08);tone(440,.16,'square',.08,.18)}
+    if(kind==='win')[523,659,784,1047].forEach((f,i)=>tone(f,.4,'sine',.22,i*.13));
+  }
+  function technoHat(delay,open=false,clap=false){
+    const ac=sound.ctx;if(!ac||ac.state!=='running')return;
+    if(!sound.noise){sound.noise=ac.createBuffer(1,Math.ceil(ac.sampleRate*.25),ac.sampleRate);
+      const data=sound.noise.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;}
+    const src=ac.createBufferSource(),filter=ac.createBiquadFilter(),gain=ac.createGain();
+    src.buffer=sound.noise;filter.type='highpass';filter.frequency.value=clap?1200:6500;
+    const t=ac.currentTime+delay,dur=clap?.12:open?.16:.035;
+    gain.gain.setValueAtTime(clap?.24:open?.13:.08,t);gain.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    src.connect(filter);filter.connect(gain);gain.connect(sound.musicBus);src.start(t);src.stop(t+dur);
+    src.onended=()=>{src.disconnect();filter.disconnect();gain.disconnect()};
+  }
+  function technoSynth(midi,delay,bright=false){
+    const ac=sound.ctx;if(!ac||ac.state!=='running')return;
+    const osc=ac.createOscillator(),filter=ac.createBiquadFilter(),gain=ac.createGain(),t=ac.currentTime+delay;
+    osc.type='sawtooth';osc.frequency.value=440*2**((midi-69)/12);
+    filter.type='lowpass';filter.Q.value=bright?3:5;
+    filter.frequency.setValueAtTime(bright?2600:1100,t);filter.frequency.exponentialRampToValueAtTime(bright?600:130,t+.14);
+    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(bright?.10:.22,t+.008);
+    gain.gain.exponentialRampToValueAtTime(.0001,t+.17);
+    osc.connect(filter);filter.connect(gain);gain.connect(sound.musicBus);osc.start(t);osc.stop(t+.19);
+    osc.onended=()=>{osc.disconnect();filter.disconnect();gain.disconnect()};
+  }
+  function updateAudio(now){
+    if(!sound.ctx)return;
+    const active=started&&!paused&&!finished&&!document.hidden;
+    sound.musicBus.gain.setTargetAtTime(active&&sound.music?.17:0,sound.ctx.currentTime,.08);
+    if(!active){sound.next=sound.ctx.currentTime;return}
+    if(sound.stage!==gameStage){sound.stage=gameStage;sound.beat=0;sound.next=sound.ctx.currentTime}
+    const ac=sound.ctx,bpm=gameStage===3?140:(gameStage===2||gameStage===0)?112:124,step=60/bpm/4;
+    if(sound.next<ac.currentTime-.1)sound.next=ac.currentTime;
+    const lead={1:[76,0,79,0,76,0,72,74,76,0,79,0,77,76,74,0],2:[64,0,0,71,0,67,0,0,62,0,0,69,0,67,0,0],3:[76,79,83,79,74,79,81,79,76,79,84,83,74,79,81,83]};
+    while(sound.next<ac.currentTime+.12){
+      const tick=sound.beat%16,bar=Math.floor(sound.beat/16),delay=Math.max(0,sound.next-ac.currentTime);
+      if(gameStage!==3){
+        if(gameStage===1||gameStage===0){
+          const melody=[76,79,83,79,74,78,81,78,72,76,79,76,74,78,81,86];
+          if(tick%2===0){const n=melody[(tick/2+bar*8)%16];tone(440*2**((n-69)/12),.26,'sine',.28,delay,true);tone(440*2**((n-57)/12),.12,'sine',.045,delay+.04,true)}
+          if(tick%4===0)tone(120,.17,'sine',.62,delay,true,45);
+          if(tick%4===2)technoHat(delay);
+          if(tick===4||tick===12)technoHat(delay,false,true);
+          if(tick%4===2)technoSynth([40,36,43,38][bar%4],delay);
+        }else{
+          const arp=[52,59,64,67,50,57,62,65];
+          if(tick%2===0)technoSynth(arp[(tick/2+bar*2)%8],delay,true);
+          if(tick===0||tick===10)tone(105,.24,'sine',.68,delay,true,34);
+          if(tick===4||tick===12)technoHat(delay,false,true);
+          if(tick%4===3)technoHat(delay);
+          if(tick===0)tone([82.41,65.41,73.42,61.74][bar%4],.8,'triangle',.24,delay,true);
+        }
+        sound.beat++;sound.next+=step;continue;
+      }
+      const root=[40,40,36,38][Math.floor(bar/2)%4];
+      // Four-on-the-floor kick, offbeat hats, clap on beats two and four.
+      if(tick%4===0){tone(145,.20,'sine',.85,delay,true,43);tone(1000,.018,'triangle',.14,delay,true,150)}
+      if(tick%2===0)technoHat(delay,tick%4===2);
+      if(tick===4||tick===12)technoHat(delay,false,true);
+      if(tick%4===2||tick%4===3)technoSynth(root+(tick%4===3?12:0),delay);
+      const note=lead[gameStage][tick];
+      if(note&&(bar%4!==3||tick<12))technoSynth(note,delay,true);
+      if(bar%4===3&&tick>=12)technoHat(delay,false,false);
+      sound.beat++;sound.next+=step;
+    }
+    const moving=['KeyW','KeyS','KeyA','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].some(k=>keys.has(k));
+    if(moving&&now-sound.lastStep>330&&(gameStage!==3||stage3.onGround)){
+      effect('step');sound.lastStep=now;
+    }
+  }
+  for(const [id,key] of [['musicToggle','music'],['fxToggle','fx']]){
+    document.getElementById(id).onclick=()=>{
+      unlockAudio();sound[key]=!sound[key];
+      document.getElementById(id).setAttribute('aria-pressed',String(sound[key]));
+      document.getElementById(id).textContent=(key==='music'?'♫ Musik':'♪ Geräusche')+(sound[key]?'':' aus');
+      if(sound.ctx)sound.fxBus.gain.value=sound.fx?.35:0;
+    };
+  }
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden&&started&&!paused&&!finished)openGameMenu();
+    keys.clear();if(sound.ctx){if(document.hidden)sound.ctx.suspend();else sound.ctx.resume().catch(()=>{})}
+  });
 
 
   function burst(x,y,color="#f0c85b",count=16){
@@ -1030,7 +1245,7 @@
       }
 
       b.pressed=true;
-      b.pulse=performance.now();
+      b.pulse=gameNow();
       burst(b.x,b.y,"#ff4b4b",16);
       beep(720,.08);
       if(b.targetType==="bridge"){
@@ -1113,10 +1328,24 @@
     return clearLineBetween(ex,ey,px,py,enemyVisionBlockers());
   }
 
+  function freeEnemyFromWall(e){
+    if(!enemyBlockedAt(e,e.x,e.y))return;
+    // Recover to the closest free position if level data or knockback overlap a wall.
+    for(let radius=2;radius<=960;radius+=2){
+      for(const [dx,dy] of [[0,-1],[0,1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1,1]]){
+        const x=e.x+dx*radius,y=e.y+dy*radius;
+        if(x>=25&&y>=25&&x+e.w<=935&&y+e.h<=515&&!enemyBlockedAt(e,x,y)){
+          e.x=x;e.y=y;return;
+        }
+      }
+    }
+  }
+
   function updateEnemies(dt, now){
     for(const e of state.enemies){
       if(e.defeated) continue;
 
+      freeEnemyFromWall(e);
       // Wenn der Feind den Helden ohne Wand dazwischen sieht,
       // merkt er sich die Position kurz und beginnt zu verfolgen.
       if(enemyCanSeePlayer(e)){
@@ -1153,10 +1382,10 @@
         let nextX=e.x + e.speed*e.dir*dt;
 
         if(nextX<e.min){
-          nextX=e.min;
+          if(e.x>=e.min)nextX=e.min;
           e.dir=1;
         }else if(nextX>e.max){
-          nextX=e.max;
+          if(e.x<=e.max)nextX=e.max;
           e.dir=-1;
         }
 
@@ -1169,10 +1398,10 @@
         let nextY=e.y + e.speed*e.dir*dt;
 
         if(nextY<e.min){
-          nextY=e.min;
+          if(e.y>=e.min)nextY=e.min;
           e.dir=1;
         }else if(nextY>e.max){
-          nextY=e.max;
+          if(e.y<=e.max)nextY=e.max;
           e.dir=-1;
         }
 
@@ -1240,7 +1469,7 @@
         if(rectsOverlap(hitbox,e)){
           p.alive = false;
           e.hp -= 1;
-          const hitNow=performance.now();
+          const hitNow=gameNow();
           e.hitFlashUntil=hitNow+180;
 
           // Treffer verformt den Feind sichtbar.
@@ -1277,12 +1506,12 @@
 
   function attack(){
     if(!started || finished) return;
-    const now=performance.now();
+    const now=gameNow();
     if(now-lastAttack<280) return;
     lastAttack=now;
     attackStartedAt=now;
     attackUntil=now+120;
-    beep(420,.05);
+    effect('attack');
 
     const [dx,dy]=facingVector();
     const angle=Math.atan2(dy,dx);
@@ -1303,9 +1532,53 @@
     return state.enemies.filter(e=>!e.defeated).length;
   }
 
+  function initSchoolMission(){
+    const titles=['Werkstatt · Stromausfall','Transport · Rettungsdrohne','Bewerbung · Dein Gespräch'];
+    state.name=titles[levelIndex];state.subtitle=['Finde die Schalttafel und repariere die Stromversorgung.','Starte die Drohne mit E und begleite sie sicher zum Ausgang.','Finde das Gesprächspult und beantworte drei Fragen.'][levelIndex];
+    state.mission={done:false,step:0,drone:null,trail:[],active:false};
+    state.items=state.items.slice(0,1);state.items[0].label=['Schalttafel','Rettungsdrohne','Gesprächspult'][levelIndex];state.items[0].icon=['⚡','🤖','💬'][levelIndex];
+  }
+  function schoolInteract(){
+    const m=state.mission;if(!m||m.done)return true;
+    const item=state.items[0];
+    if(levelIndex===1&&m.active){showMessage('Führe die Drohne zum Ausgang. Bleibe in ihrer Nähe.',1500);return true;}
+    if(Math.hypot(player.x+14-item.x,player.y+14-item.y)>62||!hasClearInteractionPath(item.x,item.y))return true;
+    if(levelIndex===1){m.active=true;m.drone={x:player.x+14,y:player.y+14};m.trail=[];item.collected=true;showMessage('Drohne gestartet! Führe sie zum Ausgang und baue die Brücke.',2300);return true;}
+    showSchoolTask();return true;
+  }
+  function completeSchoolMission(){state.mission.done=true;state.items.forEach(i=>i.collected=true);awardCandy('finish-mission-'+levelIndex,2);showMessage('Mission geschafft! Der Ausgang ist bereit.',2200);}
+  function showSchoolTask(){
+    openGameMenu('mission');const m=state.mission;
+    const question=GAME_DATA.questions[m.step];
+    const labels=['ROT','BLAU','GELB'];
+    const heading=levelIndex===0?'Stromversorgung reparieren':'Bewerbungsgespräch';
+    const prompt=levelIndex===0?'Schalte die Leitungen in dieser Reihenfolge: '+GAME_DATA.circuit.map(i=>labels[i]).join(' → '):question.q;
+    const choices=levelIndex===0?labels:question.a;
+    overlay.innerHTML=`<div class="card menu-card"><h1>${heading}</h1><p>${prompt}</p><p>Schritt ${m.step+1} / 3</p><div class="menu-actions">${choices.map((v,i)=>`<button data-answer="${i}">${v}</button>`).join('')}</div><p id="taskFeedback">${levelIndex===0?'Eine falsche Leitung setzt die Reihenfolge zurück.':'Wähle eine Antwort. Bei einem Fehler kannst du es erneut versuchen.'}</p><button id="taskBack">Zurück ins Spiel</button></div>`;
+    document.getElementById('taskBack').onclick=resumeGame;
+    overlay.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{
+      const correct=levelIndex===0?GAME_DATA.circuit[m.step]:question.correct;
+      if(Number(button.dataset.answer)!==correct){if(levelIndex===0){m.step=0;showSchoolTask();}document.getElementById('taskFeedback').textContent='Noch nicht richtig. Versuche es noch einmal.';return;}
+      m.step++;if(m.step===3){resumeGame();completeSchoolMission();}else showSchoolTask();
+    });
+  }
+  function updateSchoolMission(dt){
+    const m=state.mission;if(!m||!m.active||m.done)return;
+    const p={x:player.x+14,y:player.y+14},last=m.trail[m.trail.length-1]||m.drone;
+    if(Math.hypot(p.x-last.x,p.y-last.y)>3)m.trail.push(p);
+    let budget=190*dt;
+    while(m.trail.length&&budget>0){const target=m.trail[0],dx=target.x-m.drone.x,dy=target.y-m.drone.y,d=Math.hypot(dx,dy);if(d<=budget){m.drone={...target};m.trail.shift();budget-=d;}else{m.drone.x+=dx/d*budget;m.drone.y+=dy/d*budget;budget=0;}}
+    if(Math.hypot(m.drone.x-(state.exit.x+state.exit.w/2),m.drone.y-(state.exit.y+state.exit.h/2))<46&&bridgeBuilt())completeSchoolMission();
+  }
+  function drawSchoolMission(){
+    const m=state.mission;if(!m)return;
+    drawRoundedRect(24,H-65,W-48,40,9,'rgba(4,14,24,.90)');ctx.fillStyle='#d8f9ed';ctx.font='bold 13px system-ui';ctx.fillText(m.done?'✓ Mission geschafft · Gehe zum Ausgang':state.subtitle,40,H-40);
+    if(m.drone){const {x,y}=m.drone,bob=Math.sin(gameNow()*.005)*3;ctx.fillStyle='#152736';ctx.beginPath();ctx.ellipse(x,y+10,19,7,0,0,Math.PI*2);ctx.fill();drawRoundedRect(x-13,y-12+bob,26,21,6,'#69e9d0','#e0fffa');ctx.fillStyle='#082a38';ctx.fillRect(x-8,y-7+bob,16,6);for(const sign of [-1,1]){ctx.fillStyle='#d9f6ff';ctx.fillRect(x+sign*20-9,y-7+bob,18,3);}}
+  }
   function interact(){
     if(!started || finished) return;
     if(activateNearbyButton()) return;
+    if(schoolInteract())return;
     for(const item of state.items){
       const box={x:item.x-18,y:item.y-18,w:36,h:36};
       if(!item.collected && centerDist(player,box)<58){
@@ -1329,8 +1602,8 @@
   }
 
   function nextLevel(){
-    if(collectedCount() < state.items.length){
-      showMessage("Du brauchst zuerst alle 3 Gegenstände.");
+    if(!state.mission.done){
+      showMessage("Schliesse zuerst die Mission ab.");
       return;
     }
     if(!bridgeBuilt()){
@@ -1342,6 +1615,7 @@
     levelIndex++;
 
     if(levelIndex>=levels.length){
+      awardCandy('finish-school',4);
       startPixelTransition(()=>startStage2(),"ETAPPE 2 · 3D-WELT");
     }else{
       startPixelTransition(()=>resetLevel(),`LEVEL ${levelIndex+1}`);
@@ -1495,7 +1769,7 @@
     // Rote Tasten stehen bewusst an einem anderen Ort als ihr Ziel.
     for(const b of state.redButtons||[]){
       const pressOffset=b.pressed?4:0;
-      const glow=!b.pressed && Math.sin(performance.now()*0.006)>0 ? 10 : 5;
+      const glow=!b.pressed && Math.sin(gameNow()*0.006)>0 ? 10 : 5;
 
       ctx.save();
       ctx.shadowColor="rgba(225,45,45,.7)";
@@ -1661,7 +1935,7 @@
     }
 
     // Bewegtes Ziel / Ausgang
-    const exitBob = Math.sin(performance.now()*0.0032)*5;
+    const exitBob = Math.sin(gameNow()*0.0032)*5;
     drawTree(state.exit.x+state.exit.w/2, state.exit.y+state.exit.h+40+exitBob, .72);
 
     const unlocked=collectedCount()===state.items.length;
@@ -1685,7 +1959,7 @@
     // Bewegliche Sammelobjekte
     for(const item of state.items){
       if(item.collected) continue;
-      const pulse=1+Math.sin(performance.now()*0.006+item.phase)*.08;
+      const pulse=1+Math.sin(gameNow()*0.006+item.phase)*.08;
       ctx.save();
       ctx.translate(item.x,item.y);
       ctx.scale(pulse,pulse);
@@ -1717,9 +1991,9 @@
     // Bewegliche Feinde
     for(const e of state.enemies){
       if(e.defeated) continue;
-      const wobble=Math.sin(performance.now()*0.008+e.phase)*2;
+      const wobble=Math.sin(gameNow()*0.008+e.phase)*2;
       ctx.save();
-      const enemyNow=performance.now();
+      const enemyNow=gameNow();
       ctx.translate(e.x+e.w/2,e.y+e.h/2+wobble);
 
       // Elastische Verformung direkt nach einem Treffer.
@@ -1821,13 +2095,14 @@
       );
     }
 
+    for(const candy of state.candies||[])if(!profile.claimed[candy.id])drawCandy(candy.x,candy.y,1);
     // player: Schüler mit vier Blickrichtungen
     ctx.save();
     ctx.translate(player.x + player.w/2, player.y + player.h/2);
 
     // Nach einem Treffer blinkt der Held kurz als Schutzphase.
-    if(performance.now() < playerInvulnerableUntil){
-      ctx.globalAlpha = (Math.floor(performance.now()/90)%2===0) ? 0.35 : 1;
+    if(gameNow() < playerInvulnerableUntil){
+      ctx.globalAlpha = (Math.floor(gameNow()/90)%2===0) ? 0.35 : 1;
     }
 
     const isWalking =
@@ -1836,7 +2111,7 @@
       keys.has("ArrowUp") || keys.has("KeyW") ||
       keys.has("ArrowDown") || keys.has("KeyS");
 
-    const walkPhase = isWalking ? Math.sin(performance.now() * 0.018) : 0;
+    const walkPhase = isWalking ? Math.sin(gameNow() * 0.018) : 0;
     const legSwing = walkPhase * 5.5;
     const armSwing = walkPhase * 3.2;
 
@@ -1847,8 +2122,8 @@
     ctx.ellipse(0,18,13+jumpHeight()*.12,4+jumpHeight()*.03,0,0,Math.PI*2);
     ctx.fill();
 
-    ctx.globalAlpha = (performance.now() < playerInvulnerableUntil)
-      ? ((Math.floor(performance.now()/90)%2===0) ? 0.35 : 1)
+    ctx.globalAlpha = (gameNow() < playerInvulnerableUntil)
+      ? ((Math.floor(gameNow()/90)%2===0) ? 0.35 : 1)
       : 1;
     ctx.translate(0,-jumpHeight());
 
@@ -1868,7 +2143,7 @@
       ctx.beginPath(); ctx.moveTo(9,0); ctx.lineTo(12+armSwing,8); ctx.stroke();
 
       // Körper
-      ctx.fillStyle="#2f62c9";
+      ctx.fillStyle=outfit().color;
       ctx.beginPath(); ctx.roundRect(-10,-3,20,16,5); ctx.fill();
 
       // Rucksack seitlich sichtbar
@@ -1906,7 +2181,7 @@
       ctx.beginPath(); ctx.moveTo(9,0); ctx.lineTo(12+armSwing,8); ctx.stroke();
 
       // Körper
-      ctx.fillStyle="#2f62c9";
+      ctx.fillStyle=outfit().color;
       ctx.beginPath(); ctx.roundRect(-10,-3,20,16,5); ctx.fill();
 
       // Rucksack mittig auf dem Rücken
@@ -1941,7 +2216,7 @@
       ctx.beginPath(); ctx.moveTo(-2,0); ctx.lineTo(-5-armSwing,8); ctx.stroke();
 
       // Körper
-      ctx.fillStyle="#2f62c9";
+      ctx.fillStyle=outfit().color;
       ctx.beginPath(); ctx.roundRect(-8,-3,16,16,5); ctx.fill();
 
       // Rucksack auf dem Rücken
@@ -1969,11 +2244,15 @@
       ctx.strokeStyle="#bd8f72"; ctx.lineWidth=1.3;
       ctx.beginPath(); ctx.moveTo(8,-12); ctx.lineTo(10,-11); ctx.stroke();
     }
+    ctx.fillStyle=outfit().scarf;ctx.fillRect(-7,-5,14,3);
+    if(profile.hat==='beanie'){ctx.fillStyle=outfit().scarf;ctx.beginPath();ctx.arc(0,-17,9,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-9,-18,18,4)}
+    if(profile.hat==='phones'){ctx.strokeStyle='#54d8df';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-14,9,Math.PI,Math.PI*2);ctx.stroke();ctx.fillStyle='#54d8df';ctx.fillRect(-10,-17,4,8);ctx.fillRect(6,-17,4,8)}
+
 
 
     // Kurze Wurfbewegung beim Schießen
-    if(performance.now() < attackUntil){
-      const p=Math.min(1,(performance.now()-attackStartedAt)/120);
+    if(gameNow() < attackUntil){
+      const p=Math.min(1,(gameNow()-attackStartedAt)/120);
       ctx.save();
       const [fx,fy]=facingVector();
       const baseRot=Math.atan2(fy,fx);
@@ -2061,7 +2340,7 @@
     }
   }
 
-  let last=performance.now();
+  let last=gameNow();
 
   // Pixel-Übergang beim Wechseln des Levels / der Etappe
   const transitionBuffer=document.createElement("canvas");
@@ -2082,7 +2361,7 @@
   function startPixelTransition(onSwitch,label="LEVEL WECHSEL"){
     if(transitionFX.active) return;
     transitionFX.active=true;
-    transitionFX.start=performance.now();
+    transitionFX.start=gameNow();
     transitionFX.switched=false;
     transitionFX.onSwitch=onSwitch;
     transitionFX.label=label;
@@ -2170,17 +2449,22 @@
   // ================================================================
   // ETAPPE 2: 3D-LABYRINTH
   // ================================================================
-  const stage2Map = [
-    "############",
-    "#..........#",
-    "#.####.##..#",
-    "#....#.....#",
-    "##.#.#.###.#",
-    "#..#.......#",
-    "#..###.###.#",
-    "#..........#",
-    "############"
-  ];
+  function createMazeLayout(){
+    const w=23,h=17,grid=Array.from({length:h},()=>Array(w).fill('#'));let seed=9147;
+    const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+    const stack=[[1,1]];grid[1][1]='.';
+    while(stack.length){const [x,y]=stack[stack.length-1],options=[[2,0],[-2,0],[0,2],[0,-2]].filter(([dx,dy])=>x+dx>0&&x+dx<w-1&&y+dy>0&&y+dy<h-1&&grid[y+dy][x+dx]==='#');
+      if(!options.length){stack.pop();continue}const [dx,dy]=options[Math.floor(rnd()*options.length)];grid[y+dy/2][x+dx/2]='.';grid[y+dy][x+dx]='.';stack.push([x+dx,y+dy]);}
+    for(let y=1;y<=4;y++)for(let x=1;x<=5;x++)grid[y][x]='.';
+    for(let i=0;i<18;i++){const x=2+Math.floor(rnd()*(w-4)),y=2+Math.floor(rnd()*(h-4));if((grid[y][x-1]==='.'&&grid[y][x+1]==='.')||(grid[y-1][x]==='.'&&grid[y+1][x]==='.'))grid[y][x]='.';}
+    return grid.map(row=>row.join(''));
+  }
+  const labyrinthMap=createMazeLayout();
+  const classroomMap=Array.from({length:11},(_,y)=>y===0||y===10?'#############':'#...........#');
+  let stage2Map=labyrinthMap;
+  const hubFurniture=[{x:2.3,z:2.3,w:2,d:.85},...[4.4,6.5].flatMap(z=>[3,4.8,8.2,10].map(x=>({x,z,w:1.1,d:.65})))];
+  const hubTargets=[{id:'levels',x:6.5,z:1.5,name:'Wandtafel · Level wählen'},{id:'shop',x:11.3,z:7.8,name:'Garderobe · Kleidung kaufen'}];
+
 
   const stage2 = {
     x:1.5, y:1.5, angle:0,
@@ -2190,19 +2474,39 @@
     depth:[]
   };
 
-  function resetStage2(){
-    gameStage=2;
-    stage2.x=1.5;
-    stage2.y=1.5;
-    stage2.angle=0;
+  function resetStage2(hub=false){
+    stage2Map=hub?classroomMap:labyrinthMap;stage2.hub=hub;
+    gameStage=hub?0:2;stage2.jumpZ=0;stage2.jumpV=0;stage2.vx=0;stage2.vz=0;stage2.flashlight=true;stage2.lightHeat=0;stage2.lightPingAt=0;
+    stage2.x=3.5;
+    stage2.y=2.5;
+    stage2.angle=0;stage2.cameraYaw=0;stage2.zoom=1.9;stage2.pitch=-.18;
+    stage2.thirdPerson=stage2.thirdPerson??true;stage2.walkPhase=0;stage2.walking=false;
+    document.getElementById('cameraToggle').textContent=stage2.thirdPerson?'Kamera: hinten':'Kamera: Augen';
     stage2.collected=0;
     stage2.items=[
-      {x:3.5,y:3.5,label:"Idee",icon:"◆",got:false},
-      {x:7.5,y:5.5,label:"Technik",icon:"◆",got:false},
-      {x:9.5,y:7.5,label:"Zukunft",icon:"◆",got:false}
+      {x:21.5,y:1.5,label:"Idee",icon:"◆",got:false},
+      {x:1.5,y:15.5,label:"Technik",icon:"◆",got:false},
+      {x:11.5,y:9.5,label:"Zukunft",icon:"◆",got:false}
     ];
-    stage2.exit={x:10.5,y:1.5};
+    stage2.exit={x:21.5,y:15.5};
     stage2.depth=[];
+    stage2.health=3;stage2.invuln=0;stage2.attackUntil=0;stage2.lastAttack=-1000;
+    stage2.enemies=[[19.5,3.5],[3.5,13.5],[17.5,13.5]].map(([x,y])=>({x,y,stunned:0,alert:false,pathAt:0,target:null}));
+    stage2.enemy=stage2.enemies[0];stage2.obstacles=[];
+    const candidates=[];
+    for(let z=2;z<stage2Map.length-2;z++)for(let x=2;x<stage2Map[0].length-2;x++){
+      if(stage2Map[z][x]!=='#'&&(x>6||z>5)){
+        const horizontal=stage2Map[z-1][x]==='#'&&stage2Map[z+1][x]==='#';
+        const vertical=stage2Map[z][x-1]==='#'&&stage2Map[z][x+1]==='#';
+        if(horizontal||vertical)candidates.push({x:x+.5,z:z+.5,w:horizontal?.18:.98,d:horizontal?.98:.18,h:.42});
+      }
+    }
+    for(let i=0;i<8&&candidates.length;i++)stage2.obstacles.push(candidates[Math.floor((i+.5)*candidates.length/8)]);
+    stage2.candies=[];const cells=[];
+    for(let z=1;z<stage2Map.length-1;z+=2)for(let x=1;x<stage2Map[0].length-1;x+=2)if(stage2Map[z][x]!== '#')cells.push({x:x+.5,y:z+.5});
+    for(let i=0;i<24;i++)stage2.candies.push({...cells[Math.floor(i*cells.length/24)],id:'candy-maze-'+i});
+    if(hub){stage2.x=6.5;stage2.y=8.4;stage2.angle=-Math.PI/2;stage2.cameraYaw=stage2.angle;stage2.pitch=-.10;stage2.items=[];stage2.candies=[];stage2.enemies=[];stage2.obstacles=[];}
+
     keys.clear();
     stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 2: 3D-Welt";
     hud.textContent=isCompactMobile() ? "3D · ◆ 0/3" : "Etappe 2/3 · 3D-Labyrinth · ◆ 0/3";
@@ -2225,6 +2529,7 @@
     let stageButtonHandled=false;
 
     const continueStage=()=>{
+      unlockAudio();
       if(stageButtonHandled) return;
       stageButtonHandled=true;
       overlay.style.display="none";
@@ -2247,7 +2552,7 @@
     showStageCard(
       "🧊 Etappe 2",
       "3D-Labyrinth",
-      "Die Perspektive wechselt vollständig. Finde drei leuchtende Stationen im Labyrinth und erreiche danach das grüne Portal. W/S = vor/zurück, A/D oder ←/→ = drehen.",
+      "Die Perspektive wechselt vollständig. Finde drei leuchtende Stationen im Labyrinth und erreiche danach das grüne Portal. Echtes 3D mit animierten Figuren. V oder die Kamera-Taste wechselt zwischen Rückansicht und Ich-Perspektive. Maus bewegen = Kamera frei drehen. Ein Klick ins Bild fängt die Maus ein; Esc gibt sie frei. Mausrad = Zoom. WASD/Pfeile = laufen, Q/C = Kamera drehen, V = Ansicht wechseln. Space = über die gelb markierten Hindernisse springen. Handy: links laufen, rechts auf dem Bild wischen. Das Stress-Monster patrouilliert im Labyrinth und verfolgt dich, wenn er dich sieht! F = mit dem Lineal kurz betäuben. Drei Monster bewachen das grosse Labyrinth. Du hast drei Herzen und keine Minikarte.",
       "3D-Welt starten"
     );
   }
@@ -2266,24 +2571,98 @@
            !s2IsWall(x+r,y+r);
   }
 
-  function updateStage2(dt){
-    let turn=0;
-    if(keys.has("KeyA") || keys.has("ArrowLeft")) turn-=1;
-    if(keys.has("KeyD") || keys.has("ArrowRight")) turn+=1;
-    stage2.angle += turn*1.85*dt;
-
-    let forward=0;
-    if(keys.has("KeyW") || keys.has("ArrowUp")) forward+=1;
-    if(keys.has("KeyS") || keys.has("ArrowDown")) forward-=1;
-
-    if(forward){
-      const speed=2.15;
-      const nx=stage2.x+Math.cos(stage2.angle)*forward*speed*dt;
-      const ny=stage2.y+Math.sin(stage2.angle)*forward*speed*dt;
-      if(s2CanStand(nx,stage2.y)) stage2.x=nx;
-      if(s2CanStand(stage2.x,ny)) stage2.y=ny;
+  function s2PlayerCanStand(x,z){
+    if(!s2CanStand(x,z))return false;
+    const boxes=stage2.hub?hubFurniture.map(b=>({...b,h:1})):stage2.obstacles;
+    return !boxes.some(b=>stage2.jumpZ<b.h+.025&&Math.abs(x-b.x)<b.w/2+.18&&Math.abs(z-b.z)<b.d/2+.18);
+  }
+  function s2Jump(){if(stage2.jumpZ===0){stage2.jumpV=4.8;effect('jump')}}
+  function hubInteract(){
+    const target=hubTargets.find(t=>Math.hypot(stage2.x-t.x,stage2.y-t.z)<1.85);
+    if(target)openGameMenu(target.id);else showMessage('Gehe zur Wandtafel oder zur Garderobe und drücke E.',1600);
+  }
+  function s2Visible(ax,ay,bx,by){
+    const steps=Math.ceil(Math.hypot(bx-ax,by-ay)*18);
+    for(let i=1;i<=steps;i++)if(s2IsWall(ax+(bx-ax)*i/steps,ay+(by-ay)*i/steps))return false;
+    return true;
+  }
+  function s2Attack(){
+    if(stage2.hub)return;const now=gameNow();if(now-stage2.lastAttack<650)return;
+    stage2.angle=stage2.cameraYaw??stage2.angle;stage2.lastAttack=now;stage2.attackUntil=now+220;effect('attack');
+    for(const e of stage2.enemies){const dist=Math.hypot(e.x-stage2.x,e.y-stage2.y);
+      if(dist<1.65&&Math.abs(angleDiff(Math.atan2(e.y-stage2.y,e.x-stage2.x),stage2.angle))<.8&&s2Visible(stage2.x,stage2.y,e.x,e.y)){
+        e.stunned=now+2100;beep(880,.12);showMessage('Monster betäubt! Lauf weiter.',1000);
+      }
     }
+  }
+  function toggleFlashlight(){stage2.flashlight=!stage2.flashlight;effect('click');showMessage(stage2.flashlight?'Taschenlampe an · lange Nutzung verrät dich!':'Taschenlampe aus · Aufmerksamkeit sinkt',1600)}
+  function updateFlashlight(dt){
+    if(stage2.hub)return;
+    stage2.lightHeat=Math.max(0,Math.min(1,stage2.lightHeat+dt*(stage2.flashlight?.125:-.24)));
+    if(stage2.lightHeat>=1&&gameNow()>=stage2.lightPingAt){
+      stage2.lightPingAt=gameNow()+1800;
+      for(const e of stage2.enemies){e.lastSeen={x:stage2.x,y:stage2.y};e.memory=gameNow()+6500;e.pathAt=0;}
+      showMessage('Das Licht hat dich verraten! Ausschalten und Position wechseln.',1600);
+    }
+  }
+  function updateMazeEnemy(dt,e=stage2.enemy){
+    const now=gameNow();if(now<e.stunned)return;
+    const sees=s2Visible(e.x,e.y,stage2.x,stage2.y)&&Math.hypot(e.x-stage2.x,e.y-stage2.y)<6;
+    if(sees&&!e.alert){effect('alert');showMessage('Der Bewerbungsstress hat dich entdeckt! F = abwehren',1500)}
+    e.alert=sees;
+    if(sees){e.memory=now+5000;e.lastSeen={x:stage2.x,y:stage2.y};}
+    if(now>e.pathAt){
+      e.pathAt=now+450;
+      const chasing=now<(e.memory||0);
+      if(!e.patrol||Math.hypot(e.x-e.patrol.x,e.y-e.patrol.y)<.45){
+        const points=[{x:1.5,y:1.5},{x:21.5,y:1.5},{x:1.5,y:15.5},{x:21.5,y:15.5}];
+        e.patrol=points[(e.patrolIndex=(e.patrolIndex??-1)+1)%4];
+      }
+      const goal=chasing?(e.lastSeen||stage2):e.patrol;
+      const sx=Math.floor(e.x),sy=Math.floor(e.y),gx=Math.floor(goal.x),gy=Math.floor(goal.y);
+      const queue=[[sx,sy,[]]],seen=new Set([sx+','+sy]);e.target=null;
+      while(queue.length){
+        const [x,y,path]=queue.shift();
+        if(x===gx&&y===gy){e.target=path.length?{x:path[0][0]+.5,y:path[0][1]+.5}: {x:goal.x,y:goal.y};break}
+        for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+          const nx=x+dx,ny=y+dy,k=nx+','+ny;
+          if(!seen.has(k)&&!s2IsWall(nx+.5,ny+.5)){seen.add(k);queue.push([nx,ny,[...path,[nx,ny]]])}
+        }
+      }
+    }
+    if(e.target){
+      const dx=e.target.x-e.x,dy=e.target.y-e.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*(e.alert?1.52:.95));
+      if(d>.02){const nx=e.x+dx/d*step,ny=e.y+dy/d*step;
+        if(s2CanStand(nx,e.y))e.x=nx;if(s2CanStand(e.x,ny))e.y=ny;
+      }
+    }
+    if(Math.hypot(e.x-stage2.x,e.y-stage2.y)<.52&&now>stage2.invuln&&s2Visible(e.x,e.y,stage2.x,stage2.y)){
+      stage2.health--;stage2.invuln=now+1800;e.stunned=now+1400;beep(160,.18);
+      showMessage('Autsch! F hält den Stress auf Abstand.',1200);
+      if(stage2.health<=0){resetStage2();showMessage('Neuer Versuch im Labyrinth – du schaffst das!',1800)}
+    }
+  }
+  function updateStage2(dt){
+    updateFlashlight(dt);
+    if(!stage2.hub)for(const e of stage2.enemies){updateMazeEnemy(dt,e)}
+    stage2.jumpV-=12*dt;stage2.jumpZ=Math.max(0,stage2.jumpZ+stage2.jumpV*dt);if(stage2.jumpZ===0)stage2.jumpV=0;
+    const oldPX=stage2.x,oldPY=stage2.y;
+    // Camera yaw is independent; walking follows the camera's horizontal axes.
+    const turn=(keys.has('KeyC')?1:0)-(keys.has('KeyQ')?1:0);
+    stage2.cameraYaw+=turn*1.65*dt;
+    const f=(keys.has('KeyW')||keys.has('ArrowUp')?1:0)-(keys.has('KeyS')||keys.has('ArrowDown')?1:0);
+    const side=(keys.has('KeyD')||keys.has('ArrowRight')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')?1:0);
+    {const a=stage2.cameraYaw,n=Math.hypot(f,side)||1,targetX=(Math.cos(a)*f-Math.sin(a)*side)/n*GAME_DATA.motion.mazeSpeed,targetZ=(Math.sin(a)*f+Math.cos(a)*side)/n*GAME_DATA.motion.mazeSpeed;
+      stage2.vx+=(targetX-stage2.vx)*response(dt);stage2.vz+=(targetZ-stage2.vz)*response(dt);
+      const vx=stage2.vx,vy=stage2.vz,nx=stage2.x+vx*dt,ny=stage2.y+vy*dt;
+      if(s2PlayerCanStand(nx,stage2.y))stage2.x=nx;if(s2PlayerCanStand(stage2.x,ny))stage2.y=ny;
+      if(stage2.thirdPerson&&Math.hypot(vx,vy)>.04)stage2.angle+=angleDiff(Math.atan2(vy,vx),stage2.angle)*Math.min(1,dt*14);
+    }
+    if(!stage2.thirdPerson)stage2.angle=stage2.cameraYaw;
 
+    const travelled=Math.hypot(stage2.x-oldPX,stage2.y-oldPY);
+    stage2.walking=travelled>.0001;stage2.walkPhase+=travelled*8;
+    if(stage2.hub){hud.textContent='Klassenzimmer · 🍬 '+profile.candies+' · E an Tafel / Garderobe';return}
     for(const item of stage2.items){
       if(item.got) continue;
       if(Math.hypot(stage2.x-item.x,stage2.y-item.y)<.46){
@@ -2298,13 +2677,13 @@
       if(stage2.collected<stage2.items.length){
         showMessage("Das Portal ist noch gesperrt – finde zuerst alle 3 Stationen.",1000);
       }else{
-        startPixelTransition(()=>startStage3(),"ETAPPE 3 · NEON-ACTION");
+        awardCandy('finish-maze',4);startPixelTransition(()=>startStage3(),"ETAPPE 3 · NEON-ACTION");
       }
     }
 
     hud.textContent=isCompactMobile()
-      ? `3D · ◆ ${stage2.collected}/3`
-      : `Etappe 2/3 · 3D-Labyrinth · ◆ ${stage2.collected}/3`;
+      ? `${"♥".repeat(stage2.health)} · ◆ ${stage2.collected}/3`
+      : `Etappe 2/3 · ${"♥".repeat(stage2.health)} · ◆ ${stage2.collected}/3 · F abwehren`;
   }
 
   function castStage2Ray(angle){
@@ -2348,10 +2727,19 @@
     ctx.translate(sx,H/2+size*.10);
     ctx.shadowBlur=Math.min(38,size*.28);
 
-    if(kind==="item"){
+    if(kind==="enemy"){
+      const stunned=gameNow()<sprite.stunned;
+      ctx.shadowColor=stunned?'#79ddff':'#ff4768';ctx.fillStyle=stunned?'#5187ac':'#bd244b';
+      ctx.fillRect(-size*.28,-size*.25,size*.56,size*.65);
+      ctx.fillStyle='#ecdbbd';ctx.fillRect(-size*.23,-size*.49,size*.46,size*.30);
+      ctx.fillStyle='#d63956';ctx.beginPath();ctx.moveTo(-size*.30,-size*.47);ctx.lineTo(size*.15,-size*.85);ctx.lineTo(size*.30,-size*.47);ctx.fill();
+      ctx.fillStyle='white';ctx.fillRect(-size*.29,-size*.49,size*.58,size*.07);
+      ctx.fillStyle='#151725';ctx.fillRect(-size*.15,-size*.38,size*.09,size*.05);ctx.fillRect(size*.06,-size*.38,size*.09,size*.05);
+      ctx.fillStyle='#f7ce66';ctx.fillRect(-size*.28,size*.15,size*.56,size*.07);
+    }else if(kind==="item"){
       ctx.shadowColor="#61e9ff";
       ctx.fillStyle="#73ecff";
-      ctx.rotate(performance.now()*.0016);
+      ctx.rotate(gameNow()*.0016);
       ctx.fillRect(-size*.18,-size*.18,size*.36,size*.36);
       ctx.strokeStyle="#ffffff";
       ctx.lineWidth=Math.max(1,size*.018);
@@ -2370,7 +2758,7 @@
     ctx.restore();
   }
 
-  function drawStage2(){
+  function drawStage2Legacy(){
     ctx.setTransform(1,0,0,1,0,0);
     ctx.textAlign="left";
     ctx.textBaseline="alphabetic";
@@ -2425,10 +2813,14 @@
       }
     }
 
-    for(const item of stage2.items){
-      if(!item.got) drawStage2Sprite(item,"item");
+    const sprites=[...stage2.items.filter(i=>!i.got).map(i=>[i,'item']),[stage2.exit,'exit'],[stage2.enemy,'enemy']];
+    sprites.sort((a,b)=>Math.hypot(b[0].x-stage2.x,b[0].y-stage2.y)-Math.hypot(a[0].x-stage2.x,a[0].y-stage2.y));
+    for(const [sprite,kind] of sprites)drawStage2Sprite(sprite,kind);
+    if(gameNow()<stage2.invuln){ctx.fillStyle='rgba(255,30,60,.13)';ctx.fillRect(0,0,W,H)}
+    if(gameNow()<stage2.attackUntil){
+      ctx.save();ctx.translate(W*.63,H*.83);ctx.rotate(-.7);ctx.fillStyle='#f3ce72';ctx.fillRect(-12,-190,24,230);ctx.fillStyle='#46371b';
+      for(let i=-180;i<30;i+=15)ctx.fillRect(-12,i,10,2);ctx.restore();
     }
-    drawStage2Sprite(stage2.exit,"exit");
 
     // Crosshair
     ctx.save();
@@ -2441,50 +2833,390 @@
     ctx.restore();
 
     // Titel / Steuerung
-    drawRoundedRect(24,24,270,60,12,"rgba(3,8,18,.74)","rgba(118,235,255,.22)");
+    drawRoundedRect(24,24,410,60,12,"rgba(3,8,18,.74)","rgba(118,235,255,.22)");
     ctx.fillStyle="#ffffff";
     ctx.font="900 20px system-ui";
-    ctx.fillText("ETAPPE 2 · 3D-WELT",40,51);
+    ctx.fillText(stage2.hub?"KLASSENZIMMER · START":"DAS VERLASSENE LABYRINTH",40,51);
     ctx.fillStyle="#7deeff";
     ctx.font="700 12px system-ui";
-    ctx.fillText("W/S laufen · A/D drehen · ◆ sammeln",40,72);
+    ctx.fillText("Maus · WASD · Space Sprung · V Kamera · L Lampe",40,72);
 
-    // Mini-Karte
-    const cell=10;
-    const mapX=W-stage2Map[0].length*cell-26;
-    const mapY=26;
-    ctx.save();
-    ctx.globalAlpha=.78;
-    ctx.fillStyle="rgba(3,8,18,.82)";
-    ctx.fillRect(mapX-8,mapY-8,stage2Map[0].length*cell+16,stage2Map.length*cell+16);
-    for(let y=0;y<stage2Map.length;y++){
-      for(let x=0;x<stage2Map[y].length;x++){
-        if(stage2Map[y][x]==="#"){
-          ctx.fillStyle="#38576a";
-          ctx.fillRect(mapX+x*cell,mapY+y*cell,cell-1,cell-1);
+  }
+
+
+  // Real triangle-based WebGL renderer. All geometry and shaders are embedded.
+  let mazeGL=null,mazeGLFailed=false;
+  function initMazeGL(){
+    if(mazeGL&&mazeGL.mapRef===stage2Map)return;
+    if(!mazeGL)try{
+      const surface=document.createElement('canvas');surface.width=W;surface.height=H;
+      const gl=surface.getContext('webgl',{antialias:true,alpha:false,preserveDrawingBuffer:true});
+      if(!gl)throw new Error('WebGL unavailable');
+      const vs=`precision mediump float;attribute vec3 aPos;attribute vec3 aNormal;attribute vec3 aColor;attribute float aGlow;
+        uniform vec3 uEye,uForward,uRight,uUp;uniform float uAspect;
+        varying vec3 vPos,vNormal,vColor;varying float vGlow;
+        void main(){vec3 d=aPos-uEye;float z=dot(d,uForward);
+          gl_Position=vec4(dot(d,uRight)*1.32/uAspect,dot(d,uUp)*1.32,1.0050125*z-.1002506,z);
+          vPos=aPos;vNormal=aNormal;vColor=aColor;vGlow=aGlow;}`;
+      const fs=`precision mediump float;varying vec3 vPos,vNormal,vColor;varying float vGlow;
+        uniform vec3 uEye,uForward;uniform float uLamp,uHub;
+        void main(){vec3 n=normalize(vNormal);vec3 delta=uEye-vPos;float dist=length(delta);
+          vec3 light=normalize(delta);float cone=smoothstep(.55,.94,dot(-light,uForward));
+          float lamp=max(dot(n,light),0.)*(uHub*.35+uLamp*cone*1.65)/(1.+dist*dist*.14);
+          float sky=.09+uHub*.15+.20*max(dot(n,normalize(vec3(-.4,1.,.3))),0.);
+          float checker=1.;if(abs(n.y)>.9&&vPos.y<.05){vec2 tile=floor(vPos.xz*2.);checker=.82+.18*mod(tile.x+tile.y,2.);}
+          vec3 col=vColor*checker*(sky+lamp)+vColor*vGlow;
+          float fog=1.-exp(-dist*dist*.009);col=mix(col,vec3(.018,.031,.055),fog);
+          gl_FragColor=vec4(pow(clamp(col,0.,1.),vec3(.88)),1.);}`;
+      function shader(type,code){const sh=gl.createShader(type);gl.shaderSource(sh,code);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(sh));return sh}
+      const program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vs));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(program);
+      if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
+      gl.useProgram(program);gl.enable(gl.DEPTH_TEST);gl.clearColor(.018,.031,.055,1);
+      const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+      for(const [name,size,offset] of [['aPos',3,0],['aNormal',3,12],['aColor',3,24],['aGlow',1,36]]){
+        const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,40,offset);
+      }
+      const uniforms={};for(const name of ['uEye','uForward','uRight','uUp','uAspect','uLamp','uHub'])uniforms[name]=gl.getUniformLocation(program,name);
+      mazeGL={gl,surface,program,buffer,uniforms,static:[]};
+      surface.addEventListener('webglcontextlost',event=>{event.preventDefault();mazeGLFailed=true;mazeGL.software=true;showMessage('Grafikmodus gewechselt – 3D bleibt aktiv.',2200)});
+    }catch(error){
+      mazeGLFailed=true;mazeGL={software:true,static:[],reason:String(error.message||error)};
+      showMessage('3D-Kompatibilitätsmodus aktiv – beide Kameras sind verfügbar.',3200);
+    }
+      mazeGL.mapRef=stage2Map;const mesh=mazeGL.static=[];
+      const hub=stage2.hub,mw=stage2Map[0].length,mh=stage2Map.length;
+      mazeBox(mesh,mw/2,-.12,mh/2,mw,.24,mh,hub?[.48,.32,.19]:[.13,.15,.18]);
+      mazeBox(mesh,mw/2,2.65,mh/2,mw,.15,mh,hub?[.65,.66,.59]:[.06,.07,.10]);
+      for(let z=0;z<mh;z++)for(let x=0;x<mw;x++){
+        if(stage2Map[z][x]==='#'){
+          mazeBox(mesh,x+.5,1.25,z+.5,1,2.5,1,hub?[.72,.67,.49]:[.20,.19,.25]);
+          mazeBox(mesh,x+.5,.12,z+.5,1.012,.13,1.012,[.10,.09,.12]);
+          if(!hub){for(const y of [.62,1.24,1.86])mazeBox(mesh,x+.5,y,z+.5,1.008,.018,1.008,[.09,.08,.12]);
+            if((x*7+z*3)%9===0){mazeBox(mesh,x+.5,2.32,z+.5,1.04,.09,1.04,[.20,.24,.27]);mazeBox(mesh,x+.5,1.25,z+.5,.065,2.5,1.04,[.25,.19,.15]);}}
+
+        }else if((x+z)%(hub?4:11)===0){
+          mazeBox(mesh,x+.5,2.54,z+.5,.65,.045,.30,hub?[1,.87,.63]:[.72,.09,.16],1.6);
+          if(!hub)mazeBox(mesh,x+.5,.012,z+.5,.12,.015,.12,[.6,.07,.12],1.2);
+        }
+      }
+      if(hub){
+        mazeBox(mesh,6.5,1.62,1.06,6,1.45,.12,[.38,.23,.10]);
+        mazeBox(mesh,6.5,1.62,1.14,5.76,1.22,.035,[.035,.25,.19],.25);
+        for(const d of hubFurniture){
+          mazeBox(mesh,d.x,.78,d.z,d.w,.12,d.d,[.60,.35,.15]);
+          for(const dx of [-1,1])for(const dz of [-1,1])mazeBox(mesh,d.x+dx*(d.w/2-.1),.36,d.z+dz*(d.d/2-.1),.065,.72,.065,[.25,.29,.31]);
+          mazeBox(mesh,d.x,.87,d.z,.28,.055,.35,[.15,.48,.65]);
+          if(d.z>3){mazeBox(mesh,d.x,.42,d.z+.62,.48,.08,.45,[.34,.46,.55]);mazeBox(mesh,d.x,.69,d.z+.82,.48,.52,.07,[.34,.46,.55]);}
+        }
+        for(const z of [3,6,8]){mazeBox(mesh,1.04,1.65,z,.04,1.25,1.5,[.34,.66,.80],.75);mazeBox(mesh,1.08,1.65,z,.05,1.3,.05,[.85,.82,.70]);}
+        mazeBox(mesh,11.55,1.05,7.8,.7,2.1,2.5,[.39,.23,.14]);
+        for(let i=0;i<4;i++)mazeBox(mesh,11.15,1.27,6.95+i*.55,.12,.82,.35,rgb(cosmetics[i+1].color),.25);
+        mazeBox(mesh,10,.25,2,.22,.5,.22,[.38,.22,.1]);
+        for(let i=0;i<3;i++)mazeRound(mesh,[10,.65+i*.45,2],[.65-i*.15,.55,.65-i*.15],[.05,.34,.21]);
+        mazeRound(mesh,[10,2.13,2],[.12,.12,.12],[1,.7,.13],null,1.5);
+      }
+  }
+
+  function mazeBox(out,x,y,z,w,h,d,color,glow=0,yaw=0){
+    const c=Math.cos(yaw),s=Math.sin(yaw);
+    const faces=[[[1,0,0],[[1,-1,-1],[1,1,-1],[1,1,1],[1,-1,1]]],
+      [[-1,0,0],[[-1,-1,1],[-1,1,1],[-1,1,-1],[-1,-1,-1]]],
+      [[0,1,0],[[-1,1,-1],[-1,1,1],[1,1,1],[1,1,-1]]],
+      [[0,-1,0],[[-1,-1,1],[-1,-1,-1],[1,-1,-1],[1,-1,1]]],
+      [[0,0,1],[[1,-1,1],[1,1,1],[-1,1,1],[-1,-1,1]]],
+      [[0,0,-1],[[-1,-1,-1],[-1,1,-1],[1,1,-1],[1,-1,-1]]]];
+    for(const [normal,points] of faces)for(const i of [0,1,2,0,2,3]){
+      const v=points[i],px=v[0]*w/2,pz=v[2]*d/2;
+      out.push(x+px*c-pz*s,y+v[1]*h/2,z+px*s+pz*c,normal[0]*c-normal[2]*s,normal[1],normal[0]*s+normal[2]*c,...color,glow);
+    }
+  }
+  function toggleMazeCamera(){
+    if(gameStage!==2&&gameStage!==0)return;
+    stage2.thirdPerson=!stage2.thirdPerson;
+    if(!stage2.thirdPerson)stage2.angle=stage2.cameraYaw;
+    document.getElementById('cameraToggle').textContent=stage2.thirdPerson?'Kamera: hinten':'Kamera: Augen';
+    showMessage(stage2.thirdPerson?'Kamera hinter dem Helden · V wechseln':'Ich-Perspektive · V wechseln',1300);
+  }
+  document.getElementById('cameraToggle').onclick=toggleMazeCamera;
+
+  // Smooth ellipsoids with per-vertex normals; limbs use a local joint basis.
+  const sphereTemplate=[];
+  for(let row=0;row<8;row++)for(let col=0;col<12;col++){
+    const point=(r,c)=>{const p=Math.PI*r/8,t=Math.PI*2*c/12;return [Math.sin(p)*Math.cos(t),Math.cos(p),Math.sin(p)*Math.sin(t)]};
+    const q=[point(row,col),point(row+1,col),point(row+1,col+1),point(row,col+1)];
+    for(const i of [0,1,2,0,2,3])sphereTemplate.push(q[i]);
+  }
+  const sphereLow=[];
+  for(let r=0;r<5;r++)for(let c=0;c<8;c++){
+    const pt=(y,x)=>[Math.sin(Math.PI*y/5)*Math.cos(Math.PI*2*x/8),Math.cos(Math.PI*y/5),Math.sin(Math.PI*y/5)*Math.sin(Math.PI*2*x/8)];
+    const q=[pt(r,c),pt(r+1,c),pt(r+1,c+1),pt(r,c+1)];for(const i of [0,1,2,0,2,3])sphereLow.push(q[i]);
+  }
+  function mazeRound(out,center,scale,color,basis=null,glow=0){
+    basis=basis||[[1,0,0],[0,1,0],[0,0,1]];
+    for(const unit of (mazeGL?.software?sphereLow:sphereTemplate)){
+      const p=unit.map((v,i)=>v*scale[i]),n=unit.map((v,i)=>v/scale[i]);
+      const len=Math.hypot(...n);
+      const world=[0,1,2].map(i=>center[i]+basis[0][i]*p[0]+basis[1][i]*p[1]+basis[2][i]*p[2]);
+      const normal=[0,1,2].map(i=>(basis[0][i]*n[0]+basis[1][i]*n[1]+basis[2][i]*n[2])/len);
+      out.push(...world,...normal,...color,glow);
+    }
+  }
+  function mazeLimb(out,a,b,radius,color){
+    const delta=b.map((v,i)=>v-a[i]),len=Math.hypot(...delta);if(len<.001)return;
+    const y=delta.map(v=>v/len),ref=Math.abs(y[1])>.95?[1,0,0]:[0,1,0];
+    const x=[ref[1]*y[2]-ref[2]*y[1],ref[2]*y[0]-ref[0]*y[2],ref[0]*y[1]-ref[1]*y[0]];
+    const m=Math.hypot(...x);for(let i=0;i<3;i++)x[i]/=m;
+    const z=[x[1]*y[2]-x[2]*y[1],x[2]*y[0]-x[0]*y[2],x[0]*y[1]-x[1]*y[0]];
+    mazeRound(out,a.map((v,i)=>(v+b[i])/2),[radius,len/2+radius*.30,radius],color,[x,y,z]);
+  }
+  function mazeCharacter(out,x,z,yaw,phase,walking,enemy=false,stunned=false,attack=0,jumpZ=0){
+    const c=Math.cos(yaw),s=Math.sin(yaw),basis=[[c,0,s],[0,1,0],[-s,0,c]];
+    const stride=walking?gait(phase)*.22:0,bob=walking?Math.abs(Math.cos(phase))*.018:Math.sin(gameNow()*.002)*.008;
+    const pos=(dx,y,dz)=>[x+dx*c-dz*s,y+jumpZ,z+dx*s+dz*c];
+    const cloth=enemy?(stunned?[.12,.40,.58]:[.52,.025,.09]):rgb(outfit().color);
+    const trousers=enemy?[.07,.075,.11]:[.10,.13,.18],skin=enemy?[.62,.38,.25]:[.74,.49,.32];
+    const ball=(dx,y,dz,rx,ry,rz,col,glow=0)=>mazeRound(out,pos(dx,y,dz),[rx,ry,rz],col,basis,glow);
+    const limb=(a,b,r,col)=>mazeLimb(out,pos(...a),pos(...b),r,col);
+    // Hips, knees and ankles form a two-part leg on each side.
+    for(const side of [-1,1]){
+      const swing=stride*side,knee=[side*.11,.37+bob,swing*.65+.025],ankle=[side*.11,.10+Math.max(0,swing)*.18,swing];
+      limb([side*.10,.66+bob,0],knee,.082,trousers);limb(knee,ankle,.065,trousers);
+      ball(ankle[0],ankle[1]-.045,ankle[2]+.055,.086,.035,.145,[.45,.50,.55]);
+      ball(ankle[0],ankle[1]-.015,ankle[2]+.04,.08,.055,.13,[.035,.05,.07]);
+    }
+    ball(0,.68+bob,0,.17,.13,.12,trousers);
+    ball(0,.93+bob,0,.19,.265,.135,cloth);
+    ball(0,1.09+bob,0,.215,.115,.13,cloth);
+    // Jacket zip, chest pocket and fitted waist add structure to the clothing.
+    limb([0,.75+bob,.126],[0,1.15+bob,.13],.009,[.55,.65,.72]);
+    ball(-.095,1.05+bob,.12,.046,.05,.018,enemy?[.32,.02,.06]:[.16,.35,.48]);
+    ball(0,.73+bob,0,.18,.035,.135,[.035,.05,.065]);
+    ball(0,1.21+bob,0,.065,.085,.067,skin);
+    ball(0,1.39+bob,.005,.128,.175,.123,skin);
+    // Hair, ears, nose and eyes are smooth meshes too.
+    ball(0,1.51+bob,-.025,.133,.085,.12,[.045,.035,.035]);
+    ball(0,1.41+bob,-.075,.13,.12,.066,[.045,.035,.035]);
+    ball(-.055,1.51+bob,.07,.082,.055,.062,[.055,.04,.035]);
+    limb([-.045,1.32+bob,.118],[.045,1.32+bob,.118],.008,[.28,.09,.07]);
+    for(const side of [-1,1])limb([side*.025,1.465+bob,.126],[side*.085,1.46+bob,.108],.009,[.065,.045,.035]);
+    ball(-.145,1.39+bob,0,.028,.045,.035,skin);ball(.145,1.39+bob,0,.028,.045,.035,skin);
+    ball(0,1.39+bob,.139,.030,.036,.033,skin);
+    for(const side of [-1,1]){ball(side*.055,1.43+bob,.122,.029,.019,.014,[.88,.91,.94]);ball(side*.055,1.43+bob,.136,.012,.013,.008,[.025,.04,.06]);}
+    for(const side of [-1,1]){
+      const swing=-stride*side,elbow=[side*.27,1.00+bob,swing*.55],hand=[side*.27,.79+bob,swing];
+      if(side===1&&attack>0){elbow[1]=1.05;elbow[2]=.19;hand[0]=.27-attack*.40;hand[1]=1.12;hand[2]=.38;}
+      limb([side*.19,1.13+bob,0],elbow,.071,cloth);limb(elbow,hand,.06,cloth);ball(...hand,.048,.062,.045,skin);
+      ball(hand[0]-.035*side,hand[1]+.015,hand[2]+.025,.025,.036,.022,skin);
+      if(side===1&&!enemy){const h=pos(...hand);mazeBox(out,h[0],h[1]+.17,h[2],.035,.36,.026,[.65,.41,.09],0,yaw);}
+    }
+    if(enemy){
+      ball(0,1.29+bob,.085,.105,.085,.065,[.80,.82,.83]);
+      for(const y of [.86,.99,1.1])ball(.025,y+bob,.136,.014,.014,.014,[.85,.67,.2]);
+      ball(0,1.57+bob,-.01,.165,.045,.15,[.9,.92,.95]);
+      ball(.025,1.68+bob,-.015,.13,.13,.12,cloth);ball(.11,1.77+bob,-.01,.055,.055,.055,[.9,.92,.95]);
+    }else{
+      // Backpack and scarf identify the playable character from behind.
+      ball(0,.97+bob,-.17,.14,.19,.08,[.61,.29,.06]);
+      ball(0,.91+bob,-.235,.105,.085,.036,[.80,.43,.09]);
+      limb([-.075,.99+bob,-.26],[.075,.99+bob,-.26],.009,[.24,.15,.07]);
+      for(const side of [-1,1])limb([side*.14,1.15,-.13],[side*.13,.78,-.12],.023,[.2,.12,.06]);
+      ball(0,1.22+bob,0,.12,.04,.12,rgb(outfit().scarf));
+      if(profile.hat==='beanie'){ball(0,1.55+bob,0,.145,.12,.135,rgb(outfit().scarf));ball(0,1.65+bob,0,.045,.045,.045,[.95,.9,.8])}
+      if(profile.hat==='phones'){for(const side of [-1,1])ball(side*.145,1.41+bob,0,.035,.07,.045,[.2,.75,.8]);limb([-.14,1.51+bob,0],[.14,1.51+bob,0],.024,[.2,.75,.8]);}
+      limb([-.08,1.22,-.06],[-.12,1.04,-.22-Math.abs(stride)*.3],.035,rgb(outfit().scarf));
+    }
+  }
+  function mazeSpike(out,a,b,radius,color){
+    const delta=b.map((v,i)=>v-a[i]),len=Math.hypot(...delta),axis=delta.map(v=>v/len);
+    const ref=Math.abs(axis[1])>.9?[1,0,0]:[0,1,0];
+    let u=[ref[1]*axis[2]-ref[2]*axis[1],ref[2]*axis[0]-ref[0]*axis[2],ref[0]*axis[1]-ref[1]*axis[0]];
+    const size=Math.hypot(...u);u=u.map(v=>v/size);
+    const v=[axis[1]*u[2]-axis[2]*u[1],axis[2]*u[0]-axis[0]*u[2],axis[0]*u[1]-axis[1]*u[0]];
+    for(let i=0;i<10;i++){
+      const theta=i*Math.PI/5,next=(i+1)*Math.PI/5;
+      const p=a.map((n,j)=>n+radius*(Math.cos(theta)*u[j]+Math.sin(theta)*v[j]));
+      const q=a.map((n,j)=>n+radius*(Math.cos(next)*u[j]+Math.sin(next)*v[j]));
+      const normal=u.map((n,j)=>n*Math.cos((theta+next)/2)+v[j]*Math.sin((theta+next)/2)+axis[j]*radius/len);
+      const norm=Math.hypot(...normal);for(const point of [p,q,b])out.push(...point,...normal.map(n=>n/norm),...color,0);
+    }
+  }
+  function mazeStressMonster(out,e,now){
+    const stunned=now<e.stunned,target=e.alert?stage2:(e.target||stage2);
+    const yaw=Math.atan2(target.y-e.y,target.x-e.x)-Math.PI/2,c=Math.cos(yaw),s=Math.sin(yaw);
+    const basis=[[c,0,s],[0,1,0],[-s,0,c]],phase=now*(e.alert?.014:.009);
+    const stride=stunned?0:gait(phase)*.17,bob=stunned?0:Math.abs(Math.cos(phase))*.04;
+    const skin=stunned?[.13,.24,.35]:[.20,.055,.28],ridge=stunned?[.20,.40,.52]:[.39,.08,.37];
+    const bone=[.80,.68,.47],eye=stunned?[.12,.83,1]:[1,.42,.035];
+    const stepUp=(stage2.obstacles||[]).some(b=>Math.abs(e.x-b.x)<b.w/2+.25&&Math.abs(e.y-b.z)<b.d/2+.25)?.46:0;
+    const pos=(x,y,z)=>[e.x+x*c-z*s,y+stepUp,e.y+x*s+z*c];
+    const ball=(x,y,z,rx,ry,rz,color,glow=0)=>mazeRound(out,pos(x,y,z),[rx,ry,rz],color,basis,glow);
+    const limb=(a,b,r,color)=>mazeLimb(out,pos(...a),pos(...b),r,color);
+    const spike=(a,b,r,color)=>mazeSpike(out,pos(...a),pos(...b),r,color);
+    // Low, hunched silhouette, crooked legs, a heavy jaw and a pointed tail.
+    ball(0,.76+bob,-.06,.29,.34,.23,skin);
+    ball(0,.98+bob,-.11,.31,.23,.23,ridge);
+    ball(0,.69+bob,.12,.21,.23,.11,[.30,.12,.32]);
+    for(const side of [-1,1]){
+      const swing=stride*side,hip=[side*.17,.57+bob,-.02],knee=[side*.22,.33,.11+swing*.5],foot=[side*.21,.09,.13+swing];
+      limb(hip,knee,.11,skin);limb(knee,foot,.075,ridge);ball(...foot,.12,.075,.17,skin);
+      for(const dx of [-.065,0,.065])spike([foot[0]+dx,.08,foot[2]+.10],[foot[0]+dx,.045,foot[2]+.25],.025,bone);
+      const elbow=[side*.34,.70+bob,-swing],hand=[side*.34,.46+bob,.18-swing];
+      limb([side*.24,1.0+bob,0],elbow,.105,ridge);limb(elbow,hand,.08,skin);ball(...hand,.095,.11,.09,skin);
+      for(const dx of [-.05,0,.05])spike([hand[0]+dx,hand[1]-.055,hand[2]+.035],[hand[0]+dx,hand[1]-.19,hand[2]+.14],.024,bone);
+    }
+    ball(0,1.19+bob,.09,.28,.24,.22,skin);
+    ball(0,1.08+bob,.25,.23,.13,.15,ridge);
+    ball(0,1.075+bob,.375,.17,.068,.023,[.018,.008,.025]);
+    for(const side of [-1,1]){
+      ball(side*.105,1.24+bob,.276,.070,.046,.030,eye,1.15);
+      ball(side*.105,1.24+bob,.305,.012,.039,.009,[.025,.005,.02]);
+      limb([side*.035,1.29+bob,.27],[side*.19,1.34+bob,.20],.04,ridge);
+      spike([side*.10,1.12+bob,.37],[side*.085,1.015+bob,.39],.027,bone);
+      spike([side*.20,1.36+bob,.01],[side*.29,1.76+bob,-.12],.078,bone);
+      spike([side*.24,1.02+bob,-.13],[side*.36,1.23+bob,-.22],.06,ridge);
+    }
+    limb([0,.55,-.20],[Math.sin(phase*.45)*.10,.33,-.43],.075,skin);
+    spike([Math.sin(phase*.45)*.10,.33,-.43],[Math.sin(phase*.45)*.17,.25,-.68],.07,ridge);
+    for(const y of [.70,.90,1.10])spike([0,y+bob,-.24],[0,y+.13+bob,-.40],.055,ridge);
+    if(stunned)for(let i=0;i<3;i++){
+      const a=now*.004+i*Math.PI*2/3;ball(Math.cos(a)*.26,1.83+Math.sin(a*2)*.035,Math.sin(a)*.18,.035,.035,.035,[.2,.8,1],1.5);
+    }
+  }
+  function mazeCamera(now){
+    const angle=stage2.cameraYaw??stage2.angle,pitch=stage2.pitch||0,cp=Math.cos(pitch),sp=Math.sin(pitch);
+    const forward=[Math.cos(angle)*cp,sp,Math.sin(angle)*cp],right=[-Math.sin(angle),0,Math.cos(angle)],up=[-Math.cos(angle)*sp,cp,-Math.sin(angle)*sp];
+    const target=[stage2.x,Math.min(2.34,(stage2.thirdPerson?1.12:1.43)+(stage2.jumpZ||0)),stage2.y];
+    let distance=0;
+    if(stage2.thirdPerson){
+      for(let d=.025;d<=(stage2.zoom||1.9);d+=.025){
+        const q=target.map((v,i)=>v-forward[i]*d);
+        if(q[1]<.18||q[1]>2.38||!s2CanStand(q[0],q[2]))break;
+        distance=d;
+      }
+    }
+    const eye=target.map((v,i)=>v-forward[i]*distance);
+    return {eye,forward,right,up,distance};
+  }
+  // Canvas software rasterizer: same 3D meshes and depth buffer, no WebGL needed.
+  let softwareMaze=null;
+  function renderSoftwareMaze(data,eye,forward,right,up){
+    if(!softwareMaze){
+      const surface=document.createElement('canvas');surface.width=640;surface.height=360;
+      const context=surface.getContext('2d');
+      softwareMaze={surface,context,image:context.createImageData(640,360),depth:new Float32Array(640*360)};
+    }
+    const {surface,context,image,depth}=softwareMaze,sw=640,sh=360,pixels=image.data;
+    depth.fill(0);for(let i=0;i<pixels.length;i+=4){pixels[i]=5;pixels[i+1]=8;pixels[i+2]=14;pixels[i+3]=255}
+    const focal=sh*.66;
+    const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    for(let k=0;k<data.length;k+=30){
+      const cx=(data[k]+data[k+10]+data[k+20])/3-eye[0],cy=(data[k+1]+data[k+11]+data[k+21])/3-eye[1],cz=(data[k+2]+data[k+12]+data[k+22])/3-eye[2];
+      if((data[k+3]+data[k+13]+data[k+23])*cx+(data[k+4]+data[k+14]+data[k+24])*cy+(data[k+5]+data[k+15]+data[k+25])*cz>=0)continue;
+      let vertices=[];
+      for(let v=0;v<3;v++){
+        const i=k+v*10,delta=[data[i]-eye[0],data[i+1]-eye[1],data[i+2]-eye[2]],dist=Math.hypot(...delta)||.001;
+        const nx=data[i+3],ny=data[i+4],nz=data[i+5],lamp=Math.max(0,-(nx*delta[0]+ny*delta[1]+nz*delta[2])/dist);
+        const cone=Math.max(0,Math.min(1,(dot(delta,forward)/dist-.55)/.39));
+        const lit=.09+(stage2.hub?.15:0)+.20*Math.max(0,(-.4*nx+ny+.3*nz)/1.118)+lamp*((stage2.hub?.35:0)+(stage2.hub||stage2.flashlight?cone*1.65:0))/(1+dist*dist*.14)+data[i+9];
+        const fog=1-Math.exp(-dist*dist*.009),base=[.018,.031,.055];
+        const colors=[0,1,2].map(c=>Math.pow(Math.max(0,Math.min(1,data[i+6+c]*lit*(1-fog)+base[c]*fog)),.88)*255);
+        vertices.push([dot(delta,right),dot(delta,up),dot(delta,forward),...colors]);
+      }
+      // Clip triangles at the near plane; geometry behind the camera is discarded.
+      const clipped=[];
+      for(let i=0;i<3;i++){
+        const a=vertices[i],b=vertices[(i+1)%3],ina=a[2]>=.055,inb=b[2]>=.055;
+        if(ina)clipped.push(a);
+        if(ina!==inb){const t=(.055-a[2])/(b[2]-a[2]);clipped.push(a.map((v,j)=>v+(b[j]-v)*t))}
+      }
+      if(clipped.length<3)continue;
+      const projected=clipped.map(v=>{const iz=1/v[2];return [sw/2+v[0]*focal*iz,sh/2-v[1]*focal*iz,iz,v[3]*iz,v[4]*iz,v[5]*iz]});
+      for(let tri=1;tri<projected.length-1;tri++){
+        const a=projected[0],b=projected[tri],c=projected[tri+1];
+        const area=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1]);if(Math.abs(area)<.001)continue;
+        const minX=Math.max(0,Math.floor(Math.min(a[0],b[0],c[0]))),maxX=Math.min(sw-1,Math.ceil(Math.max(a[0],b[0],c[0])));
+        const minY=Math.max(0,Math.floor(Math.min(a[1],b[1],c[1]))),maxY=Math.min(sh-1,Math.ceil(Math.max(a[1],b[1],c[1])));
+        const dax=(b[1]-c[1])/area,day=(c[0]-b[0])/area,dbx=(c[1]-a[1])/area,dby=(a[0]-c[0])/area;
+        for(let y=minY;y<=maxY;y++){
+          let wa=dax*(minX+.5-c[0])+day*(y+.5-c[1]),wb=dbx*(minX+.5-c[0])+dby*(y+.5-c[1]);
+          for(let x=minX;x<=maxX;x++,wa+=dax,wb+=dbx){
+            const wc=1-wa-wb;if(wa<0||wb<0||wc<0)continue;
+            const z=wa*a[2]+wb*b[2]+wc*c[2],idx=y*sw+x;if(z<=depth[idx])continue;
+            depth[idx]=z;const p=idx*4;
+            pixels[p]=(wa*a[3]+wb*b[3]+wc*c[3])/z;pixels[p+1]=(wa*a[4]+wb*b[4]+wc*c[4])/z;pixels[p+2]=(wa*a[5]+wb*b[5]+wc*c[5])/z;
+          }
         }
       }
     }
-    for(const item of stage2.items){
-      if(item.got) continue;
-      ctx.fillStyle="#75eeff";
-      ctx.fillRect(mapX+item.x*cell-2,mapY+item.y*cell-2,4,4);
+    context.putImageData(image,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(surface,0,0,W,H);
+  }
+  function renderMaze3D(){
+    initMazeGL();if(!mazeGL)return false;
+    const {gl,surface,uniforms}=mazeGL,now=gameNow(),data=mazeGL.static.slice();
+    for(const item of stage2.items){if(item.got)continue;
+      mazeBox(data,item.x,.16,item.y,.6,.32,.6,[.15,.22,.30]);
+      mazeBox(data,item.x,.34,item.y,.48,.04,.48,[.06,.7,.8],1.3);
+      const y=.83+Math.sin(now*.003+item.x)*.07,spin=now*.001;
+      mazeBox(data,item.x,y,item.y,.28,.30,.28,[.05,.75,.85],1.0,spin);
+      mazeBox(data,item.x,y+.005,item.y,.31,.045,.31,[1,.68,.18],.8,spin);
+      mazeBox(data,item.x,y,item.y,.045,.33,.31,[1,.68,.18],.8,spin);
     }
-    ctx.fillStyle=stage2.collected===3?"#62f28a":"#89948e";
-    ctx.fillRect(mapX+stage2.exit.x*cell-3,mapY+stage2.exit.y*cell-3,6,6);
-    ctx.fillStyle="#ffffff";
+    if(!stage2.hub){
+    const portal=stage2.exit,unlocked=stage2.collected===3,pc=unlocked?[.12,.85,.46]:[.8,.15,.25];
+    mazeBox(data,portal.x-.32,1,portal.y,.08,2,.15,pc,1.2);
+    mazeBox(data,portal.x+.32,1,portal.y,.08,2,.15,pc,1.2);
+    mazeBox(data,portal.x,1.96,portal.y,.72,.08,.15,pc,1.2);
+    mazeBox(data,portal.x,.05,portal.y,.72,.08,.55,pc,.7);
+    }
+    for(const o of stage2.obstacles){mazeBox(data,o.x,o.h/2,o.z,o.w,o.h,o.d,[.40,.24,.15]);mazeBox(data,o.x,o.h+.012,o.z,o.w,.025,o.d,[.95,.57,.12],.4);}
+    for(const c of stage2.candies){if(profile.claimed[c.id])continue;const y=.55+Math.sin(now*.003+c.x)*.07;mazeRound(data,[c.x,y,c.y],[.14,.10,.10],[1,.19,.48],null,.7);mazeBox(data,c.x,y,c.y,.40,.045,.07,[1,.75,.24],.7,now*.002);}
+    const {eye,forward,right,up,distance}=mazeCamera(now);
+    for(const e of stage2.enemies)if(!mazeGL.software||s2Visible(eye[0],eye[2],e.x,e.y))mazeStressMonster(data,e,now);
+    const swing=now<stage2.attackUntil?Math.sin((1-(stage2.attackUntil-now)/220)*Math.PI):0;
+    if(stage2.thirdPerson&&distance>.38){
+      mazeCharacter(data,stage2.x,stage2.y,stage2.angle-Math.PI/2,stage2.walkPhase||0,stage2.walking,false,false,swing,stage2.jumpZ);
+    }else{
+      const hand=eye.map((v,i)=>v+forward[i]*.40+right[i]*(.23-swing*.30)-up[i]*.30);
+      const elbow=eye.map((v,i)=>v+forward[i]*.19+right[i]*.27-up[i]*.43);
+      mazeLimb(data,elbow,hand,.045,rgb(outfit().color));mazeRound(data,hand,[.045,.06,.045],[.74,.49,.32]);
+      mazeBox(data,hand[0],hand[1]+.08,hand[2],.045,.36,.025,[.65,.40,.09],0,stage2.angle+swing*1.5);
+      for(let i=0;i<7;i++)mazeBox(data,hand[0]-forward[0]*.017,hand[1]-.02+i*.035,hand[2]-forward[2]*.017,.05,.006,.035,[.08,.09,.10],0,stage2.angle);
+    }
+    if(mazeGL.software){renderSoftwareMaze(data,eye,forward,right,up);return true}
+    gl.viewport(0,0,W,H);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(mazeGL.program);
+    gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);gl.uniform3fv(uniforms.uRight,right);gl.uniform3fv(uniforms.uUp,up);gl.uniform1f(uniforms.uAspect,W/H);gl.uniform1f(uniforms.uLamp,stage2.hub||stage2.flashlight?1:0);gl.uniform1f(uniforms.uHub,stage2.hub?1:0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,mazeGL.buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.DYNAMIC_DRAW);gl.drawArrays(gl.TRIANGLES,0,data.length/10);
+    ctx.drawImage(surface,0,0,W,H);return true;
+  }
+  function drawStage2(){
+    ctx.setTransform(1,0,0,1,0,0);ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.shadowBlur=0;ctx.globalAlpha=1;
+    renderMaze3D();
+    if(gameNow()<stage2.invuln){ctx.fillStyle='rgba(255,30,60,.13)';ctx.fillRect(0,0,W,H)}
+    // Crosshair
+    ctx.save();
+    ctx.strokeStyle="rgba(255,255,255,.75)";
+    ctx.lineWidth=2;
     ctx.beginPath();
-    ctx.arc(mapX+stage2.x*cell,mapY+stage2.y*cell,3.5,0,Math.PI*2);
-    ctx.fill();
-    ctx.strokeStyle="#ffffff";
-    ctx.beginPath();
-    ctx.moveTo(mapX+stage2.x*cell,mapY+stage2.y*cell);
-    ctx.lineTo(
-      mapX+(stage2.x+Math.cos(stage2.angle)*.8)*cell,
-      mapY+(stage2.y+Math.sin(stage2.angle)*.8)*cell
-    );
+    ctx.moveTo(W/2-8,H/2);ctx.lineTo(W/2+8,H/2);
+    ctx.moveTo(W/2,H/2-8);ctx.lineTo(W/2,H/2+8);
     ctx.stroke();
     ctx.restore();
+
+    // Titel / Steuerung
+    drawRoundedRect(24,24,410,60,12,"rgba(3,8,18,.74)","rgba(118,235,255,.22)");
+    ctx.fillStyle="#ffffff";
+    ctx.font="900 20px system-ui";
+    ctx.fillText(stage2.hub?"KLASSENZIMMER · START":"DAS VERLASSENE LABYRINTH",40,51);
+    ctx.fillStyle="#7deeff";
+    ctx.font="700 12px system-ui";
+    ctx.fillText("Maus · WASD · Space Sprung · V Kamera · L Lampe",40,72);
+    if(stage2.hub){
+      const target=hubTargets.find(t=>Math.hypot(t.x-stage2.x,t.z-stage2.y)<1.85);
+      drawRoundedRect(150,H-74,660,44,12,'rgba(3,8,18,.85)');ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 16px system-ui';
+      ctx.fillText(target?'E · '+target.name:'Wandtafel vorne: Level wählen · Garderobe rechts: Kleidung',W/2,H-47);ctx.textAlign='left';
+      const cam=mazeCamera(gameNow());
+      for(const t of hubTargets){const pos=[t.x,1.9,t.z],d=pos.map((v,i)=>v-cam.eye[i]),z=d.reduce((v,n,i)=>v+n*cam.forward[i],0);if(z>.1){const px=W/2+d.reduce((v,n,i)=>v+n*cam.right[i],0)*H*.66/z,py=H/2-d.reduce((v,n,i)=>v+n*cam.up[i],0)*H*.66/z;if(px>20&&px<W-20&&py>90&&py<H-100){ctx.textAlign='center';ctx.font='bold 15px system-ui';ctx.lineWidth=5;ctx.strokeStyle='#142724';ctx.strokeText(t.id==='levels'?'LEVELAUSWAHL':'GARDEROBE',px,py);ctx.fillStyle='#fff5cf';ctx.fillText(t.id==='levels'?'LEVELAUSWAHL':'GARDEROBE',px,py);ctx.textAlign='left';}}}
+    }else{drawRoundedRect(W-260,24,236,62,10,'rgba(3,8,18,.9)');ctx.fillStyle=stage2.lightHeat>.7?'#ff667c':'#b8eeec';ctx.font='bold 13px system-ui';ctx.fillText('L · LAMPE '+(stage2.flashlight?'AN':'AUS'),W-244,47);ctx.fillStyle='#293442';ctx.fillRect(W-244,60,204,8);ctx.fillStyle=stage2.lightHeat>.7?'#ff526d':'#e8c677';ctx.fillRect(W-244,60,204*stage2.lightHeat,8);const shade=ctx.createRadialGradient(W/2,H/2,120,W/2,H/2,560);shade.addColorStop(0,'transparent');shade.addColorStop(1,'rgba(8,0,12,.66)');ctx.fillStyle=shade;ctx.fillRect(0,0,W,H);}
   }
 
 
@@ -2494,7 +3226,7 @@
   // verwenden aber vollständig eigene Formen, Figuren und Level.
   // ================================================================
   const stage3 = {
-    worldW:2700,
+    worldW:6800,
     x:80,y:406,w:28,h:44,
     vx:0,vy:0,
     facing:1,
@@ -2507,13 +3239,18 @@
     pickups:[],
     enemies:[],
     platforms:[],
-    exitX:2570
+    exitX:6620
   };
 
   function resetStage3(){
+    if(document.pointerLockElement===canvas)document.exitPointerLock?.();
     gameStage=3;
     stage3.x=80; stage3.y=406;
     stage3.vx=0; stage3.vy=0;
+    stage3.dashUntil=0;stage3.dashReady=0;stage3.dashDir=1;
+    stage3.runPhase=0;stage3.trails=[];stage3.lastTrail=0;
+    stage3.lastGround=gameNow();stage3.jumpBuffer=0;
+    stage3.landUntil=0;stage3.deadUntil=0;
     stage3.facing=1;
     stage3.onGround=true;
     stage3.cameraX=0;
@@ -2521,27 +3258,34 @@
     stage3.invulnUntil=0;
     stage3.attackUntil=0;
     stage3.collected=0;
+    stage3.candies=[250,610,920,1320,1590,2050,2270,2620,3100,3490,3670,4250,4500,5010,5500,5820,6200,6530].map((x,i)=>({x,y:[610,920,1320,1590,3490,3670,4250,5500,5820,6200].includes(x)?({610:363,920:353,1320:353,1590:278,3490:353,3670:248,4250:343,5500:353,5820:268,6200:348}[x]):420,id:'candy-neon-'+i}));
+    stage3.checkpoint=80;stage3.checkpoints=[{x:2200,lit:false},{x:4420,lit:false}];
+    stage3.gaps=[{x:1040,w:145},{x:2840,w:170},{x:4770,w:160},{x:6030,w:155}];
+    stage3.spikes=[{x:720,w:90},{x:1870,w:105},{x:3280,w:110},{x:4120,w:95},{x:5310,w:115},{x:6300,w:100}];
+    stage3.gates=[{x:2470,phase:0},{x:3930,phase:1300},{x:5690,phase:650}];
     stage3.pickups=[
-      {x:650,y:355,label:"Mut",got:false},
-      {x:1430,y:305,label:"Fokus",got:false},
-      {x:2260,y:355,label:"Ziel",got:false}
+      {x:1590,y:275,label:'Mut',got:false},
+      {x:3670,y:245,label:'Fokus',got:false},
+      {x:5820,y:265,label:'Ziel',got:false}
     ];
     stage3.enemies=[
-      {x:470,y:414,w:28,h:36,min:430,max:610,dir:1,dead:false},
-      {x:930,y:414,w:28,h:36,min:860,max:1080,dir:-1,dead:false},
-      {x:1370,y:414,w:28,h:36,min:1290,max:1510,dir:1,dead:false},
-      {x:1840,y:414,w:28,h:36,min:1750,max:1980,dir:-1,dead:false},
-      {x:2310,y:414,w:28,h:36,min:2220,max:2430,dir:1,dead:false}
-    ];
+      [450,340,650,1],[1360,1240,1730,1],[1760,1650,1840,2],[2050,2000,2140,1],
+      [2580,2530,2780,2],[3130,3050,3220,1],[3490,3420,3790,1],
+      [4010,3990,4090,2],[4550,4490,4690,1],[5000,4960,5230,2],
+      [5510,5460,5630,1],[5900,5830,5990,2],[6490,6430,6550,2]
+    ].map(([x,min,max,hp],i)=>({x,y:414,w:28,h:36,min,max,dir:i%2?-1:1,dead:false,hp,maxHp:hp,hitUntil:0}));
     stage3.platforms=[
-      {x:560,y:380,w:170,h:18},
-      {x:1180,y:350,w:180,h:18},
-      {x:1390,y:330,w:140,h:18},
-      {x:2050,y:380,w:190,h:18}
+      {x:570,y:385,w:130,h:18},{x:880,y:375,w:145,h:18},
+      {x:1300,y:375,w:150,h:18},{x:1460,y:325,w:130,h:18},{x:1560,y:300,w:130,h:18},
+      {x:1990,y:370,w:150,h:18},{x:2690,y:365,w:140,h:18},
+      {x:3420,y:375,w:150,h:18},{x:3540,y:320,w:130,h:18},{x:3650,y:270,w:140,h:18},
+      {x:4240,y:365,w:145,h:18},{x:4590,y:375,w:160,h:18},
+      {x:5450,y:375,w:150,h:18},{x:5610,y:325,w:150,h:18},{x:5780,y:290,w:140,h:18},
+      {x:6150,y:370,w:130,h:18}
     ];
     keys.clear();
     stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 3: Neon-Action";
-    hud.textContent=isCompactMobile() ? "♥♥♥ · ✦ 0/3 · 👾 5" : "Etappe 3/3 · ♥♥♥ · ✦ 0/3";
+    hud.textContent=isCompactMobile() ? "♥♥♥ · ✦ 0/3 · 👾 13" : "Etappe 3/3 · ♥♥♥ · ✦ 0/3";
     updateMobileUI();
   }
 
@@ -2549,47 +3293,85 @@
     resetStage3();
     showStageCard(
       "⚡ Etappe 3",
-      "Neon-Action",
-      "Die Perspektive wechselt erneut: schnelle 2D-Side-Scroller-Action mit eigener Neon-Pixel-Optik. Sammle Mut, Fokus und Ziel. A/D oder ←/→ = laufen, Leertaste = springen, F = Nahkampfangriff.",
+      "Die Schattenstadt",
+      "Die Perspektive wechselt erneut: schnelle 2D-Side-Scroller-Action mit eigener Neon-Pixel-Optik. Überquere die Schattenstadt mit Abgründen, Dornen und roten Sperren. Die Sperren wechseln zwischen Rot (gefährlich) und Blau (frei); mit X kannst du durch rote Sperren dashen. Grüne Laternen sind Checkpoints. Sammle Mut, Fokus und Ziel. A/D oder ←/→ = laufen, Leertaste = springen, F = Nahkampfangriff. Shift halten = Rennen. X = Dash mit kurzem Schutz (auch in der Luft). Kurzes Drücken der Sprungtaste = kleiner Sprung; gedrückt halten = hoher Sprung.",
       "Neon-Etappe starten"
     );
   }
 
   function s3Jump(){
-    if(stage3.onGround){
-      stage3.vy=-560;
-      stage3.onGround=false;
-      beep(520,.05);
-    }
+    stage3.jumpBuffer=gameNow()+120;
+  }
+
+  function s3Dash(){
+    const now=gameNow();
+    if(now<stage3.dashReady || stage3.deadUntil>now)return;
+    stage3.dashDir=stage3.facing;
+    stage3.dashUntil=now+180;stage3.dashReady=now+900;
+    stage3.invulnUntil=Math.max(stage3.invulnUntil,stage3.dashUntil);
+    tone(180,.18,'triangle',.24,0,false,650);
   }
 
   function s3Attack(){
-    stage3.attackUntil=performance.now()+180;
-    beep(690,.045);
+    if(gameNow()<(stage3.attackUntil||0)+180)return;
+    stage3.attackUntil=gameNow()+180;
+    effect('attack');
   }
 
   function s3Rect(){
     return {x:stage3.x,y:stage3.y,w:stage3.w,h:stage3.h};
   }
 
+  function s3GateOn(g,now){return (now+g.phase)%3200<1600}
+  function respawnStage3(){
+    stage3.x=stage3.checkpoint;stage3.y=406;stage3.vx=0;stage3.vy=0;
+    stage3.health=3;stage3.deadUntil=0;stage3.invulnUntil=gameNow()+1800;
+    stage3.onGround=true;stage3.dashUntil=0;stage3.dashReady=0;stage3.trails=[];
+    stage3.cameraX=Math.max(0,Math.min(stage3.worldW-W,stage3.x-260));
+    keys.clear();showMessage('Zurück am Checkpoint · Deine Symbole bleiben erhalten.',1800);
+  }
+  function hurtStage3(now,fallen=false){
+    if(stage3.deadUntil||(!fallen&&now<stage3.invulnUntil))return;
+    stage3.health=Math.max(0,stage3.health-1);stage3.invulnUntil=now+1000;beep(150,.15);
+    if(stage3.health===0){stage3.deadUntil=now+650;showMessage('Der Schatten erwischt dich · Neustart am Checkpoint',1100);return}
+    if(fallen){stage3.x=stage3.checkpoint;stage3.y=406;stage3.vx=0;stage3.vy=0;stage3.onGround=true;stage3.cameraX=Math.max(0,stage3.x-260);stage3.trails=[]}
+    else{stage3.vy=-280;stage3.onGround=false}
+  }
   function updateStage3(dt,now){
+    if(stage3.deadUntil){if(now>=stage3.deadUntil)respawnStage3();return}
+    const wasGrounded=stage3.onGround,fallSpeed=stage3.vy;
+    if(wasGrounded)stage3.lastGround=now;
+    if(stage3.jumpBuffer>now && now-stage3.lastGround<100){
+      stage3.vy=-560;stage3.onGround=false;stage3.lastGround=-1000;stage3.jumpBuffer=0;effect('jump');
+    }
+    const dashing=now<stage3.dashUntil;
     let move=0;
     if(keys.has("KeyA") || keys.has("ArrowLeft")) move-=1;
     if(keys.has("KeyD") || keys.has("ArrowRight")) move+=1;
 
-    stage3.vx=move*285;
-    if(move) stage3.facing=Math.sign(move);
+    stage3.sprinting=!!move&&(keys.has("ShiftLeft")||keys.has("ShiftRight"));
+    const desired=move*(stage3.sprinting?GAME_DATA.motion.sprintSpeed:GAME_DATA.motion.walkSpeed);
+    const acceleration=(move?2600:3400)*dt;
+    stage3.vx+=(desired-stage3.vx)*response(dt);
+    if(dashing){stage3.vx=stage3.dashDir*780;stage3.vy=0}
+    else if(move)stage3.facing=Math.sign(move);
+    stage3.runPhase+=Math.abs(stage3.vx)*dt*.065;
+    stage3.trails=stage3.trails.filter(t=>now-t.time<230);
+    if(dashing&&now-stage3.lastTrail>28){
+      stage3.lastTrail=now;stage3.trails.push({x:stage3.x,y:stage3.y,facing:stage3.dashDir,phase:stage3.runPhase,time:now});
+    }
 
     stage3.x+=stage3.vx*dt;
     stage3.x=Math.max(20,Math.min(stage3.worldW-stage3.w-20,stage3.x));
 
     const oldBottom=stage3.y+stage3.h;
-    stage3.vy+=1450*dt;
+    if(!dashing)stage3.vy+=(stage3.vy<0&&!keys.has("Space")?2450:1450)*dt;
     stage3.y+=stage3.vy*dt;
     stage3.onGround=false;
 
     const groundY=450;
-    if(stage3.y+stage3.h>=groundY){
+    const overGap=stage3.gaps.some(g=>stage3.x+stage3.w*.5>g.x&&stage3.x+stage3.w*.5<g.x+g.w);
+    if(stage3.y+stage3.h>=groundY&&!overGap){
       stage3.y=groundY-stage3.h;
       stage3.vy=0;
       stage3.onGround=true;
@@ -2609,6 +3391,16 @@
       }
     }
 
+    if(stage3.onGround&&!wasGrounded&&fallSpeed>120){stage3.landUntil=now+130;effect('step')}
+
+    if(stage3.y>H+90){hurtStage3(now,true);return}
+    for(const cp of stage3.checkpoints){
+      if(!cp.lit&&Math.abs(stage3.x-cp.x)<45&&stage3.onGround){cp.lit=true;stage3.checkpoint=cp.x;stage3.health=3;effect('win');showMessage('Checkpoint erreicht · Herzen aufgefüllt',1800)}
+    }
+    const heroBox=s3Rect();
+    if(stage3.spikes.some(h=>rectsOverlap(heroBox,{x:h.x,y:433,w:h.w,h:17})))hurtStage3(now);
+    if(stage3.gates.some(g=>s3GateOn(g,now)&&rectsOverlap(heroBox,{x:g.x,y:265,w:18,h:185})))hurtStage3(now);
+    if(stage3.deadUntil)return;
     // Pickups
     for(const p of stage3.pickups){
       if(p.got) continue;
@@ -2629,20 +3421,27 @@
       const enemyCenter=e.x+e.w/2;
       const dist=playerCenter-enemyCenter;
 
-      if(Math.abs(dist)<235){
-        e.x+=Math.sign(dist)*105*dt;
+      const oldEnemyX=e.x;
+      e.alert=Math.abs(dist)<300;
+      if(e.alert){
+        e.dir=Math.sign(dist)||e.dir;
+        e.x+=e.dir*(e.maxHp===2?116:142)*dt;
       }else{
         e.x+=e.dir*62*dt;
         if(e.x<e.min){e.x=e.min;e.dir=1}
         if(e.x>e.max){e.x=e.max;e.dir=-1}
       }
 
-      if(attacking){
+      e.x=Math.max(e.min,Math.min(e.max,e.x));
+      e.phase=(e.phase||0)+Math.abs(e.x-oldEnemyX)*.09;
+      if(attacking&&now>(e.hitUntil||0)){
         const attackCenter=stage3.x+stage3.w/2+stage3.facing*44;
         if(Math.abs(enemyCenter-attackCenter)<48 &&
            Math.abs((e.y+e.h/2)-(stage3.y+stage3.h/2))<48){
-          e.dead=true;
-          beep(880,.055);
+          e.hp--;e.hitUntil=now+250;
+          e.x=Math.max(e.min,Math.min(e.max,e.x+stage3.facing*28));
+          e.dead=e.hp<=0;
+          beep(e.dead?880:440,.055);
           burst(
             Math.max(20,Math.min(W-20,e.x-stage3.cameraX)),
             e.y+e.h/2,
@@ -2655,17 +3454,9 @@
       if(now>stage3.invulnUntil &&
          stage3.x<e.x+e.w && stage3.x+stage3.w>e.x &&
          stage3.y<e.y+e.h && stage3.y+stage3.h>e.y){
-        stage3.health--;
-        stage3.invulnUntil=now+900;
-        stage3.x-=Math.sign(dist||1)*45;
-        stage3.vy=-260;
-        beep(160,.08);
-
-        if(stage3.health<=0){
-          showMessage("Keine Herzen mehr – Etappe 3 startet neu.",1000);
-          setTimeout(()=>resetStage3(),700);
-          return;
-        }
+        hurtStage3(now);
+        stage3.x=Math.max(20,stage3.x-Math.sign(dist||1)*28);
+        if(stage3.deadUntil)return;
       }
     }
 
@@ -2684,6 +3475,7 @@
 
     const hearts="♥".repeat(stage3.health)+"♡".repeat(3-stage3.health);
     const remaining=stage3.enemies.filter(e=>!e.dead).length;
+    document.getElementById('mobileDash').classList.toggle('cooldown',false);
     hud.textContent=isCompactMobile()
       ? `${hearts} · ✦ ${stage3.collected}/3 · 👾 ${remaining}`
       : `Etappe 3/3 · ${hearts} · ✦ ${stage3.collected}/3 · Gegner ${remaining}`;
@@ -2713,8 +3505,96 @@
     ctx.restore();
   }
 
+  function drawNeonEnemy(e,x,now){
+    ctx.save();ctx.translate(Math.round(x+e.w/2),Math.round(e.y+e.h));ctx.scale(e.dir,1);
+    const step=Math.sin(e.phase||0),bob=Math.abs(Math.cos(e.phase||0))*1.3;
+    const index=stage3.enemies.indexOf(e),armor=['#ae355d','#6c57b5','#ae6542'][index%3];
+    function limb(points,color,width){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='square';ctx.lineJoin='bevel';ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke()}
+    // Boots, articulated knees, jacket, helmet, illuminated visor and baton.
+    limb([[-4,-14],[-6+step*4,-8],[step*9,-1]],'#25253c',6);
+    limb([[4,-14],[5-step*4,-8],[-step*9,-1]],'#42445c',6);
+    limb([[step*9,-1],[step*9+4,-1]],'#a6adba',3);
+    limb([[-step*9,-1],[-step*9+4,-1]],'#a6adba',3);
+    ctx.translate(e.alert?3:1,-bob);
+    ctx.fillStyle=armor;ctx.fillRect(-9,-29,18,16);
+    ctx.fillStyle='#212538';ctx.fillRect(-8,-15,16,4);ctx.fillStyle='#d8b367';ctx.fillRect(-2,-15,4,3);
+    ctx.fillStyle='#202537';ctx.fillRect(-8,-38,16,11);
+    ctx.fillStyle='#4b526c';ctx.fillRect(-7,-39,14,4);
+    ctx.fillStyle=e.alert?'#ff556f':'#b998d9';ctx.fillRect(0,-33,8,3);
+    if(e.maxHp===2){ctx.fillStyle='#58416d';ctx.beginPath();ctx.moveTo(-8,-36);ctx.lineTo(-13,-47);ctx.lineTo(-2,-38);ctx.fill();ctx.beginPath();ctx.moveTo(6,-36);ctx.lineTo(12,-46);ctx.lineTo(10,-35);ctx.fill()}
+    if((e.hp||0)>1){ctx.fillStyle='#f38bb9';ctx.fillRect(-9,-49,18,2)}
+    limb([[-6,-26],[-11,-21],[-9+step*4,-16]],armor,5);
+    const hand=e.alert?[16,-23]:[10-step*4,-18];
+    limb([[6,-26],[12,-22],hand],armor,5);
+    limb([hand,[hand[0]+(e.alert?13:4),hand[1]-12]],'#f5b47a',3);
+    ctx.fillStyle='#d4dce4';ctx.fillRect(-5,-26,4,5);
+    if(e.alert){ctx.fillStyle='#ffcf73';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('!',0,-45)}
+    ctx.restore();
+  }
+
+  function drawNeonHero(x,y,facing,phase,pose,alpha,ghost,now){
+    ctx.save();ctx.globalAlpha=alpha;
+    ctx.translate(Math.round(x+14),Math.round(y+44));ctx.scale(facing,1);
+    const run=pose==='run',dash=pose==='dash',air=pose==='rise'||pose==='fall';
+    const stride=run?gait(phase):0;
+    const bob=run?Math.abs(Math.cos(phase))*2:pose==='idle'?Math.sin(now*.003)*.8:0;
+    const crouch=dash?13:pose==='land'?7:0;
+    const lean=dash?12:run?5:pose==='attack'?7:0;
+    const cloth=ghost?'#61f4e3':outfit().color,dark=ghost?'#61f4e3':'#283047';
+    const skin=ghost?'#61f4e3':'#f0c8a5',pink=ghost?'#61f4e3':outfit().scarf;
+    function limb(points,color,width){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='square';ctx.lineJoin='bevel';ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke()}
+    const hipY=-17+crouch-bob;
+    const footA=dash?[-20,-2]:air?[-10,-10]:[stride*12,-Math.max(0,stride)*7];
+    const footB=dash?[8,-2]:air?[10,-5]:[-stride*12,-Math.max(0,-stride)*7];
+    limb([[-3,hipY],[-6+footA[0]*.45,(hipY+footA[1])*.5],footA],dark,6);
+    limb([[3,hipY],[4+footB[0]*.45,(hipY+footB[1])*.5],footB],ghost?dark:'#3d4964',6);
+    limb([footA,[footA[0]+5,footA[1]]],dark,4);limb([footB,[footB[0]+5,footB[1]]],dark,4);
+    ctx.save();ctx.translate(lean,crouch-bob);ctx.rotate(dash?.28:run?.13:0);
+    // Scarf reacts to movement, with a different silhouette in the dash.
+    limb([[-3,-33],[-16,-32+Math.sin(phase*.7)*3],[-(dash?37:run?29:20),-28+Math.sin(now*.016)*3]],pink,4);
+    ctx.fillStyle=cloth;ctx.fillRect(-8,-33,16,18);ctx.fillStyle=dark;ctx.fillRect(-8,-18,16,4);
+    ctx.fillStyle=skin;ctx.fillRect(-6,-44,13,12);ctx.fillStyle=dark;ctx.fillRect(-8,-46,15,6);ctx.fillRect(-9,-41,5,9);
+    ctx.fillStyle=pink;ctx.fillRect(-7,-37,16,3);
+    if(profile.hat==='beanie'){ctx.fillStyle=pink;ctx.fillRect(-8,-48,16,7);ctx.fillRect(-5,-51,10,4)}
+    if(profile.hat==='phones'){ctx.strokeStyle='#54d8df';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-39,8,Math.PI,Math.PI*2);ctx.stroke();ctx.fillStyle='#54d8df';ctx.fillRect(-9,-43,4,8)}
+    const hand=pose==='attack'?[25,-23]:dash?[15,-18]:air?[9,-28]:[8-stride*7,-21];
+    limb([[4,-30],[11,-25],hand],cloth,5);
+    limb([[-5,-30],[-10,-23],[-8+stride*7,-18]],ghost?cloth:'#a8b9ce',4);
+    const bladeAngle=pose==='attack'?-1.3+(1-(stage3.attackUntil-now)/180)*2.5:dash?-.3:-.85;
+    const tx=hand[0]+Math.cos(bladeAngle)*32,ty=hand[1]+Math.sin(bladeAngle)*32;
+    limb([hand,[tx,ty]],ghost?cloth:'#8dfff0',2);
+    ctx.restore();ctx.restore();
+  }
+
+  function drawShadowLandscape(cam,now){
+    // Industrial silhouettes and watching eyes behind the traversable foreground.
+    for(let i=0;i<25;i++){
+      const x=i*290-cam*.65;if(x<-120||x>W+120)continue;
+      ctx.fillStyle='#0a0c16';ctx.fillRect(x,210+(i%3)*25,19,240);
+      ctx.strokeStyle='#171928';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x+8,220);ctx.lineTo(x+67,255);ctx.lineTo(x+67,330);ctx.stroke();
+      ctx.fillStyle='rgba(230,98,112,.38)';ctx.fillRect(x+35,320,4,2);ctx.fillRect(x+43,320,4,2);
+    }
+    for(const gap of stage3.gaps){const x=gap.x-cam;if(x>W||x+gap.w<0)continue;
+      ctx.fillStyle='#02030a';ctx.fillRect(x,450,gap.w,90);ctx.fillStyle='#b44869';ctx.fillRect(x-3,447,4,5);ctx.fillRect(x+gap.w,447,4,5);
+      ctx.fillStyle='rgba(230,63,98,.3)';ctx.fillRect(x+gap.w*.42,505,5,3);ctx.fillRect(x+gap.w*.42+13,505,5,3);
+    }
+    for(const trap of stage3.spikes){const x=trap.x-cam;if(x>W||x+trap.w<0)continue;
+      ctx.fillStyle='#f58d99';for(let i=0;i<trap.w;i+=15){ctx.beginPath();ctx.moveTo(x+i,450);ctx.lineTo(x+i+7,432);ctx.lineTo(x+i+14,450);ctx.fill()}
+    }
+    for(const gate of stage3.gates){const x=gate.x-cam;if(x<-40||x>W+40)continue;const on=s3GateOn(gate,now);
+      ctx.fillStyle='#30364c';ctx.fillRect(x-6,256,30,12);ctx.fillRect(x-6,444,30,6);
+      ctx.fillStyle=on?'#f25d7c':'#68d7da';ctx.fillRect(x,264,18,on?180:4);
+      if(on){ctx.fillStyle='rgba(238,65,106,.12)';ctx.fillRect(x-10,265,38,179)}
+      drawReadableLabel(on?'SHIFT →':'FREI',x+9,245,{font:'bold 10px system-ui',bg:'rgba(5,8,18,.85)'});
+    }
+    for(const cp of stage3.checkpoints){const x=cp.x-cam;if(x<-70||x>W+70)continue;
+      ctx.fillStyle='#293a43';ctx.fillRect(x,346,8,104);ctx.fillStyle=cp.lit?'#6ce4b0':'#d3d8b3';ctx.fillRect(x-10,326,28,25);
+      ctx.fillStyle='rgba(105,225,179,.08)';ctx.beginPath();ctx.arc(x+4,340,54,0,Math.PI*2);ctx.fill();
+      drawReadableLabel(cp.lit?'GESICHERT':'CHECKPOINT',x+4,317,{font:'bold 10px system-ui',bg:'rgba(5,8,18,.8)'});
+    }
+  }
   function drawStage3(){
-    const now=performance.now();
+    const now=gameNow();
     ctx.setTransform(1,0,0,1,0,0);
     ctx.textAlign="left";
     ctx.textBaseline="alphabetic";
@@ -2732,7 +3612,7 @@
     // Mond / Neon-Sonne
     ctx.save();
     ctx.globalAlpha=.8;
-    ctx.fillStyle="#e04e8c";
+    ctx.fillStyle="#853f57";
     ctx.beginPath();ctx.arc(760,115,58,0,Math.PI*2);ctx.fill();
     ctx.fillStyle="#090817";
     for(let y=80;y<150;y+=11) ctx.fillRect(700,y,120,4);
@@ -2761,6 +3641,7 @@
     ctx.fillStyle="rgba(210,58,137,.18)";
     for(let x=-((cam*.7)%60);x<W;x+=60) ctx.fillRect(x,478,28,3);
 
+    drawShadowLandscape(cam,now);
     // Plattformen
     for(const p of stage3.platforms){
       const sx=p.x-cam;
@@ -2772,6 +3653,7 @@
       ctx.fillStyle="#d34c91";
       for(let x=sx+8;x<sx+p.w-4;x+=26) ctx.fillRect(x,p.y+8,12,3);
     }
+
 
     // Pickups
     for(const p of stage3.pickups){
@@ -2792,23 +3674,14 @@
       drawReadableLabel(p.label,sx,p.y+37,{font:"800 11px system-ui",bg:"rgba(20,12,32,.82)"});
     }
 
+    for(const candy of stage3.candies||[])if(!profile.claimed[candy.id]&&Math.abs(candy.x-cam-W/2)<W)drawCandy(candy.x-cam,candy.y,.9);
     // Gegner
     for(const e of stage3.enemies){
       if(e.dead) continue;
       const sx=e.x-cam;
       if(sx<-80 || sx>W+80) continue;
 
-      ctx.save();
-      ctx.translate(Math.round(sx),Math.round(e.y));
-      ctx.fillStyle="#c7426c";
-      ctx.fillRect(0,6,e.w,e.h-6);
-      ctx.fillStyle="#191426";
-      ctx.fillRect(4,0,e.w-8,12);
-      ctx.fillStyle="#f7e4ee";
-      ctx.fillRect(e.dir>0?18:6,5,4,3);
-      ctx.fillStyle="#8c2d50";
-      ctx.fillRect(-5,19,8,5);
-      ctx.restore();
+      drawNeonEnemy(e,sx,now);
     }
 
     // Ausgang
@@ -2827,39 +3700,28 @@
       {font:"900 11px system-ui",bg:"rgba(12,17,29,.86)"}
     );
 
-    // Spieler
-    const px=stage3.x-cam;
-    ctx.save();
-    ctx.translate(Math.round(px+stage3.w/2),Math.round(stage3.y+stage3.h/2));
-    if(now<stage3.invulnUntil && Math.floor(now/80)%2===0) ctx.globalAlpha=.35;
-
-    // Körper
-    ctx.fillStyle="#eeeeef";
-    ctx.fillRect(-9,-17,18,26);
-    ctx.fillStyle="#252036";
-    ctx.fillRect(-9,9,7,13);
-    ctx.fillRect(2,9,7,13);
-    ctx.fillStyle="#e24a8d";
-    ctx.fillRect(stage3.facing>0?5:-9,-11,4,5);
-
-    // Schwert / Linealartige Klinge
-    ctx.strokeStyle="#75f4e2";
-    ctx.lineWidth=4;
-    ctx.beginPath();
-    ctx.moveTo(stage3.facing*8,-2);
-    ctx.lineTo(stage3.facing*25,-8);
-    ctx.stroke();
-
-    if(now<stage3.attackUntil){
-      ctx.strokeStyle="#f6d85e";
-      ctx.lineWidth=7;
-      ctx.globalAlpha=.75;
-      ctx.beginPath();
-      if(stage3.facing>0) ctx.arc(7,-2,43,-1.05,1.05);
-      else ctx.arc(-7,-2,43,Math.PI-1.05,Math.PI+1.05);
-      ctx.stroke();
+    // Original articulated pixel hero; poses follow velocity and action state.
+    for(const t of stage3.trails){
+      drawNeonHero(t.x-cam,t.y,t.facing,t.phase,'dash',(1-(now-t.time)/230)*.38,true,now);
     }
-    ctx.restore();
+    const pose=now<stage3.dashUntil?'dash':now<stage3.attackUntil?'attack':
+      !stage3.onGround?(stage3.vy<0?'rise':'fall'):now<stage3.landUntil?'land':
+      Math.abs(stage3.vx)>15?'run':'idle';
+    const alpha=now<stage3.invulnUntil&&pose!=='dash'&&Math.floor(now/80)%2===0?.4:1;
+    drawNeonHero(stage3.x-cam,stage3.y,stage3.facing,stage3.runPhase,pose,alpha,false,now);
+    if(pose==='attack'){
+      const progress=1-(stage3.attackUntil-now)/180;
+      ctx.save();ctx.translate(stage3.x-cam+14,stage3.y+20);ctx.scale(stage3.facing,1);
+      ctx.strokeStyle='#efffff';ctx.shadowColor='#5cf5e4';ctx.shadowBlur=14;
+      ctx.lineWidth=5;ctx.beginPath();ctx.arc(9,0,49,-1.5+progress*.7,.8+progress*.7);ctx.stroke();
+      ctx.strokeStyle='#d34c91';ctx.lineWidth=2;ctx.beginPath();ctx.arc(9,0,57,-1.3+progress*.7,.4+progress*.7);ctx.stroke();ctx.restore();
+    }
+    // Dash cooldown stays visible beside the control legend.
+    const ready=Math.max(0,Math.min(1,1-(stage3.dashReady-now)/900));
+    drawRoundedRect(24,91,116,26,7,'rgba(8,7,18,.8)');
+    ctx.fillStyle='#374158';ctx.fillRect(32,110,98,3);
+    ctx.fillStyle=ready===1?'#71f5da':'#dc5b9f';ctx.fillRect(32,110,98*ready,3);
+    ctx.font='bold 11px system-ui';ctx.fillText(ready===1?'RENNEN HALTEN BEREIT':'DASH LÄDT',32,104);
 
     // Speed lines while moving
     if(Math.abs(stage3.vx)>10){
@@ -2874,6 +3736,10 @@
       ctx.restore();
     }
 
+    // Slow moving fog adds atmosphere while leaving the ground readable.
+    ctx.save();ctx.fillStyle='rgba(159,152,190,.065)';
+    for(let i=0;i<7;i++){ctx.beginPath();ctx.ellipse(((i*210-now*.012)%1250+1250)%1250-120,405+Math.sin(i+now*.0005)*20,160,19,0,0,Math.PI*2);ctx.fill()}
+    ctx.restore();
     // Scanlines
     ctx.save();
     ctx.globalAlpha=.08;
@@ -2882,21 +3748,25 @@
     ctx.restore();
 
     // Titel
-    drawRoundedRect(22,22,300,61,10,"rgba(8,7,18,.82)","rgba(226,74,141,.30)");
+    drawRoundedRect(22,22,390,61,10,"rgba(8,7,18,.82)","rgba(226,74,141,.30)");
     ctx.fillStyle="#ffffff";
     ctx.font="900 20px system-ui";
-    ctx.fillText("ETAPPE 3 · NEON-ACTION",38,49);
+    ctx.fillText("ETAPPE 3 · SCHATTENSTADT",38,49);
     ctx.fillStyle="#70eadc";
     ctx.font="700 12px system-ui";
-    ctx.fillText("A/D laufen · Leertaste springen · F angreifen",38,71);
+    ctx.fillText("A/D laufen · Space springen · F Angriff · Shift Rennen · X Dash",38,71);
+    const zone=stage3.x<2200?'01 · Verlassenes Viertel':stage3.x<4420?'02 · Schattenfabrik':'03 · Das letzte Tor';
+    drawReadableLabel(zone,W/2,34,{font:'bold 12px system-ui',bg:'rgba(7,8,16,.8)'});
+    ctx.fillStyle='#253043';ctx.fillRect(W-210,30,182,5);ctx.fillStyle='#d479a8';ctx.fillRect(W-210,30,182*Math.min(1,stage3.x/stage3.exitX),5);
   }
 
   function finishWholeGame(){
     if(finished) return;
+    awardCandy('finish-neon',6);effect("win");
     finished=true;
     started=false;
     keys.clear();
-    const total=formatTime((performance.now()-startTime)/1000);
+    const total=formatTime((gameNow()-startTime)/1000);
     overlay.innerHTML=`
       <div class="card">
         <h1>🎄 Geschafft!</h1>
@@ -2904,35 +3774,27 @@
         <p>Du hast die <strong>2D-Welt</strong>, das <strong>3D-Labyrinth</strong> und die <strong>Neon-Action-Etappe</strong> abgeschlossen.</p>
         <p>Gesamtzeit: <strong>${total}</strong></p>
         <p class="small">Viventa · BVJ 2026/27 · Technology &amp; Design</p>
-        <button id="againBtn">Noch einmal spielen</button>
+        <button id="againBtn">Zum Spielmenü</button>
       </div>`;
     overlay.style.display="flex";
-    document.getElementById("againBtn").onclick=()=>{
-      gameStage=1;
-      levelIndex=0;
-      finished=false;
-      started=true;
-      overlay.style.display="none";
-      startTime=performance.now();
-      stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 1: 2D";
-      updateMobileUI();
-      resetLevel();
-    };
+    document.getElementById("againBtn").onclick=()=>openGameMenu();
   }
 
   function drawCurrentStage(){
-    if(gameStage===1) draw();
-    else if(gameStage===2) drawStage2();
+    if(gameStage===1){draw();drawSchoolMission();}
+    else if((gameStage===2||gameStage===0)) drawStage2();
     else drawStage3();
   }
 
-  function loop(now){
-    const dt=Math.min(.032,(now-last)/1000);
+  function loop(frameNow){
+    const now=gameNow();
+    const dt=Math.min(((gameStage===2||gameStage===0) && mazeGL?.software) ? .10 : .032,(now-last)/1000);
     last=now;
 
-    updateTransitionFX(now);
+    updateAudio(now);
+    if(!paused)updateTransitionFX(now);
 
-    if(started && !finished && !transitionFX.active){
+    if(started && !paused && !finished && !transitionFX.active && !document.hidden){
       if(gameStage===1){
         let dx=0,dy=0;
         if(keys.has("ArrowLeft")||keys.has("KeyA")) dx-=1;
@@ -2944,7 +3806,7 @@
         if(dx&&dy){dx*=Math.SQRT1_2;dy*=Math.SQRT1_2}
 
         movePlayer(dx,dy,dt);
-        updateMovingItems(now);
+        updateSchoolMission(dt);
         updateEnemies(dt,now);
         updateProjectiles(dt);
         updateParticles(dt);
@@ -2959,11 +3821,11 @@
         const buttonDone=(state.redButtons||[]).filter(b=>b.pressed).length;
         const buttonAll=(state.redButtons||[]).length;
         if(isCompactMobile()){
-          hud.innerHTML=`${hearts}<span class="jump-indicator" aria-hidden="true">${jumpMark}</span> · 2D ${levelIndex+1}/3 · 🎒 ${collectedCount()}/3 · 🔴 ${buttonDone}/${buttonAll}`;
+          hud.innerHTML=`${hearts}<span class="jump-indicator" aria-hidden="true">${jumpMark}</span> · 2D ${levelIndex+1}/3 · 🎒 ${state.mission.done?"✓":"Mission"} · 🔴 ${buttonDone}/${buttonAll}`;
         }else{
-          hud.innerHTML=`${hearts}<span class="jump-indicator" aria-hidden="true">${jumpMark}</span> · Etappe 1/3 · Level ${levelIndex+1}/3 · ${collectedCount()}/3 · 🔴 ${buttonDone}/${buttonAll}`;
+          hud.innerHTML=`${hearts}<span class="jump-indicator" aria-hidden="true">${jumpMark}</span> · Etappe 1/3 · Level ${levelIndex+1}/3 · ${state.mission.done?"✓":"Mission"} · 🔴 ${buttonDone}/${buttonAll}`;
         }
-      }else if(gameStage===2){
+      }else if((gameStage===2||gameStage===0)){
         updateStage2(dt);
       }else{
         updateStage3(dt,now);
@@ -2977,7 +3839,9 @@
       updateProjectiles(dt);
     }
 
+    if(started&&!paused&&!finished){collectCandies()}
     drawCurrentStage();
+    drawReadableLabel('🍬 '+profile.candies,W-55,H-18,{font:'bold 14px system-ui',bg:'rgba(9,15,25,.9)'});
 
     if(transitionFX.active){
       drawPixelTransition(now);
@@ -2987,8 +3851,12 @@
   }
 
   function keyDown(code){
-    if(code==="ShiftLeft" || code==="ShiftRight") return;
+    if(code==='Escape'||code==='KeyP'){if(paused)resumeGame();else if(started&&!finished)openGameMenu();return}
+    if(paused||!started||finished||transitionFX.active)return;
+    if(code==="ShiftLeft" || code==="ShiftRight"){keys.add(code);return;}
+    if(code==="KeyL"&&gameStage===2&&!keys.has(code))toggleFlashlight();
 
+    if(code==='KeyV'&&keys.has(code))return;
     keys.add(code);
 
     if(gameStage===1){
@@ -2996,9 +3864,14 @@
       if(code==="Space") jump();
       if(code==="KeyF") attack();
       if(code==="KeyR" && started && !finished) resetLevel();
-    }else if(gameStage===2){
-      if(code==="KeyR" && started && !finished) resetStage2();
+    }else if((gameStage===2||gameStage===0)){
+      if(code==="KeyV" && started && !finished) toggleMazeCamera();
+      if(code==="KeyF" && started && !finished) s2Attack();
+      if(code==='Space')s2Jump();
+      if(code==='KeyE'&&gameStage===0)hubInteract();
+      if(code==="KeyR" && started && !finished){if(gameStage===0)enterClassroom();else resetStage2()}
     }else if(gameStage===3){
+      if(code==="KeyX")s3Dash();
       if(code==="Space" && started && !finished) s3Jump();
       if(code==="KeyF" && started && !finished) s3Attack();
       if(code==="KeyR" && started && !finished) resetStage3();
@@ -3017,6 +3890,7 @@
       e.stopPropagation();
       keys.delete("ShiftLeft");
       keys.delete("ShiftRight");
+      if(!e.repeat)keyDown(e.code);
       return;
     }
 
@@ -3070,7 +3944,7 @@
   }
   joystick.addEventListener("pointerdown",e=>{
     e.preventDefault();
-    if(joystickPointer!==null || !started || finished || transitionFX.active) return;
+    if(joystickPointer!==null || !started || paused || finished || transitionFX.active) return;
     joystickPointer=e.pointerId;
     try{joystick.setPointerCapture(e.pointerId)}catch(_){}
     positionJoystick(e);
@@ -3089,8 +3963,9 @@
   });
 
   document.querySelectorAll(".ctrl").forEach(el=>{
-    const code=el.dataset.key;
+    let code=el.dataset.key;
     const down=e=>{
+      code=el.dataset.key;
       e.preventDefault();
       try{el.setPointerCapture(e.pointerId)}catch(_){}
       el.classList.add("pressed");
@@ -3114,6 +3989,7 @@
   document.getElementById("gamebox").addEventListener("contextmenu",e=>e.preventDefault());
 
   window.addEventListener("blur",()=>{
+    if(started&&!paused&&!finished)openGameMenu();
     stopJoystick();
     keys.clear();
     document.querySelectorAll(".ctrl.pressed").forEach(el=>el.classList.remove("pressed"));
@@ -3126,16 +4002,88 @@
     setTimeout(updateMobileUI,80);
   });
 
+  function orbitMaze(dx,dy){
+    stage2.cameraYaw=(stage2.cameraYaw??stage2.angle)+dx;
+    stage2.pitch=Math.max(-.85,Math.min(.65,(stage2.pitch||0)-dy));
+    if(!stage2.thirdPerson)stage2.angle=stage2.cameraYaw;
+  }
+  let cameraDrag=null;
+  canvas.addEventListener('pointerdown',event=>{
+    if((gameStage!==2&&gameStage!==0)||!started||paused||finished)return;
+    unlockAudio();event.preventDefault();
+    if(event.pointerType==='touch'){cameraDrag={id:event.pointerId,x:event.clientX,y:event.clientY};try{canvas.setPointerCapture(event.pointerId)}catch(_){}return}
+    try{const request=canvas.requestPointerLock?.();request?.catch?.(()=>showMessage('Maus über dem Spielfeld bewegen – freier Blick ist aktiv.',1800))}catch(_){}
+  });
+  canvas.addEventListener('pointermove',event=>{
+    if(paused||!started||(gameStage!==2&&gameStage!==0))return;
+    if(cameraDrag&&event.pointerId===cameraDrag.id){orbitMaze((event.clientX-cameraDrag.x)*.005,(event.clientY-cameraDrag.y)*.005);cameraDrag.x=event.clientX;cameraDrag.y=event.clientY}
+    else if(event.pointerType==='mouse'&&document.pointerLockElement!==canvas)orbitMaze((event.movementX||0)*.0025,(event.movementY||0)*.0025);
+  });
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,()=>{cameraDrag=null});
+  canvas.addEventListener('wheel',event=>{if((gameStage===2||gameStage===0)&&started&&!paused&&stage2.thirdPerson){event.preventDefault();stage2.zoom=Math.max(.65,Math.min(2.6,(stage2.zoom||1.9)+event.deltaY*.002))}},{passive:false});
+  document.addEventListener('mousemove',event=>{if(document.pointerLockElement===canvas&&(gameStage===2||gameStage===0)&&started&&!paused)orbitMaze(event.movementX*.0025,event.movementY*.0025)});
+
+  function enterClassroom(){
+    if(paused){pausedTotal+=performance.now()-pauseRealAt;paused=false}
+    transitionFX.active=false;transitionFX.onSwitch=null;keys.clear();started=true;finished=false;overlay.style.display='none';
+    resetStage2(true);stageLabel.innerHTML='<strong>BVJ 2026/27</strong> · Klassenzimmer';updateMobileUI();last=gameNow();
+    showMessage('Willkommen! Gehe zur Wandtafel und drücke E.',3500);
+  }
+  function resumeGame(){
+    if(!started||finished)return;
+    if(paused){pausedTotal+=performance.now()-pauseRealAt;paused=false}
+    keys.clear();overlay.style.display='none';unlockAudio();last=gameNow();
+  }
+  function newGame(stage=1){
+    if(paused){pausedTotal+=performance.now()-pauseRealAt;paused=false}
+    transitionFX.active=false;transitionFX.onSwitch=null;keys.clear();
+    beginGame();
+    if(stage===2)resetStage2();if(stage===3)resetStage3();
+    showMessage(stage===3?'Schattenstadt · Shift / ⇧ = Rennen · X = Dash · P = Pause':'Viel Erfolg! Menü / P = Pause',2000);
+  }
+  function openGameMenu(view='home'){
+    if(started&&!finished&&!paused){pauseRealAt=performance.now();paused=true}
+    keys.clear();stopJoystick();cameraDrag=null;
+    if(document.pointerLockElement===canvas)document.exitPointerLock?.();
+    menuView=view;overlay.style.display='flex';
+    const canResume=started&&!finished;
+    const heading=view==='levels'?'Wähle deine Etappe':view==='shop'?'Deine Garderobe':view==='help'?'So spielst du':view==='settings'?'Ton & Anzeige':canResume?'Kurze Pause?':'Christmas Escape';
+    let body='';
+    if(view==='home')body=`<p class="subtitle">Drei Welten auf dem Weg zur Lehrstelle. Entkomme dem Stress und erreiche Weihnachten.</p>
+      <div class="menu-actions">${canResume?'<button data-menu="resume">▶ Weiterspielen</button>':''}<button data-menu="classroom">Zum Klassenzimmer</button>${canResume?'<button class="menu-secondary" data-menu="restart">Etappe neu starten</button>':''}</div>
+
+      <div class="menu-actions"><button class="menu-secondary" data-menu="help">Steuerung</button><button class="menu-secondary" data-menu="settings">Einstellungen</button></div>`;
+    if(view==='levels')body=`<p class="subtitle">Dein Outfit begleitet dich durch alle Welten.</p>      <div class="menu-grid"><button class="stage-choice" data-stage-start="1">01 · Schule<small>Werkstatt · Drohne · Gespräch</small></button><button class="stage-choice" data-stage-start="2">02 · Labyrinth<small>3D · Das Stress-Monster</small></button><button class="stage-choice" data-stage-start="3">03 · Schattenstadt<small>Schwer · Springen & Dash</small></button></div><div class="menu-actions"><button data-menu="new">Ganzes Abenteuer starten</button><button data-menu="resume">Zurück ins Klassenzimmer</button></div>`;
+    if(view==='shop')body=`<p class="subtitle">🍬 ${profile.candies} Bonbons · Sammle Bonbons in allen Etappen.</p><div class="menu-grid">${cosmetics.map(c=>{const own=profile.owned.includes(c.id),equipped=profile[c.kind]===c.id;return `<button class="stage-choice" data-buy="${c.id}" ${!own&&profile.candies<c.price?'disabled':''}><span style="display:inline-block;width:18px;height:18px;border-radius:6px;background:${c.color||'#95a8ba'}"></span> ${c.name}<small>${equipped?'✓ Ausgerüstet':own?'Anziehen':c.price+' 🍬 · Kaufen & anziehen'}</small></button>`}).join('')}</div><p class="small">${saveAvailable?'Kleidung und Bonbons werden in diesem Browser gespeichert.':'Speichern ist hier gesperrt. Kleidung und Bonbons bleiben für diese Sitzung erhalten.'}</p><button data-menu="resume">Zurück ins Klassenzimmer</button>`;
+    if(view==='help')body=`<div class="help-grid"><div><strong>Computer</strong><br>WASD / Pfeile: bewegen<br>Space: springen · F: angreifen<br>E: Mission / Schalter benutzen<br><strong>Shift halten: Rennen · X: Dash in Etappe 3</strong><br>P / Esc: Pause</div><div><strong>Handy</strong><br>Linker Daumen: Joystick<br>Rechts: Nehmen, Sprung, Angriff<br><strong>⇧ halten: Rennen · X: Dash</strong><br>Sprung halten = höher springen<br>Querformat bietet mehr Platz.</div><div><strong>3D-Kamera</strong><br>Maus bewegen · Klick fängt Maus ein<br>Handy: auf Bild wischen<br>V oder Kamera-Taste: Ansicht<br>Mausrad: Zoom · Q/C: drehen<br>E: Wandtafel / Garderobe benutzen</div><div><strong>Schattenstadt</strong><br>Alle drei Symbole sammeln.<br>Über Abgründe und Dornen springen.<br>Rote Sperren: warten oder dashen.<br>Grüne Laternen sichern den Weg.</div></div><button data-menu="home">Zurück</button>`;
+    if(view==='settings')body=`<p class="subtitle">Die Musik der Schattenstadt bleibt im bisherigen Techno-Stil. Schule und Labyrinth haben neue Musik.</p><div class="menu-actions"><button data-menu="music">Musik: ${sound.music?'an':'aus'}</button><button data-menu="fx">Geräusche: ${sound.fx?'an':'aus'}</button><button class="menu-secondary" data-menu="full">Vollbild</button></div><p class="small">Falls Vollbild auf deinem Handy nicht unterstützt wird, spiele direkt im Browser im Querformat.</p><button data-menu="home">Zurück</button>`;
+    overlay.innerHTML=`<div class="card menu-card"><div class="menu-kicker">Viventa · BVJ 2026/27</div><h1>${heading}</h1>${body}<p class="small">Klassenzimmer · Garderobe · Bonbons · Drei Welten</p></div>`;
+    overlay.querySelectorAll('[data-menu]').forEach(button=>button.onclick=()=>{
+      const action=button.dataset.menu;
+      if(action==='classroom')enterClassroom();else if(action==='resume')resumeGame();else if(action==='new')newGame(1);
+      else if(action==='restart'){const stage=gameStage;resumeGame();if(stage===0)enterClassroom();if(stage===1)resetLevel();if(stage===2)resetStage2();if(stage===3)resetStage3()}
+      else if(action==='music'||action==='fx'){document.getElementById(action==='music'?'musicToggle':'fxToggle').click();openGameMenu('settings')}
+      else if(action==='full')toggleFullscreen();else openGameMenu(action);
+    });
+    overlay.querySelectorAll('[data-buy]').forEach(button=>button.onclick=()=>{purchaseCosmetic(button.dataset.buy);openGameMenu('shop')});
+    overlay.querySelectorAll('[data-stage-start]').forEach(button=>button.onclick=()=>newGame(Number(button.dataset.stageStart)));
+  }
+  async function toggleFullscreen(){
+    try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else showMessage('Bitte drehe dein Handy ins Querformat.',2300)}catch(_){showMessage('Vollbild nicht verfügbar · Querformat verwenden.',2300)}
+  }
+  document.getElementById('menuToggle').onclick=()=>paused?resumeGame():openGameMenu();
+  document.getElementById('fullToggle').onclick=toggleFullscreen;
   function beginGame(){
+    unlockAudio();
     // Schutz gegen den zusätzlichen synthetischen Click nach einem Touch.
-    if(started && overlay.style.display==="none") return;
+
 
     gameStage=1;
     started=true;
     finished=false;
     levelIndex=0;
     overlay.style.display="none";
-    startTime=performance.now();
+    startTime=gameNow();
     stageLabel.innerHTML="<strong>BVJ 2026/27</strong> · Etappe 1: 2D";
     updateMobileUI();
     resetLevel();
@@ -3155,6 +4103,7 @@
 
   resetLevel();
   updateMobileUI();
+  enterClassroom();
   requestAnimationFrame(loop);
 })();
 </script>
