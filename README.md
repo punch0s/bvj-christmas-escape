@@ -44,3 +44,6 @@ Lehrer-Modus: Adresse um `?lehrer=1` ergänzen oder fünfmal auf das Logo tippen
 Vor der Klasse auf einem echten iPhone/Safari und Android/Chrome prüfen: Start, Touch, Ton, Drehen, Fragen, Checkpoints, Boss bis zum Sieg, Szenenzeit, Speichern/Laden, Ergebnis kopieren, CSV, Urkunde und Offline-Neustart. Browser-/Codeprüfungen ersetzen keinen realen Gerätetest. Die Freigaben für Lehrpersonen sind weiterhin als Entwurf zu behandeln.
 
 Ergebnisse bleiben im Browser des jeweiligen Geräts. Ein GitHub-Upload sammelt die Ergebnisse nicht zentral. Auf derselben Domain und demselben Browser können andere Versionen dieselben localStorage-Schlüssel verwenden.
+
+## Handy-Vorschau v2
+Unter Mehr → Lehrpersonen ansehen: alle acht Figuren in zwei Reihen, grössere Szenenfläche, ruhigere Frontkamera. Optionen sind einklappbar. Die Vorschau verändert weder Spielstand noch Freigaben. Im Boss-Finale gelten weiterhin aktiv und freigegeben.

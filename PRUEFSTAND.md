@@ -1,15 +1,25 @@
-# Prüfstand – GitHub-Vollversion
+# Lehrpersonen-Vorschau: Handy v2
 
-- Quelle: aktuelle vollständige HTML-Version mit König Stress, alle drei Etappen, Boss, Ergebnissen/CSV und Urkunde.
-- Einzige Paket-Anpassungen im Spiel: Service-Worker-Anmeldung wieder aktiviert; Link unter Mehr zur isolierten Animation hinzugefügt. Andere Quelldateien bleiben unverändert.
-- Boss-Auslöser, Szenenzustand, Pause, Schonfrist, Speichern/Laden, Figur, Kollision und Ergebnisfunktionen unverändert verglichen. Lehrpersonen-Daten und Freigabefelder unverändert.
-- JavaScript-Syntax für das vollständige Spiel und den Service Worker geprüft.
-- Szenen-Regressionstests: echte 3D-Geometrie mit abgefangenem GL-Zeichenaufruf, endliche Mesh-Daten, Zeitpause, Rückkehrkamera, 55-Sekunden-Ende, Schonfrist und WebGL-Ausfall.
-- Rückfall-Regressionstests: ruhige Textszene, pending-Spielstand, sechssekündige Kurzfassung, danach erledigter Zustand.
-- Offline-Tests in simuliertem Service-Worker-Kontext: index.html, Startadresse mit und ohne Lehrer-Parameter, separate animation.html, Manifest und Icons; Betrieb unter /klasse/spiel/ statt Domain-Wurzel; explizite Aktualisierung; nur eigene alte Caches löschen; unvollständige Releases anhand SHA-256 ablehnen.
-- Prüfsummen aller fünf Offline-Dateien entsprechen release.json. ZIP auf Lesbarkeit und vollständige Dateien geprüft.
-- Keine QA-Seiten, Fotos, interne Testskripte oder Test-Spielstände im ZIP.
+Die vollständige Spielversion bleibt enthalten. Nur der Link unter Mehr wurde verständlicher beschriftet; sämtliche Spielregeln und Freigabewerte sind unverändert.
 
-Nicht geprüft: tatsächliche Veröffentlichung auf GitHub, echte Service-Worker-Installation in Safari/Chrome auf einem Handy, GPU-Durchlauf dieser Paketversion, Ton/Touch/Akku/Wärme auf realen Geräten und kompletter Durchlauf bis zum Boss-Sieg mit Export. Browser-Vorschau dieser neuen Paketadresse ist beim Öffnen zeitlich abgebrochen.
+## Geändert in animation.html
 
-Nächster Schritt: Paketinhalt in GitHub hochladen, Pages erfolgreich veröffentlichen lassen, dann auf mindestens einem iPhone und einem Android-Handy einschliesslich Offline-Neustart und Ergebnisexport testen.
+- Alle acht Lehrpersonen als getrennte Entwurfs-Vorschau; kein Zugriff auf echte Spielstände.
+- Zwei Reihen, hintere Reihe auf einem Podest; grössere Figuren und besser unterscheidbare Kleidungsfarben mit goldener Tönung.
+- Frontkamera beim Zuspruch statt enger Kamerafahrt durch die Gruppe.
+- Szenenfläche aus dem wirklichen Abstand zwischen Kopfzeile und Untertitel berechnet. Optionen zunächst eingeklappt.
+- Weniger lange Verbindungsstäbe, die sich vor den Figuren kreuzen.
+
+## Prüfungen
+
+JavaScript-Syntax und simulierte Vorschau geprüft: acht Figuren, Freigaben unverändert, isolierter Speicher, Pause, Zeitregler, Software-3D und Ende ohne Boss-Start. Projektionsgrenzen für alle acht Figuren in 844×390, 915×412 und 390×844 geprüft; Software-Standbild intern angesehen. Offline-Cache mit simulierten Browser-APIs geprüft.
+
+Keine Prüfung auf echtem iPhone, Android oder echter GPU. Das Layout muss dort noch mit Grosse Schrift, Ruhig und eingeblendeten Optionen kontrolliert werden. Vor allem auf alten Geräten kann die Software-Darstellung grob und langsam bleiben.
+
+Dreiecke bei Sekunde 36: Kulisse 492, Schüler 1164, König 956, Lehrpersonen samt Podest/Stützen 4580, Licht 164, insgesamt 7356. Keine neuen Posen-Caches, keine Bilddateien. Weniger Stützen senken die Geometriekosten; die grössere Bildschirmdarstellung kann zusätzliche Pixelarbeit verursachen.
+
+Wichtig: Im normalen Boss-Finale erscheinen weiterhin nur Lehrpersonen mit aktiv:true und freigegeben:true. Alle acht stehen im Spiel weiterhin auf freigegeben:false. Die Entwurfs-Vorschau ist kein Nachweis einer Freigabe.
+
+## Upload
+
+ZIP entpacken und den gesamten Inhalt in das GitHub-Repository hochladen. Nicht nur index.html ersetzen. Anschliessend im Spiel das angebotene Update laden; eine laufende Runde vorher beenden oder speichern. Unter Mehr → Lehrpersonen ansehen die neue Vorschau öffnen.

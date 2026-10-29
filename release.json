@@ -1,13 +1,13 @@
 {
-  "version": "cecb67e5d562",
+  "version": "4ed67cee221d",
   "assets": [
     {
       "path": "./index.html",
-      "hash": "24dbfb162ebf776da1ede008f38fd5f4f8c4f98c9cff74fb0e02ee3487c57dd2"
+      "hash": "7858416e41991c77f4f618af69d66925f94de7156928fe826103d49056b2adda"
     },
     {
       "path": "./animation.html",
-      "hash": "efa7c752bcc70baa00e3675b1ea35d5d8fa0784e5ff654429331a3dc2302db08"
+      "hash": "02d028426ddd8cd13d73f6f4b67e5d29e65af5d386246a28a8f828ad981bfde2"
     },
     {
       "path": "./manifest.json",
