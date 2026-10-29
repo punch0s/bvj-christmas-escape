@@ -1,0 +1,25 @@
+{
+  "version": "cecb67e5d562",
+  "assets": [
+    {
+      "path": "./index.html",
+      "hash": "24dbfb162ebf776da1ede008f38fd5f4f8c4f98c9cff74fb0e02ee3487c57dd2"
+    },
+    {
+      "path": "./animation.html",
+      "hash": "efa7c752bcc70baa00e3675b1ea35d5d8fa0784e5ff654429331a3dc2302db08"
+    },
+    {
+      "path": "./manifest.json",
+      "hash": "1c6b49ad6d12ec1280fcd9d7352ac2b3af7302c663a14726f988216bc52c8f87"
+    },
+    {
+      "path": "./icons/icon-192.png",
+      "hash": "5c2e940a22b76d51eccc9c211c9a0dd1899e4af885040f5b88713a0c2bed4906"
+    },
+    {
+      "path": "./icons/icon-512.png",
+      "hash": "663bdff62ebafe84a41f7dff70ae87ea1fd0c07c1ea8a1e9ec1f2eac02b7dfdd"
+    }
+  ]
+}
